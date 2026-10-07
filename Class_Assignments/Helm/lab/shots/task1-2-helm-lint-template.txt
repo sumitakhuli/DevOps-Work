@@ -1,0 +1,12 @@
+$ helm lint web-chart; helm template demo web-chart | grep -E "^kind:|image:|replicas:"
+==> Linting web-chart
+[INFO] Chart.yaml: icon is recommended
+
+1 chart(s) linted, 0 chart(s) failed
+kind: ServiceAccount
+kind: Service
+kind: Deployment
+  replicas: 1
+          image: "nginx:1.25"
+kind: Pod
+      image: busybox

@@ -1,0 +1,20 @@
+$ helm install notes notes-chart -n notes --create-namespace --wait --timeout 3m | head -7; kubectl get deploy,pods,svc,cm -n notes
+NAME: notes
+LAST DEPLOYED: Tue Oct  6 23:41:17 2026
+NAMESPACE: notes
+STATUS: deployed
+REVISION: 1
+DESCRIPTION: Install complete
+TEST SUITE: None
+NAME                           READY   UP-TO-DATE   AVAILABLE   AGE
+deployment.apps/notes-deploy   1/1     1            1           13s
+
+NAME                                READY   STATUS    RESTARTS   AGE
+pod/notes-deploy-6bdbd76d95-9vpvv   1/1     Running   0          13s
+
+NAME                TYPE       CLUSTER-IP    EXTERNAL-IP   PORT(S)        AGE
+service/notes-svc   NodePort   10.96.188.2   <none>        80:30090/TCP   13s
+
+NAME                         DATA   AGE
+configmap/kube-root-ca.crt   1      13s
+configmap/notes-config       2      13s

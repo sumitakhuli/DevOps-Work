@@ -1,0 +1,14 @@
+$ terraform destroy -no-color -auto-approve | grep -E "Destroying|Destruction complete|Destroy complete"; terraform state list | wc -l; AWS_ACCESS_KEY_ID=test AWS_SECRET_ACCESS_KEY=test aws --endpoint-url=http://localhost:4566 --region ap-south-1 s3 ls; echo "buckets left: $(AWS_ACCESS_KEY_ID=test AWS_SECRET_ACCESS_KEY=test aws --endpoint-url=http://localhost:4566 --region ap-south-1 s3 ls | wc -l)"
+aws_s3_bucket_public_access_block.demo: Destroying... [id=sumit-24bcs10158-terraform-demo]
+aws_s3_bucket_server_side_encryption_configuration.demo: Destroying... [id=sumit-24bcs10158-terraform-demo]
+aws_s3_bucket_versioning.demo: Destroying... [id=sumit-24bcs10158-terraform-demo]
+aws_s3_object.welcome: Destroying... [id=sumit-24bcs10158-terraform-demo/welcome.txt]
+aws_s3_bucket_versioning.demo: Destruction complete after 0s
+aws_s3_bucket_server_side_encryption_configuration.demo: Destruction complete after 0s
+aws_s3_bucket_public_access_block.demo: Destruction complete after 0s
+aws_s3_object.welcome: Destruction complete after 0s
+aws_s3_bucket.demo: Destroying... [id=sumit-24bcs10158-terraform-demo]
+aws_s3_bucket.demo: Destruction complete after 0s
+Destroy complete! Resources: 5 destroyed.
+       0
+buckets left:        0

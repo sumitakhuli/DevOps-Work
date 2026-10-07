@@ -1,0 +1,10 @@
+$ kubectl get svc -n session20; cd /private/tmp/claude-501/-Users-utkarshpathak3107/82161c67-b573-47a2-b8ef-11417ea863e8/scratchpad/gitops-config && git rm -q app/service.yaml && git commit -qm "remove the service" && git push -q origin main 2>&1 | grep -v -E "Process"; git log --oneline | head -2; NEW=$(git rev-parse HEAD); kubectl annotate application session20-mini -n argocd argocd.argoproj.io/refresh=normal --overwrite >/dev/null; until [ "$(kubectl get application session20-mini -n argocd -o jsonpath={.status.sync.revision})" = "$NEW" ] && ! kubectl get svc session20-mini -n session20 >/dev/null 2>&1; do sleep 2; done; kubectl get application session20-mini -n argocd -o jsonpath="{range .status.operationState.syncResult.resources[*]}{.kind}/{.name}: {.status} {.message}{\"\n\"}{end}"; kubectl get svc -n session20
+NAME             TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)   AGE
+session20-mini   ClusterIP   10.104.143.84   <none>        80/TCP    6m15s
+0af5a80 remove the service
+7100c47 fix: configmap apiVersion must be v1
+Service/session20-mini: Pruned pruned
+Namespace/session20: Synced namespace/session20 unchanged
+ConfigMap/web-content: Synced configmap/web-content unchanged
+Deployment/session20-mini: Synced deployment.apps/session20-mini unchanged
+No resources found in session20 namespace.

@@ -1,0 +1,6 @@
+$ kubectl get hpa -n production-webapp; kubectl top pods -n production-webapp
+NAME          REFERENCE            TARGETS       MINPODS   MAXPODS   REPLICAS   AGE
+web-app-hpa   Deployment/web-app   cpu: 1%/50%   2         5         2          6m35s
+NAME                     CPU(cores)   MEMORY(bytes)   
+web-app-f9769fb4-ldkkn   1m           8Mi             
+web-app-f9769fb4-xmzt7   1m           8Mi             

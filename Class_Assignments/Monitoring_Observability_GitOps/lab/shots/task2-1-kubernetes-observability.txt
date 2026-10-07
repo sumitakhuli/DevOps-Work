@@ -1,0 +1,24 @@
+$ kubectl top nodes; echo; kubectl top pods -n session20; echo; kubectl top pods -n argocd --sort-by=memory | head -4; echo; kubectl get events -n session20 --sort-by=.lastTimestamp | tail -5 | cut -c1-140; echo; kubectl logs -n session20 deploy/session20-mini --tail=3
+NAME       CPU(cores)   CPU(%)   MEMORY(bytes)   MEMORY(%)   
+minikube   217m         2%       1982Mi          24%         
+
+NAME                              CPU(cores)   MEMORY(bytes)   
+session20-mini-65c66c8bf4-66gzn   0m           8Mi             
+session20-mini-65c66c8bf4-g57zj   0m           8Mi             
+session20-mini-65c66c8bf4-pqv46   0m           8Mi             
+
+NAME                                                CPU(cores)   MEMORY(bytes)   
+argocd-application-controller-0                     14m          164Mi           
+argocd-repo-server-57b98df6c6-g949c                 2m           47Mi            
+argocd-server-665b8b6947-htxzh                      1m           23Mi            
+
+6m44s       Normal   ScalingReplicaSet   deployment/session20-mini              Scaled up replica set session20-mini-65c66c8bf4 from 3 to 6
+6m43s       Normal   SuccessfulDelete    replicaset/session20-mini-65c66c8bf4   Deleted pod: session20-mini-65c66c8bf4-5nc6d
+6m43s       Normal   SuccessfulDelete    replicaset/session20-mini-65c66c8bf4   Deleted pod: session20-mini-65c66c8bf4-x6jng
+6m43s       Normal   SuccessfulDelete    replicaset/session20-mini-65c66c8bf4   Deleted pod: session20-mini-65c66c8bf4-dhgl4
+6m43s       Normal   ScalingReplicaSet   deployment/session20-mini              Scaled down replica set session20-mini-65c66c8bf4 from 6 to 
+
+Found 3 pods, using pod/session20-mini-65c66c8bf4-66gzn
+2026/10/06 19:00:06 [notice] 1#1: start worker process 37
+2026/10/06 19:00:06 [notice] 1#1: start worker process 38
+2026/10/06 19:00:06 [notice] 1#1: start worker process 39

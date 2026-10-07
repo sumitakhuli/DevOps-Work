@@ -1,0 +1,471 @@
+time="2026-10-06T23:52:03+05:30" level=info msg="Using docker host 'unix:///var/run/docker.sock', and daemon socket 'unix:///var/run/docker.sock'"
+level=warning msg= ⚠ You are using Apple M-series chip and you have not specified container architecture, you might encounter issues while running act. If so, try running it with '--container-architecture linux/amd64'. ⚠ 
+
+time="2026-10-06T23:52:03+05:30" level=info msg="Start server on http://10.114.2.89:34567"
+[DevSecOps Pipeline/Build] ⭐ Run Set up job
+[DevSecOps Pipeline/Build] 🚀  Start image=catthehacker/ubuntu:act-latest
+[DevSecOps Pipeline/Build]   🐳  docker pull image=catthehacker/ubuntu:act-latest platform= username= forcePull=false
+[DevSecOps Pipeline/Build]   🐳  docker create image=catthehacker/ubuntu:act-latest platform= entrypoint=["tail" "-f" "/dev/null"] cmd=[] network="kind"
+[DevSecOps Pipeline/Build]   🐳  docker run image=catthehacker/ubuntu:act-latest platform= entrypoint=["tail" "-f" "/dev/null"] cmd=[] network="kind"
+[DevSecOps Pipeline/Build]   🐳  docker exec cmd=[node --no-warnings -e console.log(process.execPath)] user= workdir=
+[DevSecOps Pipeline/Build]   ✅  Success - Set up job
+[DevSecOps Pipeline/Build]   ☁  git clone 'https://github.com/actions/setup-python' # ref=v5
+[DevSecOps Pipeline/Build] ⭐ Run Main actions/checkout@v4
+[DevSecOps Pipeline/Build]   🐳  docker cp src=/Users/utkarshpathak3107/Desktop/Learn_DevOps/Class_Assignments/DevSecOps/. dst=/Users/utkarshpathak3107/Desktop/Learn_DevOps/Class_Assignments/DevSecOps
+[DevSecOps Pipeline/Build]   ✅  Success - Main actions/checkout@v4 [15.200042ms]
+[DevSecOps Pipeline/Build] ⭐ Run Main actions/setup-python@v5
+[DevSecOps Pipeline/Build]   🐳  docker cp src=/Users/utkarshpathak3107/.cache/act/actions-setup-python@v5/ dst=/var/run/act/actions/actions-setup-python@v5/
+[DevSecOps Pipeline/Build]   🐳  docker exec cmd=[/opt/acttoolcache/node/24.19.0/arm64/bin/node /var/run/act/actions/actions-setup-python@v5/dist/setup/index.js] user= workdir=
+[DevSecOps Pipeline/Build]   ❓  ::group::Installed versions
+[DevSecOps Pipeline/Build]   | (node:32) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+[DevSecOps Pipeline/Build]   | (Use `node --trace-deprecation ...` to show where the warning was created)
+[DevSecOps Pipeline/Build]   | Successfully set up CPython (3.12.15)
+[DevSecOps Pipeline/Build]   ❓  ::endgroup::
+[DevSecOps Pipeline/Build]   ❓ add-matcher /run/act/actions/actions-setup-python@v5/.github/python.json
+[DevSecOps Pipeline/Build]   ✅  Success - Main actions/setup-python@v5 [763.495334ms]
+[DevSecOps Pipeline/Build]   ⚙  ::set-env:: pythonLocation=/opt/hostedtoolcache/Python/3.12.15/arm64
+[DevSecOps Pipeline/Build]   ⚙  ::set-env:: PKG_CONFIG_PATH=/opt/hostedtoolcache/Python/3.12.15/arm64/lib/pkgconfig
+[DevSecOps Pipeline/Build]   ⚙  ::set-env:: Python_ROOT_DIR=/opt/hostedtoolcache/Python/3.12.15/arm64
+[DevSecOps Pipeline/Build]   ⚙  ::set-env:: Python2_ROOT_DIR=/opt/hostedtoolcache/Python/3.12.15/arm64
+[DevSecOps Pipeline/Build]   ⚙  ::set-env:: Python3_ROOT_DIR=/opt/hostedtoolcache/Python/3.12.15/arm64
+[DevSecOps Pipeline/Build]   ⚙  ::set-env:: LD_LIBRARY_PATH=/opt/hostedtoolcache/Python/3.12.15/arm64/lib
+[DevSecOps Pipeline/Build]   ⚙  ::set-output:: python-version=3.12.15
+[DevSecOps Pipeline/Build]   ⚙  ::set-output:: python-path=/opt/hostedtoolcache/Python/3.12.15/arm64/bin/python
+[DevSecOps Pipeline/Build]   ⚙  ::add-path:: /opt/hostedtoolcache/Python/3.12.15/arm64
+[DevSecOps Pipeline/Build]   ⚙  ::add-path:: /opt/hostedtoolcache/Python/3.12.15/arm64/bin
+[DevSecOps Pipeline/Build] ⭐ Run Main Install dependencies
+[DevSecOps Pipeline/Build]   🐳  docker exec cmd=[bash -e /var/run/act/workflow/2] user= workdir=
+[DevSecOps Pipeline/Build]   | Collecting Flask==3.1.3 (from -r requirements.txt (line 1))
+[DevSecOps Pipeline/Build]   |   Downloading flask-3.1.3-py3-none-any.whl.metadata (3.2 kB)
+[DevSecOps Pipeline/Build]   | Requirement already satisfied: gunicorn==23.0.0 in /opt/hostedtoolcache/Python/3.12.15/arm64/lib/python3.12/site-packages (from -r requirements.txt (line 2)) (23.0.0)
+[DevSecOps Pipeline/Build]   | Requirement already satisfied: blinker>=1.9.0 in /opt/hostedtoolcache/Python/3.12.15/arm64/lib/python3.12/site-packages (from Flask==3.1.3->-r requirements.txt (line 1)) (1.9.0)
+[DevSecOps Pipeline/Build]   | Requirement already satisfied: click>=8.1.3 in /opt/hostedtoolcache/Python/3.12.15/arm64/lib/python3.12/site-packages (from Flask==3.1.3->-r requirements.txt (line 1)) (8.5.0)
+[DevSecOps Pipeline/Build]   | Requirement already satisfied: itsdangerous>=2.2.0 in /opt/hostedtoolcache/Python/3.12.15/arm64/lib/python3.12/site-packages (from Flask==3.1.3->-r requirements.txt (line 1)) (2.2.0)
+[DevSecOps Pipeline/Build]   | Requirement already satisfied: jinja2>=3.1.2 in /opt/hostedtoolcache/Python/3.12.15/arm64/lib/python3.12/site-packages (from Flask==3.1.3->-r requirements.txt (line 1)) (3.1.6)
+[DevSecOps Pipeline/Build]   | Requirement already satisfied: markupsafe>=2.1.1 in /opt/hostedtoolcache/Python/3.12.15/arm64/lib/python3.12/site-packages (from Flask==3.1.3->-r requirements.txt (line 1)) (3.0.4)
+[DevSecOps Pipeline/Build]   | Requirement already satisfied: werkzeug>=3.1.0 in /opt/hostedtoolcache/Python/3.12.15/arm64/lib/python3.12/site-packages (from Flask==3.1.3->-r requirements.txt (line 1)) (3.1.9)
+[DevSecOps Pipeline/Build]   | Requirement already satisfied: packaging in /opt/hostedtoolcache/Python/3.12.15/arm64/lib/python3.12/site-packages (from gunicorn==23.0.0->-r requirements.txt (line 2)) (26.3)
+[DevSecOps Pipeline/Build]   | Downloading flask-3.1.3-py3-none-any.whl (103 kB)
+[DevSecOps Pipeline/Build]   | Installing collected packages: Flask
+[DevSecOps Pipeline/Build]   |   Attempting uninstall: Flask
+[DevSecOps Pipeline/Build]   |     Found existing installation: Flask 3.1.2
+[DevSecOps Pipeline/Build]   |     Uninstalling Flask-3.1.2:
+[DevSecOps Pipeline/Build]   |       Successfully uninstalled Flask-3.1.2
+[DevSecOps Pipeline/Build]   | Successfully installed Flask-3.1.3
+[DevSecOps Pipeline/Build]   | WARNING: Running pip as the 'root' user can result in broken permissions and conflicting behaviour with the system package manager, possibly rendering your system unusable. It is recommended to use a virtual environment instead: https://pip.pypa.io/warnings/venv. Use the --root-user-action option if you know what you are doing and want to suppress this warning.
+[DevSecOps Pipeline/Build]   ✅  Success - Main Install dependencies [964.727375ms]
+[DevSecOps Pipeline/Build] ⭐ Run Main Compile application
+[DevSecOps Pipeline/Build]   🐳  docker exec cmd=[bash -e /var/run/act/workflow/3] user= workdir=
+[DevSecOps Pipeline/Build]   | Build OK - all modules compiled
+[DevSecOps Pipeline/Build]   ✅  Success - Main Compile application [89.417208ms]
+[DevSecOps Pipeline/Build] ⭐ Run Post actions/setup-python@v5
+[DevSecOps Pipeline/Build]   🐳  docker exec cmd=[/opt/acttoolcache/node/24.19.0/arm64/bin/node /var/run/act/actions/actions-setup-python@v5/dist/cache-save/index.js] user= workdir=
+[DevSecOps Pipeline/Build]   | (node:75) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+[DevSecOps Pipeline/Build]   | (Use `node --trace-deprecation ...` to show where the warning was created)
+[DevSecOps Pipeline/Build]   ✅  Success - Post actions/setup-python@v5 [171.197875ms]
+[DevSecOps Pipeline/Build] ⭐ Run Complete job
+[DevSecOps Pipeline/Build] Cleaning up container for job Build
+[DevSecOps Pipeline/Build]   ✅  Success - Complete job
+[DevSecOps Pipeline/Build] 🏁  Job succeeded
+[DevSecOps Pipeline/SAST - Bandit         ] ⭐ Run Set up job
+[DevSecOps Pipeline/SAST - Bandit         ] 🚀  Start image=catthehacker/ubuntu:act-latest
+[DevSecOps Pipeline/Unit Test             ] ⭐ Run Set up job
+[DevSecOps Pipeline/Secret Scan - Gitleaks] ⭐ Run Set up job
+[DevSecOps Pipeline/Unit Test             ] 🚀  Start image=catthehacker/ubuntu:act-latest
+[DevSecOps Pipeline/Secret Scan - Gitleaks] 🚀  Start image=catthehacker/ubuntu:act-latest
+[DevSecOps Pipeline/SCA - pip-audit       ] ⭐ Run Set up job
+[DevSecOps Pipeline/SCA - pip-audit       ] 🚀  Start image=catthehacker/ubuntu:act-latest
+[DevSecOps Pipeline/Unit Test             ]   🐳  docker pull image=catthehacker/ubuntu:act-latest platform= username= forcePull=false
+[DevSecOps Pipeline/SCA - pip-audit       ]   🐳  docker pull image=catthehacker/ubuntu:act-latest platform= username= forcePull=false
+[DevSecOps Pipeline/Secret Scan - Gitleaks]   🐳  docker pull image=catthehacker/ubuntu:act-latest platform= username= forcePull=false
+[DevSecOps Pipeline/SAST - Bandit         ]   🐳  docker pull image=catthehacker/ubuntu:act-latest platform= username= forcePull=false
+[DevSecOps Pipeline/Secret Scan - Gitleaks]   🐳  docker create image=catthehacker/ubuntu:act-latest platform= entrypoint=["tail" "-f" "/dev/null"] cmd=[] network="kind"
+[DevSecOps Pipeline/SCA - pip-audit       ]   🐳  docker create image=catthehacker/ubuntu:act-latest platform= entrypoint=["tail" "-f" "/dev/null"] cmd=[] network="kind"
+[DevSecOps Pipeline/Unit Test             ]   🐳  docker create image=catthehacker/ubuntu:act-latest platform= entrypoint=["tail" "-f" "/dev/null"] cmd=[] network="kind"
+[DevSecOps Pipeline/SAST - Bandit         ]   🐳  docker create image=catthehacker/ubuntu:act-latest platform= entrypoint=["tail" "-f" "/dev/null"] cmd=[] network="kind"
+[DevSecOps Pipeline/SCA - pip-audit       ]   🐳  docker run image=catthehacker/ubuntu:act-latest platform= entrypoint=["tail" "-f" "/dev/null"] cmd=[] network="kind"
+[DevSecOps Pipeline/SAST - Bandit         ]   🐳  docker run image=catthehacker/ubuntu:act-latest platform= entrypoint=["tail" "-f" "/dev/null"] cmd=[] network="kind"
+[DevSecOps Pipeline/Unit Test             ]   🐳  docker run image=catthehacker/ubuntu:act-latest platform= entrypoint=["tail" "-f" "/dev/null"] cmd=[] network="kind"
+[DevSecOps Pipeline/Secret Scan - Gitleaks]   🐳  docker run image=catthehacker/ubuntu:act-latest platform= entrypoint=["tail" "-f" "/dev/null"] cmd=[] network="kind"
+[DevSecOps Pipeline/Secret Scan - Gitleaks]   🐳  docker exec cmd=[node --no-warnings -e console.log(process.execPath)] user= workdir=
+[DevSecOps Pipeline/SAST - Bandit         ]   🐳  docker exec cmd=[node --no-warnings -e console.log(process.execPath)] user= workdir=
+[DevSecOps Pipeline/SCA - pip-audit       ]   🐳  docker exec cmd=[node --no-warnings -e console.log(process.execPath)] user= workdir=
+[DevSecOps Pipeline/Unit Test             ]   🐳  docker exec cmd=[node --no-warnings -e console.log(process.execPath)] user= workdir=
+[DevSecOps Pipeline/SAST - Bandit         ]   ✅  Success - Set up job
+[DevSecOps Pipeline/Secret Scan - Gitleaks]   ✅  Success - Set up job
+[DevSecOps Pipeline/SAST - Bandit         ]   ☁  git clone 'https://github.com/actions/setup-python' # ref=v5
+[DevSecOps Pipeline/SCA - pip-audit       ]   ✅  Success - Set up job
+[DevSecOps Pipeline/Unit Test             ]   ✅  Success - Set up job
+[DevSecOps Pipeline/Secret Scan - Gitleaks] ⭐ Run Main actions/checkout@v4
+[DevSecOps Pipeline/SCA - pip-audit       ]   ☁  git clone 'https://github.com/actions/setup-python' # ref=v5
+[DevSecOps Pipeline/Unit Test             ]   ☁  git clone 'https://github.com/actions/setup-python' # ref=v5
+[DevSecOps Pipeline/Secret Scan - Gitleaks]   🐳  docker cp src=/Users/utkarshpathak3107/Desktop/Learn_DevOps/Class_Assignments/DevSecOps/. dst=/Users/utkarshpathak3107/Desktop/Learn_DevOps/Class_Assignments/DevSecOps
+[DevSecOps Pipeline/Secret Scan - Gitleaks]   ✅  Success - Main actions/checkout@v4 [21.723042ms]
+[DevSecOps Pipeline/Secret Scan - Gitleaks] ⭐ Run Main Install Gitleaks
+[DevSecOps Pipeline/Secret Scan - Gitleaks]   🐳  docker exec cmd=[bash -e /var/run/act/workflow/1] user= workdir=
+[DevSecOps Pipeline/SAST - Bandit         ] ⭐ Run Main actions/checkout@v4
+[DevSecOps Pipeline/SAST - Bandit         ]   🐳  docker cp src=/Users/utkarshpathak3107/Desktop/Learn_DevOps/Class_Assignments/DevSecOps/. dst=/Users/utkarshpathak3107/Desktop/Learn_DevOps/Class_Assignments/DevSecOps
+[DevSecOps Pipeline/SAST - Bandit         ]   ✅  Success - Main actions/checkout@v4 [15.560708ms]
+[DevSecOps Pipeline/SAST - Bandit         ] ⭐ Run Main actions/setup-python@v5
+[DevSecOps Pipeline/SAST - Bandit         ]   🐳  docker cp src=/Users/utkarshpathak3107/.cache/act/actions-setup-python@v5/ dst=/var/run/act/actions/actions-setup-python@v5/
+[DevSecOps Pipeline/SAST - Bandit         ]   🐳  docker exec cmd=[/opt/acttoolcache/node/24.19.0/arm64/bin/node /var/run/act/actions/actions-setup-python@v5/dist/setup/index.js] user= workdir=
+[DevSecOps Pipeline/SAST - Bandit         ]   ❓  ::group::Installed versions
+[DevSecOps Pipeline/SAST - Bandit         ]   | (node:31) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+[DevSecOps Pipeline/SAST - Bandit         ]   | (Use `node --trace-deprecation ...` to show where the warning was created)
+[DevSecOps Pipeline/SAST - Bandit         ]   | Successfully set up CPython (3.12.15)
+[DevSecOps Pipeline/SAST - Bandit         ]   ❓  ::endgroup::
+[DevSecOps Pipeline/SAST - Bandit         ]   ❓ add-matcher /run/act/actions/actions-setup-python@v5/.github/python.json
+[DevSecOps Pipeline/SAST - Bandit         ]   ✅  Success - Main actions/setup-python@v5 [732.85375ms]
+[DevSecOps Pipeline/SAST - Bandit         ]   ⚙  ::set-env:: PKG_CONFIG_PATH=/opt/hostedtoolcache/Python/3.12.15/arm64/lib/pkgconfig
+[DevSecOps Pipeline/SAST - Bandit         ]   ⚙  ::set-env:: Python_ROOT_DIR=/opt/hostedtoolcache/Python/3.12.15/arm64
+[DevSecOps Pipeline/SAST - Bandit         ]   ⚙  ::set-env:: Python2_ROOT_DIR=/opt/hostedtoolcache/Python/3.12.15/arm64
+[DevSecOps Pipeline/SAST - Bandit         ]   ⚙  ::set-env:: Python3_ROOT_DIR=/opt/hostedtoolcache/Python/3.12.15/arm64
+[DevSecOps Pipeline/SAST - Bandit         ]   ⚙  ::set-env:: LD_LIBRARY_PATH=/opt/hostedtoolcache/Python/3.12.15/arm64/lib
+[DevSecOps Pipeline/SAST - Bandit         ]   ⚙  ::set-env:: pythonLocation=/opt/hostedtoolcache/Python/3.12.15/arm64
+[DevSecOps Pipeline/SAST - Bandit         ]   ⚙  ::set-output:: python-version=3.12.15
+[DevSecOps Pipeline/SAST - Bandit         ]   ⚙  ::set-output:: python-path=/opt/hostedtoolcache/Python/3.12.15/arm64/bin/python
+[DevSecOps Pipeline/SAST - Bandit         ]   ⚙  ::add-path:: /opt/hostedtoolcache/Python/3.12.15/arm64
+[DevSecOps Pipeline/SAST - Bandit         ]   ⚙  ::add-path:: /opt/hostedtoolcache/Python/3.12.15/arm64/bin
+[DevSecOps Pipeline/SCA - pip-audit       ] ⭐ Run Main actions/checkout@v4
+[DevSecOps Pipeline/SCA - pip-audit       ]   🐳  docker cp src=/Users/utkarshpathak3107/Desktop/Learn_DevOps/Class_Assignments/DevSecOps/. dst=/Users/utkarshpathak3107/Desktop/Learn_DevOps/Class_Assignments/DevSecOps
+[DevSecOps Pipeline/SCA - pip-audit       ]   ✅  Success - Main actions/checkout@v4 [10.839833ms]
+[DevSecOps Pipeline/SAST - Bandit         ] ⭐ Run Main pip install bandit==1.8.6
+[DevSecOps Pipeline/SCA - pip-audit       ] ⭐ Run Main actions/setup-python@v5
+[DevSecOps Pipeline/SAST - Bandit         ]   🐳  docker exec cmd=[bash -e /var/run/act/workflow/2] user= workdir=
+[DevSecOps Pipeline/SCA - pip-audit       ]   🐳  docker cp src=/Users/utkarshpathak3107/.cache/act/actions-setup-python@v5/ dst=/var/run/act/actions/actions-setup-python@v5/
+[DevSecOps Pipeline/Secret Scan - Gitleaks]   | 8.30.1
+[DevSecOps Pipeline/Secret Scan - Gitleaks]   ✅  Success - Main Install Gitleaks [2.00546725s]
+[DevSecOps Pipeline/Secret Scan - Gitleaks] ⭐ Run Main Scan files for secrets
+[DevSecOps Pipeline/Secret Scan - Gitleaks]   🐳  docker exec cmd=[bash -e /var/run/act/workflow/2] user= workdir=
+[DevSecOps Pipeline/Secret Scan - Gitleaks]   | [90m6:22PM[0m [32mINF[0m [1mscanned ~63492 bytes (63.49 KB) in 16.8ms[0m
+[DevSecOps Pipeline/Secret Scan - Gitleaks]   | [90m6:22PM[0m [32mINF[0m [1mno leaks found[0m
+[DevSecOps Pipeline/Secret Scan - Gitleaks]   ✅  Success - Main Scan files for secrets [445.381208ms]
+[DevSecOps Pipeline/SCA - pip-audit       ]   🐳  docker exec cmd=[/opt/acttoolcache/node/24.19.0/arm64/bin/node /var/run/act/actions/actions-setup-python@v5/dist/setup/index.js] user= workdir=
+[DevSecOps Pipeline/Secret Scan - Gitleaks] ⭐ Run Complete job
+[DevSecOps Pipeline/Secret Scan - Gitleaks] Cleaning up container for job Secret Scan - Gitleaks
+[DevSecOps Pipeline/Unit Test             ] ⭐ Run Main actions/checkout@v4
+[DevSecOps Pipeline/Unit Test             ]   🐳  docker cp src=/Users/utkarshpathak3107/Desktop/Learn_DevOps/Class_Assignments/DevSecOps/. dst=/Users/utkarshpathak3107/Desktop/Learn_DevOps/Class_Assignments/DevSecOps
+[DevSecOps Pipeline/Unit Test             ]   ✅  Success - Main actions/checkout@v4 [14.121458ms]
+[DevSecOps Pipeline/Unit Test             ] ⭐ Run Main actions/setup-python@v5
+[DevSecOps Pipeline/Unit Test             ]   🐳  docker cp src=/Users/utkarshpathak3107/.cache/act/actions-setup-python@v5/ dst=/var/run/act/actions/actions-setup-python@v5/
+[DevSecOps Pipeline/SAST - Bandit         ]   | Collecting bandit==1.8.6
+[DevSecOps Pipeline/SCA - pip-audit       ]   ❓  ::group::Installed versions
+[DevSecOps Pipeline/SCA - pip-audit       ]   | (node:31) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+[DevSecOps Pipeline/SCA - pip-audit       ]   | (Use `node --trace-deprecation ...` to show where the warning was created)
+[DevSecOps Pipeline/SCA - pip-audit       ]   | Successfully set up CPython (3.12.15)
+[DevSecOps Pipeline/SCA - pip-audit       ]   ❓  ::endgroup::
+[DevSecOps Pipeline/SCA - pip-audit       ]   ❓ add-matcher /run/act/actions/actions-setup-python@v5/.github/python.json
+[DevSecOps Pipeline/SCA - pip-audit       ]   ✅  Success - Main actions/setup-python@v5 [960.706625ms]
+[DevSecOps Pipeline/SCA - pip-audit       ]   ⚙  ::set-env:: Python_ROOT_DIR=/opt/hostedtoolcache/Python/3.12.15/arm64
+[DevSecOps Pipeline/SCA - pip-audit       ]   ⚙  ::set-env:: Python2_ROOT_DIR=/opt/hostedtoolcache/Python/3.12.15/arm64
+[DevSecOps Pipeline/SCA - pip-audit       ]   ⚙  ::set-env:: Python3_ROOT_DIR=/opt/hostedtoolcache/Python/3.12.15/arm64
+[DevSecOps Pipeline/SCA - pip-audit       ]   ⚙  ::set-env:: LD_LIBRARY_PATH=/opt/hostedtoolcache/Python/3.12.15/arm64/lib
+[DevSecOps Pipeline/SCA - pip-audit       ]   ⚙  ::set-env:: pythonLocation=/opt/hostedtoolcache/Python/3.12.15/arm64
+[DevSecOps Pipeline/SCA - pip-audit       ]   ⚙  ::set-env:: PKG_CONFIG_PATH=/opt/hostedtoolcache/Python/3.12.15/arm64/lib/pkgconfig
+[DevSecOps Pipeline/SCA - pip-audit       ]   ⚙  ::set-output:: python-version=3.12.15
+[DevSecOps Pipeline/SCA - pip-audit       ]   ⚙  ::set-output:: python-path=/opt/hostedtoolcache/Python/3.12.15/arm64/bin/python
+[DevSecOps Pipeline/SCA - pip-audit       ]   ⚙  ::add-path:: /opt/hostedtoolcache/Python/3.12.15/arm64
+[DevSecOps Pipeline/SCA - pip-audit       ]   ⚙  ::add-path:: /opt/hostedtoolcache/Python/3.12.15/arm64/bin
+[DevSecOps Pipeline/SCA - pip-audit       ] ⭐ Run Main pip install pip-audit==2.9.0
+[DevSecOps Pipeline/SAST - Bandit         ]   |   Downloading bandit-1.8.6-py3-none-any.whl.metadata (6.9 kB)
+[DevSecOps Pipeline/SCA - pip-audit       ]   🐳  docker exec cmd=[bash -e /var/run/act/workflow/2] user= workdir=
+[DevSecOps Pipeline/SAST - Bandit         ]   | Collecting PyYAML>=5.3.1 (from bandit==1.8.6)
+[DevSecOps Pipeline/SAST - Bandit         ]   |   Downloading pyyaml-6.0.3-cp312-cp312-manylinux2014_aarch64.manylinux_2_17_aarch64.manylinux_2_28_aarch64.whl.metadata (2.4 kB)
+[DevSecOps Pipeline/Secret Scan - Gitleaks]   ✅  Success - Complete job
+[DevSecOps Pipeline/Secret Scan - Gitleaks] 🏁  Job succeeded
+[DevSecOps Pipeline/SAST - Bandit         ]   | Collecting stevedore>=1.20.0 (from bandit==1.8.6)
+[DevSecOps Pipeline/SAST - Bandit         ]   |   Downloading stevedore-5.9.1-py3-none-any.whl.metadata (2.3 kB)
+[DevSecOps Pipeline/SAST - Bandit         ]   | Collecting rich (from bandit==1.8.6)
+[DevSecOps Pipeline/SAST - Bandit         ]   |   Downloading rich-15.0.0-py3-none-any.whl.metadata (18 kB)
+[DevSecOps Pipeline/SAST - Bandit         ]   | Collecting markdown-it-py>=2.2.0 (from rich->bandit==1.8.6)
+[DevSecOps Pipeline/SAST - Bandit         ]   |   Downloading markdown_it_py-4.2.0-py3-none-any.whl.metadata (7.4 kB)
+[DevSecOps Pipeline/SAST - Bandit         ]   | Requirement already satisfied: pygments<3.0.0,>=2.13.0 in /opt/hostedtoolcache/Python/3.12.15/arm64/lib/python3.12/site-packages (from rich->bandit==1.8.6) (2.21.0)
+[DevSecOps Pipeline/SAST - Bandit         ]   | Collecting mdurl~=0.1 (from markdown-it-py>=2.2.0->rich->bandit==1.8.6)
+[DevSecOps Pipeline/Unit Test             ]   🐳  docker exec cmd=[/opt/acttoolcache/node/24.19.0/arm64/bin/node /var/run/act/actions/actions-setup-python@v5/dist/setup/index.js] user= workdir=
+[DevSecOps Pipeline/SAST - Bandit         ]   |   Downloading mdurl-0.1.2-py3-none-any.whl.metadata (1.6 kB)
+[DevSecOps Pipeline/SAST - Bandit         ]   | Downloading bandit-1.8.6-py3-none-any.whl (133 kB)
+[DevSecOps Pipeline/Unit Test             ]   ❓  ::group::Installed versions
+[DevSecOps Pipeline/Unit Test             ]   | (node:30) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+[DevSecOps Pipeline/Unit Test             ]   | (Use `node --trace-deprecation ...` to show where the warning was created)
+[DevSecOps Pipeline/Unit Test             ]   | Successfully set up CPython (3.12.15)
+[DevSecOps Pipeline/Unit Test             ]   ❓  ::endgroup::
+[DevSecOps Pipeline/Unit Test             ]   ❓ add-matcher /run/act/actions/actions-setup-python@v5/.github/python.json
+[DevSecOps Pipeline/Unit Test             ]   ✅  Success - Main actions/setup-python@v5 [994.248125ms]
+[DevSecOps Pipeline/Unit Test             ]   ⚙  ::set-env:: pythonLocation=/opt/hostedtoolcache/Python/3.12.15/arm64
+[DevSecOps Pipeline/Unit Test             ]   ⚙  ::set-env:: PKG_CONFIG_PATH=/opt/hostedtoolcache/Python/3.12.15/arm64/lib/pkgconfig
+[DevSecOps Pipeline/Unit Test             ]   ⚙  ::set-env:: Python_ROOT_DIR=/opt/hostedtoolcache/Python/3.12.15/arm64
+[DevSecOps Pipeline/Unit Test             ]   ⚙  ::set-env:: Python2_ROOT_DIR=/opt/hostedtoolcache/Python/3.12.15/arm64
+[DevSecOps Pipeline/Unit Test             ]   ⚙  ::set-env:: Python3_ROOT_DIR=/opt/hostedtoolcache/Python/3.12.15/arm64
+[DevSecOps Pipeline/Unit Test             ]   ⚙  ::set-env:: LD_LIBRARY_PATH=/opt/hostedtoolcache/Python/3.12.15/arm64/lib
+[DevSecOps Pipeline/Unit Test             ]   ⚙  ::set-output:: python-version=3.12.15
+[DevSecOps Pipeline/Unit Test             ]   ⚙  ::set-output:: python-path=/opt/hostedtoolcache/Python/3.12.15/arm64/bin/python
+[DevSecOps Pipeline/SAST - Bandit         ]   | Downloading pyyaml-6.0.3-cp312-cp312-manylinux2014_aarch64.manylinux_2_17_aarch64.manylinux_2_28_aarch64.whl (775 kB)
+[DevSecOps Pipeline/Unit Test             ]   ⚙  ::add-path:: /opt/hostedtoolcache/Python/3.12.15/arm64
+[DevSecOps Pipeline/Unit Test             ]   ⚙  ::add-path:: /opt/hostedtoolcache/Python/3.12.15/arm64/bin
+[DevSecOps Pipeline/Unit Test             ] ⭐ Run Main pip install -r requirements-dev.txt
+[DevSecOps Pipeline/Unit Test             ]   🐳  docker exec cmd=[bash -e /var/run/act/workflow/2] user= workdir=
+[DevSecOps Pipeline/SAST - Bandit         ]   |    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 775.1/775.1 kB 6.4 MB/s  0:00:00
+[DevSecOps Pipeline/SAST - Bandit         ]   | Downloading stevedore-5.9.1-py3-none-any.whl (54 kB)
+[DevSecOps Pipeline/SAST - Bandit         ]   | Downloading rich-15.0.0-py3-none-any.whl (310 kB)
+[DevSecOps Pipeline/SAST - Bandit         ]   | Downloading markdown_it_py-4.2.0-py3-none-any.whl (91 kB)
+[DevSecOps Pipeline/SCA - pip-audit       ]   | Collecting pip-audit==2.9.0
+[DevSecOps Pipeline/SAST - Bandit         ]   | Downloading mdurl-0.1.2-py3-none-any.whl (10.0 kB)
+[DevSecOps Pipeline/SAST - Bandit         ]   | Installing collected packages: stevedore, PyYAML, mdurl, markdown-it-py, rich, bandit
+[DevSecOps Pipeline/SCA - pip-audit       ]   |   Downloading pip_audit-2.9.0-py3-none-any.whl.metadata (27 kB)
+[DevSecOps Pipeline/Unit Test             ]   | Requirement already satisfied: Flask==3.1.3 in /opt/hostedtoolcache/Python/3.12.15/arm64/lib/python3.12/site-packages (from -r /Users/utkarshpathak3107/Desktop/Learn_DevOps/Class_Assignments/DevSecOps/requirements.txt (line 1)) (3.1.3)
+[DevSecOps Pipeline/Unit Test             ]   | Requirement already satisfied: gunicorn==23.0.0 in /opt/hostedtoolcache/Python/3.12.15/arm64/lib/python3.12/site-packages (from -r /Users/utkarshpathak3107/Desktop/Learn_DevOps/Class_Assignments/DevSecOps/requirements.txt (line 2)) (23.0.0)
+[DevSecOps Pipeline/Unit Test             ]   | Requirement already satisfied: pytest==8.4.2 in /opt/hostedtoolcache/Python/3.12.15/arm64/lib/python3.12/site-packages (from -r requirements-dev.txt (line 2)) (8.4.2)
+[DevSecOps Pipeline/SAST - Bandit         ]   | 
+[DevSecOps Pipeline/SAST - Bandit         ]   | Successfully installed PyYAML-6.0.3 bandit-1.8.6 markdown-it-py-4.2.0 mdurl-0.1.2 rich-15.0.0 stevedore-5.9.1
+[DevSecOps Pipeline/SAST - Bandit         ]   | WARNING: Running pip as the 'root' user can result in broken permissions and conflicting behaviour with the system package manager, possibly rendering your system unusable. It is recommended to use a virtual environment instead: https://pip.pypa.io/warnings/venv. Use the --root-user-action option if you know what you are doing and want to suppress this warning.
+[DevSecOps Pipeline/SCA - pip-audit       ]   | Collecting CacheControl>=0.13.0 (from CacheControl[filecache]>=0.13.0->pip-audit==2.9.0)
+[DevSecOps Pipeline/SAST - Bandit         ]   ✅  Success - Main pip install bandit==1.8.6 [2.571927917s]
+[DevSecOps Pipeline/SCA - pip-audit       ]   |   Downloading cachecontrol-0.14.4-py3-none-any.whl.metadata (3.1 kB)
+[DevSecOps Pipeline/SAST - Bandit         ] ⭐ Run Main Scan source code
+[DevSecOps Pipeline/Unit Test             ]   | Collecting pytest-cov==6.0.0 (from -r requirements-dev.txt (line 3))
+[DevSecOps Pipeline/SAST - Bandit         ]   🐳  docker exec cmd=[bash -e /var/run/act/workflow/3] user= workdir=
+[DevSecOps Pipeline/SCA - pip-audit       ]   | Collecting cyclonedx-python-lib<10,>=5 (from pip-audit==2.9.0)
+[DevSecOps Pipeline/SCA - pip-audit       ]   |   Downloading cyclonedx_python_lib-9.1.0-py3-none-any.whl.metadata (6.5 kB)
+[DevSecOps Pipeline/Unit Test             ]   |   Downloading pytest_cov-6.0.0-py3-none-any.whl.metadata (27 kB)
+[DevSecOps Pipeline/SCA - pip-audit       ]   | Requirement already satisfied: packaging>=23.0.0 in /opt/hostedtoolcache/Python/3.12.15/arm64/lib/python3.12/site-packages (from pip-audit==2.9.0) (26.3)
+[DevSecOps Pipeline/Unit Test             ]   | Requirement already satisfied: blinker>=1.9.0 in /opt/hostedtoolcache/Python/3.12.15/arm64/lib/python3.12/site-packages (from Flask==3.1.3->-r /Users/utkarshpathak3107/Desktop/Learn_DevOps/Class_Assignments/DevSecOps/requirements.txt (line 1)) (1.9.0)
+[DevSecOps Pipeline/Unit Test             ]   | Requirement already satisfied: click>=8.1.3 in /opt/hostedtoolcache/Python/3.12.15/arm64/lib/python3.12/site-packages (from Flask==3.1.3->-r /Users/utkarshpathak3107/Desktop/Learn_DevOps/Class_Assignments/DevSecOps/requirements.txt (line 1)) (8.5.0)
+[DevSecOps Pipeline/Unit Test             ]   | Requirement already satisfied: itsdangerous>=2.2.0 in /opt/hostedtoolcache/Python/3.12.15/arm64/lib/python3.12/site-packages (from Flask==3.1.3->-r /Users/utkarshpathak3107/Desktop/Learn_DevOps/Class_Assignments/DevSecOps/requirements.txt (line 1)) (2.2.0)
+[DevSecOps Pipeline/Unit Test             ]   | Requirement already satisfied: jinja2>=3.1.2 in /opt/hostedtoolcache/Python/3.12.15/arm64/lib/python3.12/site-packages (from Flask==3.1.3->-r /Users/utkarshpathak3107/Desktop/Learn_DevOps/Class_Assignments/DevSecOps/requirements.txt (line 1)) (3.1.6)
+[DevSecOps Pipeline/Unit Test             ]   | Requirement already satisfied: markupsafe>=2.1.1 in /opt/hostedtoolcache/Python/3.12.15/arm64/lib/python3.12/site-packages (from Flask==3.1.3->-r /Users/utkarshpathak3107/Desktop/Learn_DevOps/Class_Assignments/DevSecOps/requirements.txt (line 1)) (3.0.4)
+[DevSecOps Pipeline/Unit Test             ]   | Requirement already satisfied: werkzeug>=3.1.0 in /opt/hostedtoolcache/Python/3.12.15/arm64/lib/python3.12/site-packages (from Flask==3.1.3->-r /Users/utkarshpathak3107/Desktop/Learn_DevOps/Class_Assignments/DevSecOps/requirements.txt (line 1)) (3.1.9)
+[DevSecOps Pipeline/Unit Test             ]   | Requirement already satisfied: packaging in /opt/hostedtoolcache/Python/3.12.15/arm64/lib/python3.12/site-packages (from gunicorn==23.0.0->-r /Users/utkarshpathak3107/Desktop/Learn_DevOps/Class_Assignments/DevSecOps/requirements.txt (line 2)) (26.3)
+[DevSecOps Pipeline/SAST - Bandit         ]   | [main]	INFO	profile include tests: None
+[DevSecOps Pipeline/SAST - Bandit         ]   | [main]	INFO	profile exclude tests: None
+[DevSecOps Pipeline/SAST - Bandit         ]   | [main]	INFO	cli include tests: None
+[DevSecOps Pipeline/SAST - Bandit         ]   | [main]	INFO	cli exclude tests: None
+[DevSecOps Pipeline/SAST - Bandit         ]   | [main]	INFO	running on Python 3.12.15
+[DevSecOps Pipeline/Unit Test             ]   | Requirement already satisfied: iniconfig>=1 in /opt/hostedtoolcache/Python/3.12.15/arm64/lib/python3.12/site-packages (from pytest==8.4.2->-r requirements-dev.txt (line 2)) (2.3.0)
+[DevSecOps Pipeline/Unit Test             ]   | Requirement already satisfied: pluggy<2,>=1.5 in /opt/hostedtoolcache/Python/3.12.15/arm64/lib/python3.12/site-packages (from pytest==8.4.2->-r requirements-dev.txt (line 2)) (1.6.0)
+[DevSecOps Pipeline/Unit Test             ]   | Requirement already satisfied: pygments>=2.7.2 in /opt/hostedtoolcache/Python/3.12.15/arm64/lib/python3.12/site-packages (from pytest==8.4.2->-r requirements-dev.txt (line 2)) (2.21.0)
+[DevSecOps Pipeline/SAST - Bandit         ]   | Run started:2026-10-06 18:22:13.389786
+[DevSecOps Pipeline/SAST - Bandit         ]   | 
+[DevSecOps Pipeline/SAST - Bandit         ]   | Test results:
+[DevSecOps Pipeline/SAST - Bandit         ]   | >> Issue: [B201:flask_debug_true] A Flask app appears to be run with debug=True, which exposes the Werkzeug debugger and allows the execution of arbitrary code.
+[DevSecOps Pipeline/SAST - Bandit         ]   |    Severity: High   Confidence: Medium
+[DevSecOps Pipeline/SAST - Bandit         ]   |    CWE: CWE-94 (https://cwe.mitre.org/data/definitions/94.html)
+[DevSecOps Pipeline/SAST - Bandit         ]   |    More Info: https://bandit.readthedocs.io/en/1.8.6/plugins/b201_flask_debug_true.html
+[DevSecOps Pipeline/SAST - Bandit         ]   |    Location: app/app.py:234:4
+[DevSecOps Pipeline/SAST - Bandit         ]   | 233	if __name__ == "__main__":
+[DevSecOps Pipeline/SAST - Bandit         ]   | 234	    app.run(host="0.0.0.0", port=5001, debug=True)
+[DevSecOps Pipeline/SAST - Bandit         ]   | 
+[DevSecOps Pipeline/SAST - Bandit         ]   | --------------------------------------------------
+[DevSecOps Pipeline/SAST - Bandit         ]   | >> Issue: [B104:hardcoded_bind_all_interfaces] Possible binding to all interfaces.
+[DevSecOps Pipeline/SAST - Bandit         ]   |    Severity: Medium   Confidence: Medium
+[DevSecOps Pipeline/SAST - Bandit         ]   |    CWE: CWE-605 (https://cwe.mitre.org/data/definitions/605.html)
+[DevSecOps Pipeline/SAST - Bandit         ]   |    More Info: https://bandit.readthedocs.io/en/1.8.6/plugins/b104_hardcoded_bind_all_interfaces.html
+[DevSecOps Pipeline/SAST - Bandit         ]   |    Location: app/app.py:234:17
+[DevSecOps Pipeline/SAST - Bandit         ]   | 233	if __name__ == "__main__":
+[DevSecOps Pipeline/SAST - Bandit         ]   | 234	    app.run(host="0.0.0.0", port=5001, debug=True)
+[DevSecOps Pipeline/SAST - Bandit         ]   | 
+[DevSecOps Pipeline/SAST - Bandit         ]   | --------------------------------------------------
+[DevSecOps Pipeline/SAST - Bandit         ]   | 
+[DevSecOps Pipeline/SAST - Bandit         ]   | Code scanned:
+[DevSecOps Pipeline/SAST - Bandit         ]   | 	Total lines of code: 168
+[DevSecOps Pipeline/SAST - Bandit         ]   | 	Total lines skipped (#nosec): 0
+[DevSecOps Pipeline/SAST - Bandit         ]   | 	Total potential issues skipped due to specifically being disabled (e.g., #nosec BXXX): 0
+[DevSecOps Pipeline/SAST - Bandit         ]   | 
+[DevSecOps Pipeline/SAST - Bandit         ]   | Run metrics:
+[DevSecOps Pipeline/SAST - Bandit         ]   | 	Total issues (by severity):
+[DevSecOps Pipeline/SAST - Bandit         ]   | 		Undefined: 0
+[DevSecOps Pipeline/SAST - Bandit         ]   | 		Low: 5
+[DevSecOps Pipeline/SAST - Bandit         ]   | 		Medium: 1
+[DevSecOps Pipeline/SAST - Bandit         ]   | 		High: 1
+[DevSecOps Pipeline/SAST - Bandit         ]   | 	Total issues (by confidence):
+[DevSecOps Pipeline/SAST - Bandit         ]   | 		Undefined: 0
+[DevSecOps Pipeline/SAST - Bandit         ]   | 		Low: 0
+[DevSecOps Pipeline/SAST - Bandit         ]   | 		Medium: 2
+[DevSecOps Pipeline/SAST - Bandit         ]   | 		High: 5
+[DevSecOps Pipeline/SAST - Bandit         ]   | Files skipped (0):
+[DevSecOps Pipeline/SAST - Bandit         ]   ❌  Failure - Main Scan source code [171.2265ms]
+[DevSecOps Pipeline/SAST - Bandit         ] exitcode '1': failure
+[DevSecOps Pipeline/SCA - pip-audit       ]   | Collecting pip-api>=0.0.28 (from pip-audit==2.9.0)
+[DevSecOps Pipeline/SAST - Bandit         ] ⭐ Run Complete job
+[DevSecOps Pipeline/SAST - Bandit         ]   ✅  Success - Complete job
+[DevSecOps Pipeline/SAST - Bandit         ] 🏁  Job failed
+[DevSecOps Pipeline/SCA - pip-audit       ]   |   Downloading pip_api-0.0.35-py3-none-any.whl.metadata (17 kB)
+[DevSecOps Pipeline/SCA - pip-audit       ]   | Collecting pip-requirements-parser>=32.0.0 (from pip-audit==2.9.0)
+[DevSecOps Pipeline/SCA - pip-audit       ]   |   Downloading pip_requirements_parser-32.0.1-py3-none-any.whl.metadata (9.3 kB)
+[DevSecOps Pipeline/Unit Test             ]   | Collecting coverage>=7.5 (from coverage[toml]>=7.5->pytest-cov==6.0.0->-r requirements-dev.txt (line 3))
+[DevSecOps Pipeline/SCA - pip-audit       ]   | Collecting requests>=2.31.0 (from pip-audit==2.9.0)
+[DevSecOps Pipeline/SCA - pip-audit       ]   |   Downloading requests-2.34.2-py3-none-any.whl.metadata (4.8 kB)
+[DevSecOps Pipeline/Unit Test             ]   |   Downloading coverage-7.16.2-cp312-cp312-manylinux2014_aarch64.manylinux_2_17_aarch64.manylinux_2_28_aarch64.whl.metadata (8.2 kB)
+[DevSecOps Pipeline/Unit Test             ]   | Downloading pytest_cov-6.0.0-py3-none-any.whl (22 kB)
+[DevSecOps Pipeline/SCA - pip-audit       ]   | Collecting rich>=12.4 (from pip-audit==2.9.0)
+[DevSecOps Pipeline/SCA - pip-audit       ]   |   Downloading rich-15.0.0-py3-none-any.whl.metadata (18 kB)
+[DevSecOps Pipeline/Unit Test             ]   | Downloading coverage-7.16.2-cp312-cp312-manylinux2014_aarch64.manylinux_2_17_aarch64.manylinux_2_28_aarch64.whl (259 kB)
+[DevSecOps Pipeline/SCA - pip-audit       ]   | Collecting toml>=0.10 (from pip-audit==2.9.0)
+[DevSecOps Pipeline/Unit Test             ]   | Installing collected packages: coverage, pytest-cov
+[DevSecOps Pipeline/SCA - pip-audit       ]   |   Downloading toml-0.10.2-py2.py3-none-any.whl.metadata (7.1 kB)
+[DevSecOps Pipeline/Unit Test             ]   | 
+[DevSecOps Pipeline/Unit Test             ]   | Successfully installed coverage-7.16.2 pytest-cov-6.0.0
+[DevSecOps Pipeline/Unit Test             ]   | WARNING: Running pip as the 'root' user can result in broken permissions and conflicting behaviour with the system package manager, possibly rendering your system unusable. It is recommended to use a virtual environment instead: https://pip.pypa.io/warnings/venv. Use the --root-user-action option if you know what you are doing and want to suppress this warning.
+[DevSecOps Pipeline/SCA - pip-audit       ]   | Collecting platformdirs>=4.2.0 (from pip-audit==2.9.0)
+[DevSecOps Pipeline/Unit Test             ]   ✅  Success - Main pip install -r requirements-dev.txt [1.477930209s]
+[DevSecOps Pipeline/SCA - pip-audit       ]   |   Downloading platformdirs-4.12.3-py3-none-any.whl.metadata (5.5 kB)
+[DevSecOps Pipeline/Unit Test             ] ⭐ Run Main Run tests
+[DevSecOps Pipeline/Unit Test             ]   🐳  docker exec cmd=[bash -e /var/run/act/workflow/3] user= workdir=
+[DevSecOps Pipeline/SCA - pip-audit       ]   | Collecting license-expression<31,>=30 (from cyclonedx-python-lib<10,>=5->pip-audit==2.9.0)
+[DevSecOps Pipeline/SCA - pip-audit       ]   |   Downloading license_expression-30.4.4-py3-none-any.whl.metadata (11 kB)
+[DevSecOps Pipeline/SCA - pip-audit       ]   | Collecting packageurl-python<2,>=0.11 (from cyclonedx-python-lib<10,>=5->pip-audit==2.9.0)
+[DevSecOps Pipeline/SCA - pip-audit       ]   |   Downloading packageurl_python-0.17.6-py3-none-any.whl.metadata (5.1 kB)
+[DevSecOps Pipeline/Unit Test             ]   | ============================= test session starts ==============================
+[DevSecOps Pipeline/Unit Test             ]   | platform linux -- Python 3.12.15, pytest-8.4.2, pluggy-1.6.0 -- /opt/hostedtoolcache/Python/3.12.15/arm64/bin/python
+[DevSecOps Pipeline/Unit Test             ]   | cachedir: .pytest_cache
+[DevSecOps Pipeline/Unit Test             ]   | rootdir: /Users/utkarshpathak3107/Desktop/Learn_DevOps/Class_Assignments/DevSecOps
+[DevSecOps Pipeline/Unit Test             ]   | configfile: pytest.ini
+[DevSecOps Pipeline/Unit Test             ]   | testpaths: tests
+[DevSecOps Pipeline/Unit Test             ]   | plugins: cov-6.0.0
+[DevSecOps Pipeline/SCA - pip-audit       ]   | Collecting py-serializable<3.0.0,>=2.0.0 (from cyclonedx-python-lib<10,>=5->pip-audit==2.9.0)
+[DevSecOps Pipeline/SCA - pip-audit       ]   |   Downloading py_serializable-2.1.0-py3-none-any.whl.metadata (4.3 kB)
+[DevSecOps Pipeline/SCA - pip-audit       ]   | Collecting sortedcontainers<3.0.0,>=2.4.0 (from cyclonedx-python-lib<10,>=5->pip-audit==2.9.0)
+[DevSecOps Pipeline/Unit Test             ]   | collecting ... collected 8 items
+[DevSecOps Pipeline/Unit Test             ]   | 
+[DevSecOps Pipeline/SCA - pip-audit       ]   |   Downloading sortedcontainers-2.4.0-py2.py3-none-any.whl.metadata (10 kB)
+[DevSecOps Pipeline/Unit Test             ]   | tests/test_app.py::test_home PASSED                                      [ 12%]
+[DevSecOps Pipeline/Unit Test             ]   | tests/test_app.py::test_health PASSED                                    [ 25%]
+[DevSecOps Pipeline/Unit Test             ]   | tests/test_app.py::test_greet PASSED                                     [ 37%]
+[DevSecOps Pipeline/Unit Test             ]   | tests/test_app.py::test_add_numbers PASSED                               [ 50%]
+[DevSecOps Pipeline/Unit Test             ]   | tests/test_app.py::test_add_numbers_missing_fields PASSED                [ 62%]
+[DevSecOps Pipeline/Unit Test             ]   | tests/test_app.py::test_calculator_multiply PASSED                       [ 75%]
+[DevSecOps Pipeline/Unit Test             ]   | tests/test_app.py::test_calculator_divide_by_zero PASSED                 [ 87%]
+[DevSecOps Pipeline/SCA - pip-audit       ]   | Collecting boolean.py>=4.0 (from license-expression<31,>=30->cyclonedx-python-lib<10,>=5->pip-audit==2.9.0)
+[DevSecOps Pipeline/Unit Test             ]   | tests/test_app.py::test_status PASSED                                    [100%]
+[DevSecOps Pipeline/Unit Test             ]   | 
+[DevSecOps Pipeline/Unit Test             ]   | =============================== warnings summary ===============================
+[DevSecOps Pipeline/Unit Test             ]   | app/app.py:13
+[DevSecOps Pipeline/Unit Test             ]   |   /Users/utkarshpathak3107/Desktop/Learn_DevOps/Class_Assignments/DevSecOps/app/app.py:13: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+[DevSecOps Pipeline/Unit Test             ]   |     _start_time = datetime.datetime.utcnow()
+[DevSecOps Pipeline/Unit Test             ]   | 
+[DevSecOps Pipeline/Unit Test             ]   | tests/test_app.py::test_health
+[DevSecOps Pipeline/Unit Test             ]   |   /Users/utkarshpathak3107/Desktop/Learn_DevOps/Class_Assignments/DevSecOps/app/app.py:38: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+[DevSecOps Pipeline/Unit Test             ]   |     uptime_seconds = (datetime.datetime.utcnow() - _start_time).total_seconds()
+[DevSecOps Pipeline/Unit Test             ]   | 
+[DevSecOps Pipeline/Unit Test             ]   | tests/test_app.py::test_health
+[DevSecOps Pipeline/Unit Test             ]   |   /Users/utkarshpathak3107/Desktop/Learn_DevOps/Class_Assignments/DevSecOps/app/app.py:42: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+[DevSecOps Pipeline/Unit Test             ]   |     "timestamp": datetime.datetime.utcnow().isoformat() + "Z",
+[DevSecOps Pipeline/Unit Test             ]   | 
+[DevSecOps Pipeline/Unit Test             ]   | tests/test_app.py::test_greet
+[DevSecOps Pipeline/Unit Test             ]   |   /Users/utkarshpathak3107/Desktop/Learn_DevOps/Class_Assignments/DevSecOps/app/app.py:81: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+[DevSecOps Pipeline/Unit Test             ]   |     "timestamp": datetime.datetime.utcnow().isoformat() + "Z",
+[DevSecOps Pipeline/Unit Test             ]   | 
+[DevSecOps Pipeline/Unit Test             ]   | tests/test_app.py::test_status
+[DevSecOps Pipeline/Unit Test             ]   |   /Users/utkarshpathak3107/Desktop/Learn_DevOps/Class_Assignments/DevSecOps/app/app.py:49: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+[DevSecOps Pipeline/Unit Test             ]   |     uptime = datetime.datetime.utcnow() - _start_time
+[DevSecOps Pipeline/Unit Test             ]   | 
+[DevSecOps Pipeline/Unit Test             ]   | tests/test_app.py::test_status
+[DevSecOps Pipeline/Unit Test             ]   |   /Users/utkarshpathak3107/Desktop/Learn_DevOps/Class_Assignments/DevSecOps/app/app.py:60: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+[DevSecOps Pipeline/Unit Test             ]   |     "timestamp": datetime.datetime.utcnow().isoformat() + "Z",
+[DevSecOps Pipeline/Unit Test             ]   | 
+[DevSecOps Pipeline/Unit Test             ]   | -- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+[DevSecOps Pipeline/Unit Test             ]   | 
+[DevSecOps Pipeline/Unit Test             ]   | ---------- coverage: platform linux, python 3.12.15-final-0 ----------
+[DevSecOps Pipeline/Unit Test             ]   | Name              Stmts   Miss  Cover   Missing
+[DevSecOps Pipeline/Unit Test             ]   | -----------------------------------------------
+[DevSecOps Pipeline/Unit Test             ]   | app/__init__.py       0      0   100%
+[DevSecOps Pipeline/Unit Test             ]   | app/app.py          102     32    69%   94, 104-105, 121, 128, 132-133, 145, 179-209, 225, 230, 234
+[DevSecOps Pipeline/Unit Test             ]   | -----------------------------------------------
+[DevSecOps Pipeline/Unit Test             ]   | TOTAL               102     32    69%
+[DevSecOps Pipeline/Unit Test             ]   | 
+[DevSecOps Pipeline/Unit Test             ]   | ======================== 8 passed, 6 warnings in 0.21s =========================
+[DevSecOps Pipeline/SCA - pip-audit       ]   |   Downloading boolean_py-5.0-py3-none-any.whl.metadata (2.3 kB)
+[DevSecOps Pipeline/Unit Test             ]   ✅  Success - Main Run tests [501.53375ms]
+[DevSecOps Pipeline/SCA - pip-audit       ]   | Collecting defusedxml<0.8.0,>=0.7.1 (from py-serializable<3.0.0,>=2.0.0->cyclonedx-python-lib<10,>=5->pip-audit==2.9.0)
+[DevSecOps Pipeline/Unit Test             ] ⭐ Run Post actions/setup-python@v5
+[DevSecOps Pipeline/SCA - pip-audit       ]   |   Downloading defusedxml-0.7.1-py2.py3-none-any.whl.metadata (32 kB)
+[DevSecOps Pipeline/Unit Test             ]   🐳  docker exec cmd=[/opt/acttoolcache/node/24.19.0/arm64/bin/node /var/run/act/actions/actions-setup-python@v5/dist/cache-save/index.js] user= workdir=
+[DevSecOps Pipeline/Unit Test             ]   | (node:74) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+[DevSecOps Pipeline/Unit Test             ]   | (Use `node --trace-deprecation ...` to show where the warning was created)
+[DevSecOps Pipeline/Unit Test             ]   ✅  Success - Post actions/setup-python@v5 [129.399875ms]
+[DevSecOps Pipeline/Unit Test             ] ⭐ Run Complete job
+[DevSecOps Pipeline/Unit Test             ] Cleaning up container for job Unit Test
+[DevSecOps Pipeline/SCA - pip-audit       ]   | Collecting msgpack<2.0.0,>=0.5.2 (from CacheControl>=0.13.0->CacheControl[filecache]>=0.13.0->pip-audit==2.9.0)
+[DevSecOps Pipeline/SCA - pip-audit       ]   |   Downloading msgpack-1.2.3-cp312-cp312-manylinux2014_aarch64.manylinux_2_17_aarch64.manylinux_2_28_aarch64.whl.metadata (8.3 kB)
+[DevSecOps Pipeline/SCA - pip-audit       ]   | Collecting filelock>=3.8.0 (from CacheControl[filecache]>=0.13.0->pip-audit==2.9.0)
+[DevSecOps Pipeline/SCA - pip-audit       ]   |   Downloading filelock-4.0.12-py3-none-any.whl.metadata (2.0 kB)
+[DevSecOps Pipeline/SCA - pip-audit       ]   | Requirement already satisfied: pip in /opt/hostedtoolcache/Python/3.12.15/arm64/lib/python3.12/site-packages (from pip-api>=0.0.28->pip-audit==2.9.0) (26.2.1)
+[DevSecOps Pipeline/Unit Test             ]   ✅  Success - Complete job
+[DevSecOps Pipeline/Unit Test             ] 🏁  Job succeeded
+[DevSecOps Pipeline/SCA - pip-audit       ]   | Collecting pyparsing (from pip-requirements-parser>=32.0.0->pip-audit==2.9.0)
+[DevSecOps Pipeline/SCA - pip-audit       ]   |   Downloading pyparsing-3.3.3-py3-none-any.whl.metadata (5.9 kB)
+[DevSecOps Pipeline/SCA - pip-audit       ]   | Collecting charset_normalizer<4,>=2 (from requests>=2.31.0->pip-audit==2.9.0)
+[DevSecOps Pipeline/SCA - pip-audit       ]   |   Downloading charset_normalizer-3.5.2-cp312-cp312-manylinux2014_aarch64.manylinux_2_17_aarch64.manylinux_2_28_aarch64.whl.metadata (46 kB)
+[DevSecOps Pipeline/SCA - pip-audit       ]   | Collecting idna<4,>=2.5 (from requests>=2.31.0->pip-audit==2.9.0)
+[DevSecOps Pipeline/SCA - pip-audit       ]   |   Downloading idna-3.20-py3-none-any.whl.metadata (7.2 kB)
+[DevSecOps Pipeline/SCA - pip-audit       ]   | Collecting urllib3<3,>=1.26 (from requests>=2.31.0->pip-audit==2.9.0)
+[DevSecOps Pipeline/SCA - pip-audit       ]   |   Downloading urllib3-2.8.0-py3-none-any.whl.metadata (7.4 kB)
+[DevSecOps Pipeline/SCA - pip-audit       ]   | Collecting certifi>=2023.5.7 (from requests>=2.31.0->pip-audit==2.9.0)
+[DevSecOps Pipeline/SCA - pip-audit       ]   |   Downloading certifi-2026.7.22-py3-none-any.whl.metadata (2.5 kB)
+[DevSecOps Pipeline/SCA - pip-audit       ]   | Collecting markdown-it-py>=2.2.0 (from rich>=12.4->pip-audit==2.9.0)
+[DevSecOps Pipeline/SCA - pip-audit       ]   |   Downloading markdown_it_py-4.2.0-py3-none-any.whl.metadata (7.4 kB)
+[DevSecOps Pipeline/SCA - pip-audit       ]   | Requirement already satisfied: pygments<3.0.0,>=2.13.0 in /opt/hostedtoolcache/Python/3.12.15/arm64/lib/python3.12/site-packages (from rich>=12.4->pip-audit==2.9.0) (2.21.0)
+[DevSecOps Pipeline/SCA - pip-audit       ]   | Collecting mdurl~=0.1 (from markdown-it-py>=2.2.0->rich>=12.4->pip-audit==2.9.0)
+[DevSecOps Pipeline/SCA - pip-audit       ]   |   Downloading mdurl-0.1.2-py3-none-any.whl.metadata (1.6 kB)
+[DevSecOps Pipeline/SCA - pip-audit       ]   | Downloading pip_audit-2.9.0-py3-none-any.whl (58 kB)
+[DevSecOps Pipeline/SCA - pip-audit       ]   | Downloading cyclonedx_python_lib-9.1.0-py3-none-any.whl (374 kB)
+[DevSecOps Pipeline/SCA - pip-audit       ]   | Downloading license_expression-30.4.4-py3-none-any.whl (120 kB)
+[DevSecOps Pipeline/SCA - pip-audit       ]   | Downloading packageurl_python-0.17.6-py3-none-any.whl (36 kB)
+[DevSecOps Pipeline/SCA - pip-audit       ]   | Downloading py_serializable-2.1.0-py3-none-any.whl (23 kB)
+[DevSecOps Pipeline/SCA - pip-audit       ]   | Downloading defusedxml-0.7.1-py2.py3-none-any.whl (25 kB)
+[DevSecOps Pipeline/SCA - pip-audit       ]   | Downloading sortedcontainers-2.4.0-py2.py3-none-any.whl (29 kB)
+[DevSecOps Pipeline/SCA - pip-audit       ]   | Downloading boolean_py-5.0-py3-none-any.whl (26 kB)
+[DevSecOps Pipeline/SCA - pip-audit       ]   | Downloading cachecontrol-0.14.4-py3-none-any.whl (22 kB)
+[DevSecOps Pipeline/SCA - pip-audit       ]   | Downloading msgpack-1.2.3-cp312-cp312-manylinux2014_aarch64.manylinux_2_17_aarch64.manylinux_2_28_aarch64.whl (460 kB)
+[DevSecOps Pipeline/SCA - pip-audit       ]   | Downloading filelock-4.0.12-py3-none-any.whl (111 kB)
+[DevSecOps Pipeline/SCA - pip-audit       ]   | Downloading pip_api-0.0.35-py3-none-any.whl (123 kB)
+[DevSecOps Pipeline/SCA - pip-audit       ]   | Downloading pip_requirements_parser-32.0.1-py3-none-any.whl (35 kB)
+[DevSecOps Pipeline/SCA - pip-audit       ]   | Downloading platformdirs-4.12.3-py3-none-any.whl (32 kB)
+[DevSecOps Pipeline/SCA - pip-audit       ]   | Downloading requests-2.34.2-py3-none-any.whl (73 kB)
+[DevSecOps Pipeline/SCA - pip-audit       ]   | Downloading charset_normalizer-3.5.2-cp312-cp312-manylinux2014_aarch64.manylinux_2_17_aarch64.manylinux_2_28_aarch64.whl (246 kB)
+[DevSecOps Pipeline/SCA - pip-audit       ]   | Downloading idna-3.20-py3-none-any.whl (69 kB)
+[DevSecOps Pipeline/SCA - pip-audit       ]   | Downloading urllib3-2.8.0-py3-none-any.whl (135 kB)
+[DevSecOps Pipeline/SCA - pip-audit       ]   | Downloading certifi-2026.7.22-py3-none-any.whl (136 kB)
+[DevSecOps Pipeline/SCA - pip-audit       ]   | Downloading rich-15.0.0-py3-none-any.whl (310 kB)
+[DevSecOps Pipeline/SCA - pip-audit       ]   | Downloading markdown_it_py-4.2.0-py3-none-any.whl (91 kB)
+[DevSecOps Pipeline/SCA - pip-audit       ]   | Downloading mdurl-0.1.2-py3-none-any.whl (10.0 kB)
+[DevSecOps Pipeline/SCA - pip-audit       ]   | Downloading toml-0.10.2-py2.py3-none-any.whl (16 kB)
+[DevSecOps Pipeline/SCA - pip-audit       ]   | Downloading pyparsing-3.3.3-py3-none-any.whl (126 kB)
+[DevSecOps Pipeline/SCA - pip-audit       ]   | Installing collected packages: sortedcontainers, boolean.py, urllib3, toml, pyparsing, platformdirs, pip-api, packageurl-python, msgpack, mdurl, license-expression, idna, filelock, defusedxml, charset_normalizer, certifi, requests, py-serializable, pip-requirements-parser, markdown-it-py, rich, cyclonedx-python-lib, CacheControl, pip-audit
+[DevSecOps Pipeline/SCA - pip-audit       ]   | 
+[DevSecOps Pipeline/SCA - pip-audit       ]   | Successfully installed CacheControl-0.14.4 boolean.py-5.0 certifi-2026.7.22 charset_normalizer-3.5.2 cyclonedx-python-lib-9.1.0 defusedxml-0.7.1 filelock-4.0.12 idna-3.20 license-expression-30.4.4 markdown-it-py-4.2.0 mdurl-0.1.2 msgpack-1.2.3 packageurl-python-0.17.6 pip-api-0.0.35 pip-audit-2.9.0 pip-requirements-parser-32.0.1 platformdirs-4.12.3 py-serializable-2.1.0 pyparsing-3.3.3 requests-2.34.2 rich-15.0.0 sortedcontainers-2.4.0 toml-0.10.2 urllib3-2.8.0
+[DevSecOps Pipeline/SCA - pip-audit       ]   | WARNING: Running pip as the 'root' user can result in broken permissions and conflicting behaviour with the system package manager, possibly rendering your system unusable. It is recommended to use a virtual environment instead: https://pip.pypa.io/warnings/venv. Use the --root-user-action option if you know what you are doing and want to suppress this warning.
+[DevSecOps Pipeline/SCA - pip-audit       ]   ✅  Success - Main pip install pip-audit==2.9.0 [6.058556875s]
+[DevSecOps Pipeline/SCA - pip-audit       ] ⭐ Run Main Audit requirements.txt
+[DevSecOps Pipeline/SCA - pip-audit       ]   🐳  docker exec cmd=[bash -e /var/run/act/workflow/3] user= workdir=
+[DevSecOps Pipeline/SCA - pip-audit       ]   | No known vulnerabilities found
+[DevSecOps Pipeline/SCA - pip-audit       ]   ✅  Success - Main Audit requirements.txt [5.462409459s]
+[DevSecOps Pipeline/SCA - pip-audit       ] ⭐ Run Post actions/setup-python@v5
+[DevSecOps Pipeline/SCA - pip-audit       ]   🐳  docker exec cmd=[/opt/acttoolcache/node/24.19.0/arm64/bin/node /var/run/act/actions/actions-setup-python@v5/dist/cache-save/index.js] user= workdir=
+[DevSecOps Pipeline/SCA - pip-audit       ]   | (node:130) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+[DevSecOps Pipeline/SCA - pip-audit       ]   | (Use `node --trace-deprecation ...` to show where the warning was created)
+[DevSecOps Pipeline/SCA - pip-audit       ]   ✅  Success - Post actions/setup-python@v5 [219.689709ms]
+[DevSecOps Pipeline/SCA - pip-audit       ] ⭐ Run Complete job
+[DevSecOps Pipeline/SCA - pip-audit       ] Cleaning up container for job SCA - pip-audit
+[DevSecOps Pipeline/SCA - pip-audit       ]   ✅  Success - Complete job
+[DevSecOps Pipeline/SCA - pip-audit       ] 🏁  Job succeeded
+[DevSecOps Pipeline/Security Gate         ] ⭐ Run Set up job
+[DevSecOps Pipeline/Security Gate         ] 🚀  Start image=catthehacker/ubuntu:act-latest
+[DevSecOps Pipeline/Security Gate         ]   🐳  docker pull image=catthehacker/ubuntu:act-latest platform= username= forcePull=false
+[DevSecOps Pipeline/Security Gate         ]   🐳  docker create image=catthehacker/ubuntu:act-latest platform= entrypoint=["tail" "-f" "/dev/null"] cmd=[] network="kind"
+[DevSecOps Pipeline/Security Gate         ]   🐳  docker run image=catthehacker/ubuntu:act-latest platform= entrypoint=["tail" "-f" "/dev/null"] cmd=[] network="kind"
+[DevSecOps Pipeline/Security Gate         ]   🐳  docker exec cmd=[node --no-warnings -e console.log(process.execPath)] user= workdir=
+[DevSecOps Pipeline/Security Gate         ]   ✅  Success - Set up job
+[DevSecOps Pipeline/Security Gate         ] ⭐ Run Main Evaluate security results
+[DevSecOps Pipeline/Security Gate         ]   🐳  docker exec cmd=[bash -e /var/run/act/workflow/0] user= workdir=
+[DevSecOps Pipeline/Security Gate         ]   | Unit Test    : success
+[DevSecOps Pipeline/Security Gate         ]   | SAST         : failure
+[DevSecOps Pipeline/Security Gate         ]   | SCA          : success
+[DevSecOps Pipeline/Security Gate         ]   | Secret Scan  : success
+[DevSecOps Pipeline/Security Gate         ]   | Image Scan   : skipped
+[DevSecOps Pipeline/Security Gate         ]   | SECURITY GATE: FAILED - image will NOT be pushed or deployed
+[DevSecOps Pipeline/Security Gate         ]   ❌  Failure - Main Evaluate security results [85.909416ms]
+[DevSecOps Pipeline/Security Gate         ] exitcode '1': failure
+[DevSecOps Pipeline/Security Gate         ] ⭐ Run Complete job
+[DevSecOps Pipeline/Security Gate         ]   ✅  Success - Complete job
+[DevSecOps Pipeline/Security Gate         ] 🏁  Job failed
+Error: Job 'SAST - Bandit' failed

@@ -1,0 +1,13 @@
+$ kubectl get pods -n argocd; echo; kubectl get crd | grep argoproj
+NAME                                                READY   STATUS    RESTARTS   AGE
+argocd-application-controller-0                     1/1     Running   0          2m1s
+argocd-applicationset-controller-7fb7c76f76-x84n7   1/1     Running   0          2m2s
+argocd-dex-server-7d54f7f9d6-zk28w                  1/1     Running   0          2m2s
+argocd-notifications-controller-7fcfd67447-htzj2    1/1     Running   0          2m2s
+argocd-redis-6bf744486c-7wkhg                       1/1     Running   0          2m2s
+argocd-repo-server-57b98df6c6-g949c                 1/1     Running   0          2m2s
+argocd-server-665b8b6947-htxzh                      1/1     Running   0          2m2s
+
+applications.argoproj.io      Namespaced   v1alpha1(storage)   2026-10-06T18:58:02Z
+applicationsets.argoproj.io   Namespaced   v1alpha1(storage)   2026-10-06T18:58:03Z
+appprojects.argoproj.io       Namespaced   v1alpha1(storage)   2026-10-06T18:58:03Z

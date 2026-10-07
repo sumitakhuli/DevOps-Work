@@ -1,0 +1,269 @@
+$ helm version --short; kubectl version; kubectl get nodes
+v4.3.0+gbec5b06
+Client Version: v1.37.0
+Kustomize Version: v5.8.1
+Server Version: v1.37.0
+NAME       STATUS   ROLES           AGE   VERSION
+minikube   Ready    control-plane   41m   v1.37.0
+
+$ helm lint web-chart; helm template demo web-chart | grep -E "^kind:|image:|replicas:"
+==> Linting web-chart
+[INFO] Chart.yaml: icon is recommended
+
+1 chart(s) linted, 0 chart(s) failed
+kind: ServiceAccount
+kind: Service
+kind: Deployment
+  replicas: 1
+          image: "nginx:1.25"
+kind: Pod
+      image: busybox
+
+$ kubectl create namespace helm-lab; helm install web web-chart -n helm-lab --wait --timeout 3m
+namespace/helm-lab created
+NAME: web
+LAST DEPLOYED: Tue Oct  6 23:38:39 2026
+NAMESPACE: helm-lab
+STATUS: deployed
+REVISION: 1
+DESCRIPTION: Install complete
+NOTES:
+1. Get the application URL by running these commands:
+  export POD_NAME=$(kubectl get pods --namespace helm-lab -l "app.kubernetes.io/name=web-chart,app.kubernetes.io/instance=web" -o jsonpath="{.items[0].metadata.name}")
+  export CONTAINER_PORT=$(kubectl get pod --namespace helm-lab $POD_NAME -o jsonpath="{.spec.containers[0].ports[0].containerPort}")
+  echo "Visit http://127.0.0.1:8080 to use your application"
+  kubectl --namespace helm-lab port-forward $POD_NAME 8080:$CONTAINER_PORT
+
+$ helm list -n helm-lab; echo; helm status web -n helm-lab | head -12; echo; kubectl get deploy,pods,svc -n helm-lab
+NAME	NAMESPACE	REVISION	UPDATED                             	STATUS  	CHART          	APP VERSION
+web 	helm-lab 	1       	2026-10-06 23:38:39.624376 +0530 IST	deployed	web-chart-0.1.0	1.16.0     
+
+NAME: web
+LAST DEPLOYED: Tue Oct  6 23:38:39 2026
+NAMESPACE: helm-lab
+STATUS: deployed
+REVISION: 1
+DESCRIPTION: Install complete
+RESOURCES:
+==> v1/Pod(related)
+NAME                             READY   STATUS    RESTARTS   AGE
+web-web-chart-849df6fbdd-46x96   1/1     Running   0          15s
+
+==> v1/ServiceAccount
+
+NAME                            READY   UP-TO-DATE   AVAILABLE   AGE
+deployment.apps/web-web-chart   1/1     1            1           15s
+
+NAME                                 READY   STATUS    RESTARTS   AGE
+pod/web-web-chart-849df6fbdd-46x96   1/1     Running   0          15s
+
+NAME                    TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)   AGE
+service/web-web-chart   ClusterIP   10.102.250.13   <none>        80/TCP    15s
+
+$ helm get values web -n helm-lab --all | head -12; echo ...; helm get manifest web -n helm-lab | grep -E "^# Source|image:|replicas:"
+COMPUTED VALUES:
+affinity: {}
+autoscaling:
+  enabled: false
+  maxReplicas: 100
+  minReplicas: 1
+  targetCPUUtilizationPercentage: 80
+fullnameOverride: ""
+httpRoute:
+  annotations: {}
+  enabled: false
+  hostnames:
+...
+# Source: web-chart/templates/serviceaccount.yaml
+# Source: web-chart/templates/service.yaml
+# Source: web-chart/templates/deployment.yaml
+  replicas: 1
+          image: "nginx:1.25"
+
+$ kubectl get deploy web-web-chart -n helm-lab -o jsonpath="image={.spec.template.spec.containers[0].image}  replicas={.spec.replicas}  ready={.status.readyReplicas}{\"\n\"}"; curl -sI --max-time 5 http://localhost >/dev/null 2>&1; kubectl run curl-check -n helm-lab --rm -i --restart=Never --image=curlimages/curl:8.10.1 -q -- curl -sI http://web-web-chart | grep -E 'HTTP|Server'
+image=nginx:1.25  replicas=1  ready=1
+HTTP/1.1 200 OK
+Server: nginx/1.25.5
+
+$ helm upgrade web web-chart -n helm-lab --set image.tag=1.26 --set replicaCount=2 --wait --timeout 3m | head -7
+Release "web" has been upgraded. Happy Helming!
+NAME: web
+LAST DEPLOYED: Tue Oct  6 23:39:18 2026
+NAMESPACE: helm-lab
+STATUS: deployed
+REVISION: 2
+DESCRIPTION: Upgrade complete
+
+$ kubectl get deploy web-web-chart -n helm-lab -o jsonpath="image={.spec.template.spec.containers[0].image}  replicas={.spec.replicas}  ready={.status.readyReplicas}{\"\n\"}"; kubectl get pods -n helm-lab -l app.kubernetes.io/instance=web; kubectl run curl-check -n helm-lab --rm -i --restart=Never --image=curlimages/curl:8.10.1 -q -- curl -sI http://web-web-chart | grep -E 'HTTP|Server'
+image=nginx:1.26  replicas=2  ready=2
+NAME                             READY   STATUS      RESTARTS   AGE
+web-web-chart-5c6695df77-qcx9h   1/1     Running     0          16s
+web-web-chart-5c6695df77-zwfrq   1/1     Running     0          1s
+web-web-chart-849df6fbdd-46x96   0/1     Completed   0          55s
+warning: couldn't attach to pod/curl-check, falling back to streaming logs: unable to upgrade connection: container curl-check not found in pod curl-check_helm-lab
+HTTP/1.1 200 OK
+Server: nginx/1.26.3
+HTTP/1.1 200 OK
+Server: nginx/1.26.3
+
+$ helm upgrade web web-chart -n helm-lab --set image.tag=1.99-doesnotexist --set replicaCount=2 --wait --timeout 60s
+level=WARN msg="upgrade failed" name=web error="resource Deployment/helm-lab/web-web-chart not ready. status: InProgress, message: Updated: 1/2\ncontext deadline exceeded"
+Error: UPGRADE FAILED: resource Deployment/helm-lab/web-web-chart not ready. status: InProgress, message: Updated: 1/2
+context deadline exceeded
+
+$ kubectl get deploy web-web-chart -n helm-lab -o jsonpath="image={.spec.template.spec.containers[0].image}  replicas={.spec.replicas}  ready={.status.readyReplicas}{\"\n\"}"; kubectl get pods -n helm-lab -l app.kubernetes.io/instance=web; helm list -n helm-lab
+image=nginx:1.99-doesnotexist  replicas=2  ready=2
+NAME                             READY   STATUS         RESTARTS   AGE
+web-web-chart-5c6695df77-qcx9h   1/1     Running        0          79s
+web-web-chart-5c6695df77-zwfrq   1/1     Running        0          64s
+web-web-chart-686df668f-6z27h    0/1     ErrImagePull   0          61s
+NAME	NAMESPACE	REVISION	UPDATED                             	STATUS	CHART          	APP VERSION
+web 	helm-lab 	3       	2026-10-06 23:39:36.681148 +0530 IST	failed	web-chart-0.1.0	1.16.0     
+
+$ helm history web -n helm-lab
+REVISION	UPDATED                 	STATUS    	CHART          	APP VERSION	DESCRIPTION                                                                                                          
+1       	Tue Oct  6 23:38:39 2026	superseded	web-chart-0.1.0	1.16.0     	Install complete                                                                                                     
+2       	Tue Oct  6 23:39:18 2026	deployed  	web-chart-0.1.0	1.16.0     	Upgrade complete                                                                                                     
+3       	Tue Oct  6 23:39:36 2026	failed    	web-chart-0.1.0	1.16.0     	Upgrade "web" failed: resource Deployment/helm-lab/web-web-chart not ready. status: InProgress, message: Updated: ...
+
+$ helm rollback web 2 -n helm-lab --wait --timeout 3m
+Rollback was a success! Happy Helming!
+
+$ helm history web -n helm-lab; echo; kubectl get deploy web-web-chart -n helm-lab -o jsonpath="image={.spec.template.spec.containers[0].image}  replicas={.spec.replicas}  ready={.status.readyReplicas}{\"\n\"}"; kubectl get pods -n helm-lab -l app.kubernetes.io/instance=web; helm get values web -n helm-lab
+REVISION	UPDATED                 	STATUS    	CHART          	APP VERSION	DESCRIPTION                                                                                                          
+1       	Tue Oct  6 23:38:39 2026	superseded	web-chart-0.1.0	1.16.0     	Install complete                                                                                                     
+2       	Tue Oct  6 23:39:18 2026	superseded	web-chart-0.1.0	1.16.0     	Upgrade complete                                                                                                     
+3       	Tue Oct  6 23:39:36 2026	failed    	web-chart-0.1.0	1.16.0     	Upgrade "web" failed: resource Deployment/helm-lab/web-web-chart not ready. status: InProgress, message: Updated: ...
+4       	Tue Oct  6 23:40:50 2026	deployed  	web-chart-0.1.0	1.16.0     	Rollback to 2                                                                                                        
+
+image=nginx:1.26  replicas=2  ready=2
+NAME                             READY   STATUS    RESTARTS   AGE
+web-web-chart-5c6695df77-qcx9h   1/1     Running   0          97s
+web-web-chart-5c6695df77-zwfrq   1/1     Running   0          82s
+USER-SUPPLIED VALUES:
+image:
+  tag: "1.26"
+replicaCount: 2
+
+$ helm repo add bitnami https://charts.bitnami.com/bitnami; helm repo add prometheus-community https://prometheus-community.github.io/helm-charts; helm repo update; helm repo list
+"bitnami" already exists with the same configuration, skipping
+"prometheus-community" has been added to your repositories
+Hang tight while we grab the latest from your chart repositories...
+...Successfully got an update from the "prometheus-community" chart repository
+...Successfully got an update from the "bitnami" chart repository
+Update Complete. ⎈Happy Helming!⎈
+NAME                	URL                                               
+bitnami             	https://charts.bitnami.com/bitnami                
+prometheus-community	https://prometheus-community.github.io/helm-charts
+
+$ helm search repo nginx | head -6; echo; helm search repo prometheus-community/kube-prometheus-stack --versions | head -4; echo; helm search hub argo-cd --max-col-width 60 | head -5
+NAME                                          	CHART VERSION	APP VERSION	DESCRIPTION                                       
+bitnami/nginx                                 	25.2.1       	1.31.6     	NGINX Open Source is a web server that can be a...
+bitnami/nginx-ingress-controller              	12.0.7       	1.13.1     	NGINX Ingress Controller is an Ingress controll...
+bitnami/nginx-intel                           	2.1.15       	0.4.9      	DEPRECATED NGINX Open Source for Intel is a lig...
+prometheus-community/prometheus-nginx-exporter	1.23.1       	1.5.3      	A Helm chart for NGINX Prometheus Exporter        
+
+NAME                                      	CHART VERSION	APP VERSION	DESCRIPTION                                       
+prometheus-community/kube-prometheus-stack	91.9.0       	v0.94.1    	kube-prometheus-stack collects Kubernetes manif...
+prometheus-community/kube-prometheus-stack	91.8.2       	v0.94.1    	kube-prometheus-stack collects Kubernetes manif...
+prometheus-community/kube-prometheus-stack	91.8.1       	v0.94.1    	kube-prometheus-stack collects Kubernetes manif...
+
+URL                                                         	CHART VERSION	APP VERSION	DESCRIPTION                                                 
+https://artifacthub.io/packages/helm/spnngl-argo-cd-crds/...	3.5.5        	3.5.3      	CustomResourceDefinitions for Argo CD (Applications, Appl...
+https://artifacthub.io/packages/helm/emberstack/argo-cd-e...	1.0.22       	1.0.0      	A Helm chart for Argo CD extensions                         
+https://artifacthub.io/packages/helm/argo-cd-oci/argo-cd    	10.9.6       	v3.5.3     	A Helm chart for Argo CD, a declarative, GitOps continuou...
+https://artifacthub.io/packages/helm/mesosphere-stable/ar...	0.5.4        	1.2.0      	A Helm chart for Argo-CD                                    
+
+$ find notes-chart -type f | sort; echo; helm lint notes-chart; echo; helm template notes notes-chart -f notes-chart/values-prod.yaml | grep -E "^kind:|replicas:|image:|ENVIRONMENT"
+notes-chart/Chart.yaml
+notes-chart/templates/configmap.yaml
+notes-chart/templates/deployment.yaml
+notes-chart/templates/service.yaml
+notes-chart/values-prod.yaml
+notes-chart/values.yaml
+
+==> Linting notes-chart
+[INFO] Chart.yaml: icon is recommended
+
+1 chart(s) linted, 0 chart(s) failed
+
+kind: ConfigMap
+  ENVIRONMENT: "production"
+kind: Service
+kind: Deployment
+  replicas: 3
+          image: "nginx:1.25"
+
+$ helm install notes notes-chart -n notes --create-namespace --wait --timeout 3m | head -7; kubectl get deploy,pods,svc,cm -n notes
+NAME: notes
+LAST DEPLOYED: Tue Oct  6 23:41:17 2026
+NAMESPACE: notes
+STATUS: deployed
+REVISION: 1
+DESCRIPTION: Install complete
+TEST SUITE: None
+NAME                           READY   UP-TO-DATE   AVAILABLE   AGE
+deployment.apps/notes-deploy   1/1     1            1           13s
+
+NAME                                READY   STATUS    RESTARTS   AGE
+pod/notes-deploy-6bdbd76d95-9vpvv   1/1     Running   0          13s
+
+NAME                TYPE       CLUSTER-IP    EXTERNAL-IP   PORT(S)        AGE
+service/notes-svc   NodePort   10.96.188.2   <none>        80:30090/TCP   13s
+
+NAME                         DATA   AGE
+configmap/kube-root-ca.crt   1      13s
+configmap/notes-config       2      13s
+
+$ kubectl exec -n notes deploy/notes-deploy -- printenv APP_NAME ENVIRONMENT; kubectl exec -n notes deploy/notes-deploy -- nginx -v; kubectl run curl-check -n notes --rm -i --restart=Never --image=curlimages/curl:8.10.1 -q -- curl -s http://notes-svc 2>/dev/null | grep -o "<title>.*</title>" | head -1
+notes-app
+development
+nginx version: nginx/1.24.0
+<title>Welcome to nginx!</title>
+
+$ helm upgrade notes notes-chart -n notes -f notes-chart/values-prod.yaml --wait --timeout 3m | head -7; kubectl get pods -n notes; kubectl get cm notes-config -n notes -o jsonpath="{.data}{\"\n\"}"
+Release "notes" has been upgraded. Happy Helming!
+NAME: notes
+LAST DEPLOYED: Tue Oct  6 23:41:33 2026
+NAMESPACE: notes
+STATUS: deployed
+REVISION: 2
+DESCRIPTION: Upgrade complete
+NAME                            READY   STATUS      RESTARTS   AGE
+notes-deploy-54f799c6f6-7kbm8   1/1     Running     0          0s
+notes-deploy-54f799c6f6-c8dqr   1/1     Running     0          1s
+notes-deploy-54f799c6f6-xmj6l   1/1     Running     0          1s
+notes-deploy-6bdbd76d95-9vpvv   0/1     Completed   0          17s
+notes-deploy-6bdbd76d95-bpr47   0/1     Completed   0          1s
+notes-deploy-6bdbd76d95-jpbzn   0/1     Completed   0          1s
+{"APP_NAME":"notes-app","ENVIRONMENT":"production"}
+
+$ kubectl get pods -n notes; kubectl exec -n notes deploy/notes-deploy -- printenv ENVIRONMENT; kubectl exec -n notes deploy/notes-deploy -- nginx -v
+NAME                            READY   STATUS    RESTARTS   AGE
+notes-deploy-54f799c6f6-7kbm8   1/1     Running   0          15s
+notes-deploy-54f799c6f6-c8dqr   1/1     Running   0          16s
+notes-deploy-54f799c6f6-xmj6l   1/1     Running   0          16s
+production
+nginx version: nginx/1.25.5
+
+$ helm rollback notes 1 -n notes --wait --timeout 3m; helm history notes -n notes
+Rollback was a success! Happy Helming!
+REVISION	UPDATED                 	STATUS    	CHART            	APP VERSION	DESCRIPTION     
+1       	Tue Oct  6 23:41:17 2026	superseded	notes-chart-0.1.0	1.0        	Install complete
+2       	Tue Oct  6 23:41:33 2026	superseded	notes-chart-0.1.0	1.0        	Upgrade complete
+3       	Tue Oct  6 23:41:50 2026	deployed  	notes-chart-0.1.0	1.0        	Rollback to 1   
+
+$ kubectl get pods -n notes; kubectl exec -n notes deploy/notes-deploy -- printenv ENVIRONMENT; kubectl exec -n notes deploy/notes-deploy -- nginx -v
+NAME                            READY   STATUS    RESTARTS   AGE
+notes-deploy-6bdbd76d95-pwzlz   1/1     Running   0          4s
+development
+nginx version: nginx/1.24.0
+
+$ helm uninstall web -n helm-lab --wait; helm list -A; kubectl get all -n helm-lab
+release "web" uninstalled
+NAME 	NAMESPACE	REVISION	UPDATED                             	STATUS  	CHART            	APP VERSION
+notes	notes    	3       	2026-10-06 23:41:50.039007 +0530 IST	deployed	notes-chart-0.1.0	1.0        
+NAME                                 READY   STATUS      RESTARTS   AGE
+pod/web-web-chart-5c6695df77-qcx9h   0/1     Completed   0          2m56s
+pod/web-web-chart-5c6695df77-zwfrq   0/1     Completed   0          2m41s
+

@@ -1,0 +1,15 @@
+$ docker logs --tail 6 s20-shop-api 2>&1; echo; echo "# only errors, as fields:"; docker logs --since 2m s20-shop-api 2>&1 | jq -c "select(.level==\"ERROR\") | {ts, msg, duration_ms, trace_id}" | tail -4; echo; echo "errors in last 2 min: $(docker logs --since 2m s20-shop-api 2>&1 | jq -r "select(.level==\"ERROR\") | .msg" | wc -l)"
+{"ts": "2026-10-06T19:12:17", "level": "ERROR", "msg": "POST /api/checkout 502", "trace_id": "25327a27685c04a364c41514523bb3fd", "endpoint": "/api/checkout", "status": 502, "duration_ms": 90.4}
+{"ts": "2026-10-06T19:12:17", "level": "INFO", "msg": "GET /api/report 200", "trace_id": "1d3784ca875a24b3e64544e3fadc62f4", "endpoint": "/api/report", "status": 200, "duration_ms": 21.2}
+{"ts": "2026-10-06T19:12:17", "level": "INFO", "msg": "GET /api/products 200", "trace_id": "0c1533d30000f010462eeca68468f310", "endpoint": "/api/products", "status": 200, "duration_ms": 43.5}
+{"ts": "2026-10-06T19:12:18", "level": "INFO", "msg": "POST /api/checkout 200", "trace_id": "07018087f8bc6cc63d7a03d99f84217c", "endpoint": "/api/checkout", "status": 200, "duration_ms": 93.1}
+{"ts": "2026-10-06T19:12:18", "level": "INFO", "msg": "GET /api/report 200", "trace_id": "148069a107ac41ff8df34f93b88fc8df", "endpoint": "/api/report", "status": 200, "duration_ms": 19.3}
+{"ts": "2026-10-06T19:12:18", "level": "INFO", "msg": "GET /api/products 200", "trace_id": "483d692209c11023614113d1bebecce0", "endpoint": "/api/products", "status": 200, "duration_ms": 34.6}
+
+# only errors, as fields:
+{"ts":"2026-10-06T19:12:02","msg":"POST /api/checkout 502","duration_ms":109.5,"trace_id":"cd5788330a238341498e02e222426c9b"}
+{"ts":"2026-10-06T19:12:02","msg":"POST /api/checkout 502","duration_ms":80.2,"trace_id":"e58b7a15f04e120b73ef0bcf9c5676cc"}
+{"ts":"2026-10-06T19:12:13","msg":"POST /api/checkout 502","duration_ms":86.2,"trace_id":"eb154c860478932f04bb9445d894ac0a"}
+{"ts":"2026-10-06T19:12:17","msg":"POST /api/checkout 502","duration_ms":90.4,"trace_id":"25327a27685c04a364c41514523bb3fd"}
+
+errors in last 2 min:       18

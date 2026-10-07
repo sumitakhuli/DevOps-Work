@@ -1,0 +1,10 @@
+$ curl -s http://localhost:5001/v2/_catalog; curl -s http://localhost:5001/v2/calculator-api/tags/list; echo; docker ps --filter name=calculator-staging --format "table {{.Names}}\t{{.Image}}\t{{.Status}}\t{{.Ports}}"; echo; curl -s localhost:8085/health; echo; curl -s "localhost:8085/api/divide?a=1&b=0"
+{"repositories":["calculator-api"]}
+{"name":"calculator-api","tags":["9036109"]}
+
+NAMES                IMAGE                                   STATUS              PORTS
+calculator-staging   localhost:5001/calculator-api:9036109   Up About a minute   0.0.0.0:8085->5000/tcp, [::]:8085->5000/tcp
+
+{"status":"ok","version":"9036109"}
+
+{"error":"Cannot divide by zero"}

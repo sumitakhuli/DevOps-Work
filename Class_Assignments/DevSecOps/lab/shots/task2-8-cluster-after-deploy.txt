@@ -1,0 +1,15 @@
+$ kubectl --context kind-devsecops get deploy,pods,svc -l app=session17-python; echo; kubectl --context kind-devsecops get deploy session17-python -o jsonpath="{.spec.template.spec.containers[0].image}{\"\n\"}"; curl -s localhost:5001/v2/session17-python/tags/list; echo; kubectl --context kind-devsecops exec deploy/session17-python -- id
+NAME                               READY   UP-TO-DATE   AVAILABLE   AGE
+deployment.apps/session17-python   2/2     2            2           2m1s
+
+NAME                                    READY   STATUS    RESTARTS   AGE
+pod/session17-python-68996cf4c9-74wrh   1/1     Running   0          2m1s
+pod/session17-python-68996cf4c9-mngtl   1/1     Running   0          2m1s
+
+NAME                       TYPE       CLUSTER-IP      EXTERNAL-IP   PORT(S)        AGE
+service/session17-python   NodePort   10.96.218.209   <none>        80:30001/TCP   2m1s
+
+localhost:5001/session17-python:9036109
+{"name":"session17-python","tags":["9036109"]}
+
+uid=10001(appuser) gid=10001(appuser) groups=10001(appuser)

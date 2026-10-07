@@ -1,0 +1,19 @@
+$ helm get values web -n helm-lab --all | head -12; echo ...; helm get manifest web -n helm-lab | grep -E "^# Source|image:|replicas:"
+COMPUTED VALUES:
+affinity: {}
+autoscaling:
+  enabled: false
+  maxReplicas: 100
+  minReplicas: 1
+  targetCPUUtilizationPercentage: 80
+fullnameOverride: ""
+httpRoute:
+  annotations: {}
+  enabled: false
+  hostnames:
+...
+# Source: web-chart/templates/serviceaccount.yaml
+# Source: web-chart/templates/service.yaml
+# Source: web-chart/templates/deployment.yaml
+  replicas: 1
+          image: "nginx:1.25"

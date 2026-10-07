@@ -1,0 +1,18 @@
+$ act push -W .github/workflows/devsecops.yml -P ubuntu-latest=catthehacker/ubuntu:act-latest --network kind --secret-file s17.secrets
+  (run 2 - Image Scan job, first rows of the Trivy table)
+[DevSecOps Pipeline/Image Scan - Trivy    ] ⭐ Run Main Scan image (fail on fixable HIGH/CRITICAL)
+[DevSecOps Pipeline/Image Scan - Trivy    ]   | │ session17-python:9036109 (debian 13.6)                                       │   debian   │       20        │
+[DevSecOps Pipeline/Image Scan - Trivy    ]   | session17-python:9036109 (debian 13.6)
+[DevSecOps Pipeline/Image Scan - Trivy    ]   | Total: 20 (HIGH: 17, CRITICAL: 3)
+[DevSecOps Pipeline/Image Scan - Trivy    ]   | │         Library         │  Vulnerability  │ Severity │ Status │ Installed Version │  Fixed Version   │                            Title               
+[DevSecOps Pipeline/Image Scan - Trivy    ]   | │ perl-base               │ CVE-2026-13221  │ CRITICAL │        │ 5.40.1-6          │ 5.40.1-6+deb13u1 │ perl: Perl: Incorrect regular expression proces
+[DevSecOps Pipeline/Image Scan - Trivy    ]   ❌  Failure - Main Scan image (fail on fixable HIGH/CRITICAL) [22.821211s]
+[DevSecOps Pipeline/Image Scan - Trivy    ] exitcode '1': failure
+[DevSecOps Pipeline/Image Scan - Trivy    ] 🏁  Job failed
+[DevSecOps Pipeline/Security Gate         ]   | Unit Test    : success
+[DevSecOps Pipeline/Security Gate         ]   | SAST         : success
+[DevSecOps Pipeline/Security Gate         ]   | SCA          : success
+[DevSecOps Pipeline/Security Gate         ]   | Secret Scan  : success
+[DevSecOps Pipeline/Security Gate         ]   | Image Scan   : failure
+[DevSecOps Pipeline/Security Gate         ]   | SECURITY GATE: FAILED - image will NOT be pushed or deployed
+[DevSecOps Pipeline/Security Gate         ] 🏁  Job failed

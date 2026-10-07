@@ -1,0 +1,14 @@
+$ terraform fmt -check -diff -no-color; echo "fmt -check exit code: $?"; terraform fmt; terraform fmt -check && echo "all files formatted"
+terraform.tfvars
+--- old/terraform.tfvars
++++ new/terraform.tfvars
+@@ -1,5 +1,5 @@
+ aws_region        = "ap-south-1"
+ bucket_name       = "sumit-24bcs10158-terraform-demo"
+-environment     = "dev"
++environment       = "dev"
+ enable_versioning = true
+ use_localstack    = true
+fmt -check exit code: 3
+terraform.tfvars
+all files formatted

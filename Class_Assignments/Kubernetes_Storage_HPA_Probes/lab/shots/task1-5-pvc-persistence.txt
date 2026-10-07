@@ -1,0 +1,5 @@
+$ kubectl apply -f 01-kubernetes-volumes/pvc-pod.yml >/dev/null && kubectl wait --for=condition=Ready pod/pvc-writer --timeout=120s >/dev/null; kubectl exec pvc-writer -- sh -c "echo order-1001 > /data/orders.txt; cat /data/orders.txt"; kubectl delete pod pvc-writer --wait=true; kubectl apply -f 01-kubernetes-volumes/pvc-pod.yml >/dev/null && kubectl wait --for=condition=Ready pod/pvc-writer --timeout=120s >/dev/null; echo "--- new pod, same claim:"; kubectl exec pvc-writer -- cat /data/orders.txt
+order-1001
+pod "pvc-writer" deleted from default namespace
+--- new pod, same claim:
+order-1001

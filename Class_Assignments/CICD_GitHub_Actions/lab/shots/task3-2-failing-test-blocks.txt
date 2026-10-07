@@ -1,0 +1,24 @@
+$ sed -i "" "s/return a + b/return a + b + 1/" app/calculator.py   # deliberate bug
+$ act push -W .github/workflows/ci-cd.yml -P ubuntu-latest=catthehacker/ubuntu:act-latest -s DEPLOY_TOKEN=****
+[Calculator CI/CD/Test          ] ⭐ Run Set up job
+[Calculator CI/CD/Security Check] 🏁  Job succeeded
+[Calculator CI/CD/Test          ] ⭐ Run Main Run unit tests
+[Calculator CI/CD/Test          ]   | tests/test_api.py::test_health PASSED                                    [ 11%]
+[Calculator CI/CD/Test          ]   | tests/test_api.py::test_add_endpoint FAILED                              [ 22%]
+[Calculator CI/CD/Test          ]   | tests/test_api.py::test_divide_by_zero_returns_400 PASSED                [ 33%]
+[Calculator CI/CD/Test          ]   | tests/test_api.py::test_unknown_operation_returns_404 PASSED             [ 44%]
+[Calculator CI/CD/Test          ]   | tests/test_calculator.py::test_add FAILED                                [ 55%]
+[Calculator CI/CD/Test          ]   | tests/test_calculator.py::test_subtract PASSED                           [ 66%]
+[Calculator CI/CD/Test          ]   | tests/test_calculator.py::test_multiply PASSED                           [ 77%]
+[Calculator CI/CD/Test          ]   | tests/test_calculator.py::test_divide PASSED                             [ 88%]
+[Calculator CI/CD/Test          ]   | tests/test_calculator.py::test_divide_by_zero PASSED                     [100%]
+[Calculator CI/CD/Test          ]   | E       assert 16.0 == 15
+[Calculator CI/CD/Test          ]   | E       assert 16 == 15
+[Calculator CI/CD/Test          ]   | E        +  where 16 = add(10, 5)
+[Calculator CI/CD/Test          ]   | FAILED tests/test_api.py::test_add_endpoint - assert 16.0 == 15
+[Calculator CI/CD/Test          ]   | FAILED tests/test_calculator.py::test_add - assert 16 == 15
+[Calculator CI/CD/Test          ]   ❌  Failure - Main Run unit tests [253.755416ms]
+[Calculator CI/CD/Test          ] 🏁  Job failed
+
+$ echo $?
+1

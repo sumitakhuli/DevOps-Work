@@ -1,0 +1,411 @@
+time="2026-10-06T23:45:46+05:30" level=info msg="Using docker host 'unix:///var/run/docker.sock', and daemon socket 'unix:///var/run/docker.sock'"
+level=warning msg= ⚠ You are using Apple M-series chip and you have not specified container architecture, you might encounter issues while running act. If so, try running it with '--container-architecture linux/amd64'. ⚠ 
+
+time="2026-10-06T23:45:46+05:30" level=info msg="Start server on http://10.114.2.89:34567"
+[Calculator CI/CD/Test          ] ⭐ Run Set up job
+[Calculator CI/CD/Security Check] ⭐ Run Set up job
+[Calculator CI/CD/Security Check] 🚀  Start image=catthehacker/ubuntu:act-latest
+[Calculator CI/CD/Test          ] 🚀  Start image=catthehacker/ubuntu:act-latest
+[Calculator CI/CD/Test          ]   🐳  docker pull image=catthehacker/ubuntu:act-latest platform= username= forcePull=false
+[Calculator CI/CD/Security Check]   🐳  docker pull image=catthehacker/ubuntu:act-latest platform= username= forcePull=false
+[Calculator CI/CD/Security Check]   🐳  docker create image=catthehacker/ubuntu:act-latest platform= entrypoint=["tail" "-f" "/dev/null"] cmd=[] network="host"
+[Calculator CI/CD/Test          ]   🐳  docker create image=catthehacker/ubuntu:act-latest platform= entrypoint=["tail" "-f" "/dev/null"] cmd=[] network="host"
+[Calculator CI/CD/Test          ]   🐳  docker run image=catthehacker/ubuntu:act-latest platform= entrypoint=["tail" "-f" "/dev/null"] cmd=[] network="host"
+[Calculator CI/CD/Security Check]   🐳  docker run image=catthehacker/ubuntu:act-latest platform= entrypoint=["tail" "-f" "/dev/null"] cmd=[] network="host"
+[Calculator CI/CD/Test          ]   🐳  docker exec cmd=[node --no-warnings -e console.log(process.execPath)] user= workdir=
+[Calculator CI/CD/Security Check]   🐳  docker exec cmd=[node --no-warnings -e console.log(process.execPath)] user= workdir=
+[Calculator CI/CD/Security Check]   ✅  Success - Set up job
+[Calculator CI/CD/Test          ]   ✅  Success - Set up job
+[Calculator CI/CD/Test          ]   ☁  git clone 'https://github.com/actions/setup-python' # ref=v5
+[Calculator CI/CD/Security Check] ⭐ Run Main Checkout source code
+[Calculator CI/CD/Security Check]   🐳  docker cp src=/Users/utkarshpathak3107/Desktop/Learn_DevOps/Class_Assignments/CICD_GitHub_Actions/. dst=/Users/utkarshpathak3107/Desktop/Learn_DevOps/Class_Assignments/CICD_GitHub_Actions
+[Calculator CI/CD/Security Check]   ✅  Success - Main Checkout source code [16.868041ms]
+[Calculator CI/CD/Security Check] ⭐ Run Main Check for committed secret files
+[Calculator CI/CD/Security Check]   🐳  docker exec cmd=[bash -e /var/run/act/workflow/1] user= workdir=
+[Calculator CI/CD/Security Check]   | No .env / .pem / .key files found.
+[Calculator CI/CD/Security Check]   ✅  Success - Main Check for committed secret files [60.9905ms]
+[Calculator CI/CD/Security Check] ⭐ Run Complete job
+[Calculator CI/CD/Security Check] Cleaning up container for job Security Check
+[Calculator CI/CD/Security Check]   ✅  Success - Complete job
+[Calculator CI/CD/Security Check] 🏁  Job succeeded
+[Calculator CI/CD/Test          ] ⭐ Run Main Checkout source code
+[Calculator CI/CD/Test          ]   🐳  docker cp src=/Users/utkarshpathak3107/Desktop/Learn_DevOps/Class_Assignments/CICD_GitHub_Actions/. dst=/Users/utkarshpathak3107/Desktop/Learn_DevOps/Class_Assignments/CICD_GitHub_Actions
+[Calculator CI/CD/Test          ]   ✅  Success - Main Checkout source code [16.995416ms]
+[Calculator CI/CD/Test          ] ⭐ Run Main Setup Python
+[Calculator CI/CD/Test          ]   🐳  docker cp src=/Users/utkarshpathak3107/.cache/act/actions-setup-python@v5/ dst=/var/run/act/actions/actions-setup-python@v5/
+[Calculator CI/CD/Test          ]   🐳  docker exec cmd=[/opt/acttoolcache/node/24.19.0/arm64/bin/node /var/run/act/actions/actions-setup-python@v5/dist/setup/index.js] user= workdir=
+[Calculator CI/CD/Test          ]   ❓  ::group::Installed versions
+[Calculator CI/CD/Test          ]   | Version 3.12 was not found in the local cache
+[Calculator CI/CD/Test          ]   | (node:31) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+[Calculator CI/CD/Test          ]   | (Use `node --trace-deprecation ...` to show where the warning was created)
+[Calculator CI/CD/Test          ]   | Version 3.12 is available for downloading
+[Calculator CI/CD/Test          ]   | Download from "https://github.com/actions/python-versions/releases/download/3.12.15-36805895057/python-3.12.15-linux-24.04-arm64.tar.gz"
+[Calculator CI/CD/Test          ]   | Extract downloaded archive
+[Calculator CI/CD/Test          ]   | [command]/usr/bin/tar xz --warning=no-unknown-keyword --overwrite -C /tmp/73290206-c34c-4726-bba1-9b5ca200ca43 -f /tmp/e8458740-fc36-4dac-b233-62e3ad1d8a01
+[Calculator CI/CD/Test          ]   | Execute installation script
+[Calculator CI/CD/Test          ]   | Check if Python hostedtoolcache folder exist...
+[Calculator CI/CD/Test          ]   | Creating Python hostedtoolcache folder...
+[Calculator CI/CD/Test          ]   | Create Python 3.12.15 folder
+[Calculator CI/CD/Test          ]   | Copy Python binaries to hostedtoolcache folder
+[Calculator CI/CD/Test          ]   | Create additional symlinks (Required for the UsePythonVersion Azure Pipelines task and the setup-python GitHub Action)
+[Calculator CI/CD/Test          ]   | Upgrading pip...
+[Calculator CI/CD/Test          ]   | Collecting pip
+[Calculator CI/CD/Test          ]   | Downloading pip-26.2.1-py3-none-any.whl.metadata (4.6 kB)
+[Calculator CI/CD/Test          ]   | Downloading pip-26.2.1-py3-none-any.whl (1.8 MB)
+[Calculator CI/CD/Test          ]   | ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 1.8/1.8 MB 12.5 MB/s eta 0:00:00
+[Calculator CI/CD/Test          ]   | 
+[Calculator CI/CD/Test          ]   | Installing collected packages: pip
+[Calculator CI/CD/Test          ]   | Attempting uninstall: pip
+[Calculator CI/CD/Test          ]   | Found existing installation: pip 25.0.1
+[Calculator CI/CD/Test          ]   | Uninstalling pip-25.0.1:
+[Calculator CI/CD/Test          ]   | Successfully uninstalled pip-25.0.1
+[Calculator CI/CD/Test          ]   | Successfully installed pip-26.2.1
+[Calculator CI/CD/Test          ]   | Create complete file
+[Calculator CI/CD/Test          ]   | Successfully set up CPython (3.12.15)
+[Calculator CI/CD/Test          ]   ❓  ::endgroup::
+[Calculator CI/CD/Test          ]   ❓ add-matcher /run/act/actions/actions-setup-python@v5/.github/python.json
+[Calculator CI/CD/Test          ]   ✅  Success - Main Setup Python [20.144464125s]
+[Calculator CI/CD/Test          ]   ⚙  ::set-env:: Python2_ROOT_DIR=/opt/hostedtoolcache/Python/3.12.15/arm64
+[Calculator CI/CD/Test          ]   ⚙  ::set-env:: Python3_ROOT_DIR=/opt/hostedtoolcache/Python/3.12.15/arm64
+[Calculator CI/CD/Test          ]   ⚙  ::set-env:: LD_LIBRARY_PATH=/opt/hostedtoolcache/Python/3.12.15/arm64/lib
+[Calculator CI/CD/Test          ]   ⚙  ::set-env:: pythonLocation=/opt/hostedtoolcache/Python/3.12.15/arm64
+[Calculator CI/CD/Test          ]   ⚙  ::set-env:: PKG_CONFIG_PATH=/opt/hostedtoolcache/Python/3.12.15/arm64/lib/pkgconfig
+[Calculator CI/CD/Test          ]   ⚙  ::set-env:: Python_ROOT_DIR=/opt/hostedtoolcache/Python/3.12.15/arm64
+[Calculator CI/CD/Test          ]   ⚙  ::set-output:: python-version=3.12.15
+[Calculator CI/CD/Test          ]   ⚙  ::set-output:: python-path=/opt/hostedtoolcache/Python/3.12.15/arm64/bin/python
+[Calculator CI/CD/Test          ]   ⚙  ::add-path:: /opt/hostedtoolcache/Python/3.12.15/arm64
+[Calculator CI/CD/Test          ]   ⚙  ::add-path:: /opt/hostedtoolcache/Python/3.12.15/arm64/bin
+[Calculator CI/CD/Test          ] ⭐ Run Main Install dependencies
+[Calculator CI/CD/Test          ]   🐳  docker exec cmd=[bash -e /var/run/act/workflow/2] user= workdir=
+[Calculator CI/CD/Test          ]   | Requirement already satisfied: pip in /opt/hostedtoolcache/Python/3.12.15/arm64/lib/python3.12/site-packages (26.2.1)
+[Calculator CI/CD/Test          ]   | WARNING: Running pip as the 'root' user can result in broken permissions and conflicting behaviour with the system package manager, possibly rendering your system unusable. It is recommended to use a virtual environment instead: https://pip.pypa.io/warnings/venv. Use the --root-user-action option if you know what you are doing and want to suppress this warning.
+[Calculator CI/CD/Test          ]   | Collecting flask==3.1.2 (from -r /Users/utkarshpathak3107/Desktop/Learn_DevOps/Class_Assignments/CICD_GitHub_Actions/requirements.txt (line 1))
+[Calculator CI/CD/Test          ]   |   Downloading flask-3.1.2-py3-none-any.whl.metadata (3.2 kB)
+[Calculator CI/CD/Test          ]   | Collecting gunicorn==23.0.0 (from -r /Users/utkarshpathak3107/Desktop/Learn_DevOps/Class_Assignments/CICD_GitHub_Actions/requirements.txt (line 2))
+[Calculator CI/CD/Test          ]   |   Downloading gunicorn-23.0.0-py3-none-any.whl.metadata (4.4 kB)
+[Calculator CI/CD/Test          ]   | Collecting pytest==8.4.2 (from -r requirements-dev.txt (line 2))
+[Calculator CI/CD/Test          ]   |   Downloading pytest-8.4.2-py3-none-any.whl.metadata (7.7 kB)
+[Calculator CI/CD/Test          ]   | Collecting blinker>=1.9.0 (from flask==3.1.2->-r /Users/utkarshpathak3107/Desktop/Learn_DevOps/Class_Assignments/CICD_GitHub_Actions/requirements.txt (line 1))
+[Calculator CI/CD/Test          ]   |   Downloading blinker-1.9.0-py3-none-any.whl.metadata (1.6 kB)
+[Calculator CI/CD/Test          ]   | Collecting click>=8.1.3 (from flask==3.1.2->-r /Users/utkarshpathak3107/Desktop/Learn_DevOps/Class_Assignments/CICD_GitHub_Actions/requirements.txt (line 1))
+[Calculator CI/CD/Test          ]   |   Downloading click-8.5.0-py3-none-any.whl.metadata (2.6 kB)
+[Calculator CI/CD/Test          ]   | Collecting itsdangerous>=2.2.0 (from flask==3.1.2->-r /Users/utkarshpathak3107/Desktop/Learn_DevOps/Class_Assignments/CICD_GitHub_Actions/requirements.txt (line 1))
+[Calculator CI/CD/Test          ]   |   Downloading itsdangerous-2.2.0-py3-none-any.whl.metadata (1.9 kB)
+[Calculator CI/CD/Test          ]   | Collecting jinja2>=3.1.2 (from flask==3.1.2->-r /Users/utkarshpathak3107/Desktop/Learn_DevOps/Class_Assignments/CICD_GitHub_Actions/requirements.txt (line 1))
+[Calculator CI/CD/Test          ]   |   Downloading jinja2-3.1.6-py3-none-any.whl.metadata (2.9 kB)
+[Calculator CI/CD/Test          ]   | Collecting markupsafe>=2.1.1 (from flask==3.1.2->-r /Users/utkarshpathak3107/Desktop/Learn_DevOps/Class_Assignments/CICD_GitHub_Actions/requirements.txt (line 1))
+[Calculator CI/CD/Test          ]   |   Downloading markupsafe-3.0.4-cp312-cp312-manylinux2014_aarch64.manylinux_2_17_aarch64.manylinux_2_28_aarch64.whl.metadata (2.7 kB)
+[Calculator CI/CD/Test          ]   | Collecting werkzeug>=3.1.0 (from flask==3.1.2->-r /Users/utkarshpathak3107/Desktop/Learn_DevOps/Class_Assignments/CICD_GitHub_Actions/requirements.txt (line 1))
+[Calculator CI/CD/Test          ]   |   Downloading werkzeug-3.1.9-py3-none-any.whl.metadata (4.1 kB)
+[Calculator CI/CD/Test          ]   | Collecting packaging (from gunicorn==23.0.0->-r /Users/utkarshpathak3107/Desktop/Learn_DevOps/Class_Assignments/CICD_GitHub_Actions/requirements.txt (line 2))
+[Calculator CI/CD/Test          ]   |   Downloading packaging-26.3-py3-none-any.whl.metadata (3.5 kB)
+[Calculator CI/CD/Test          ]   | Collecting iniconfig>=1 (from pytest==8.4.2->-r requirements-dev.txt (line 2))
+[Calculator CI/CD/Test          ]   |   Downloading iniconfig-2.3.0-py3-none-any.whl.metadata (2.5 kB)
+[Calculator CI/CD/Test          ]   | Collecting pluggy<2,>=1.5 (from pytest==8.4.2->-r requirements-dev.txt (line 2))
+[Calculator CI/CD/Test          ]   |   Downloading pluggy-1.6.0-py3-none-any.whl.metadata (4.8 kB)
+[Calculator CI/CD/Test          ]   | Collecting pygments>=2.7.2 (from pytest==8.4.2->-r requirements-dev.txt (line 2))
+[Calculator CI/CD/Test          ]   |   Downloading pygments-2.21.0-py3-none-any.whl.metadata (2.5 kB)
+[Calculator CI/CD/Test          ]   | Downloading flask-3.1.2-py3-none-any.whl (103 kB)
+[Calculator CI/CD/Test          ]   | Downloading gunicorn-23.0.0-py3-none-any.whl (85 kB)
+[Calculator CI/CD/Test          ]   | Downloading pytest-8.4.2-py3-none-any.whl (365 kB)
+[Calculator CI/CD/Test          ]   | Downloading pluggy-1.6.0-py3-none-any.whl (20 kB)
+[Calculator CI/CD/Test          ]   | Downloading blinker-1.9.0-py3-none-any.whl (8.5 kB)
+[Calculator CI/CD/Test          ]   | Downloading click-8.5.0-py3-none-any.whl (125 kB)
+[Calculator CI/CD/Test          ]   | Downloading iniconfig-2.3.0-py3-none-any.whl (7.5 kB)
+[Calculator CI/CD/Test          ]   | Downloading itsdangerous-2.2.0-py3-none-any.whl (16 kB)
+[Calculator CI/CD/Test          ]   | Downloading jinja2-3.1.6-py3-none-any.whl (134 kB)
+[Calculator CI/CD/Test          ]   | Downloading markupsafe-3.0.4-cp312-cp312-manylinux2014_aarch64.manylinux_2_17_aarch64.manylinux_2_28_aarch64.whl (24 kB)
+[Calculator CI/CD/Test          ]   | Downloading packaging-26.3-py3-none-any.whl (129 kB)
+[Calculator CI/CD/Test          ]   | Downloading pygments-2.21.0-py3-none-any.whl (1.3 MB)
+[Calculator CI/CD/Test          ]   |    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 1.3/1.3 MB 10.2 MB/s  0:00:00
+[Calculator CI/CD/Test          ]   | Downloading werkzeug-3.1.9-py3-none-any.whl (228 kB)
+[Calculator CI/CD/Test          ]   | Installing collected packages: pygments, pluggy, packaging, markupsafe, itsdangerous, iniconfig, click, blinker, werkzeug, pytest, jinja2, gunicorn, flask
+[Calculator CI/CD/Test          ]   | 
+[Calculator CI/CD/Test          ]   | Successfully installed blinker-1.9.0 click-8.5.0 flask-3.1.2 gunicorn-23.0.0 iniconfig-2.3.0 itsdangerous-2.2.0 jinja2-3.1.6 markupsafe-3.0.4 packaging-26.3 pluggy-1.6.0 pygments-2.21.0 pytest-8.4.2 werkzeug-3.1.9
+[Calculator CI/CD/Test          ]   | WARNING: Running pip as the 'root' user can result in broken permissions and conflicting behaviour with the system package manager, possibly rendering your system unusable. It is recommended to use a virtual environment instead: https://pip.pypa.io/warnings/venv. Use the --root-user-action option if you know what you are doing and want to suppress this warning.
+[Calculator CI/CD/Test          ]   ✅  Success - Main Install dependencies [3.683331833s]
+[Calculator CI/CD/Test          ] ⭐ Run Main Run unit tests
+[Calculator CI/CD/Test          ]   🐳  docker exec cmd=[bash -e /var/run/act/workflow/3] user= workdir=
+[Calculator CI/CD/Test          ]   | ============================= test session starts ==============================
+[Calculator CI/CD/Test          ]   | platform linux -- Python 3.12.15, pytest-8.4.2, pluggy-1.6.0 -- /opt/hostedtoolcache/Python/3.12.15/arm64/bin/python
+[Calculator CI/CD/Test          ]   | cachedir: .pytest_cache
+[Calculator CI/CD/Test          ]   | rootdir: /Users/utkarshpathak3107/Desktop/Learn_DevOps/Class_Assignments/CICD_GitHub_Actions
+[Calculator CI/CD/Test          ]   | collecting ... collected 9 items
+[Calculator CI/CD/Test          ]   | 
+[Calculator CI/CD/Test          ]   | tests/test_api.py::test_health PASSED                                    [ 11%]
+[Calculator CI/CD/Test          ]   | tests/test_api.py::test_add_endpoint PASSED                              [ 22%]
+[Calculator CI/CD/Test          ]   | tests/test_api.py::test_divide_by_zero_returns_400 PASSED                [ 33%]
+[Calculator CI/CD/Test          ]   | tests/test_api.py::test_unknown_operation_returns_404 PASSED             [ 44%]
+[Calculator CI/CD/Test          ]   | tests/test_calculator.py::test_add PASSED                                [ 55%]
+[Calculator CI/CD/Test          ]   | tests/test_calculator.py::test_subtract PASSED                           [ 66%]
+[Calculator CI/CD/Test          ]   | tests/test_calculator.py::test_multiply PASSED                           [ 77%]
+[Calculator CI/CD/Test          ]   | tests/test_calculator.py::test_divide PASSED                             [ 88%]
+[Calculator CI/CD/Test          ]   | tests/test_calculator.py::test_divide_by_zero PASSED                     [100%]
+[Calculator CI/CD/Test          ]   | 
+[Calculator CI/CD/Test          ]   | ============================== 9 passed in 0.06s ===============================
+[Calculator CI/CD/Test          ]   ✅  Success - Main Run unit tests [285.485916ms]
+[Calculator CI/CD/Test          ] ⭐ Run Post Setup Python
+[Calculator CI/CD/Test          ]   🐳  docker exec cmd=[/opt/acttoolcache/node/24.19.0/arm64/bin/node /var/run/act/actions/actions-setup-python@v5/dist/cache-save/index.js] user= workdir=
+[Calculator CI/CD/Test          ]   | (node:135) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+[Calculator CI/CD/Test          ]   | (Use `node --trace-deprecation ...` to show where the warning was created)
+[Calculator CI/CD/Test          ]   ✅  Success - Post Setup Python [117.915625ms]
+[Calculator CI/CD/Test          ] ⭐ Run Complete job
+[Calculator CI/CD/Test          ] Cleaning up container for job Test
+[Calculator CI/CD/Test          ]   ✅  Success - Complete job
+[Calculator CI/CD/Test          ] 🏁  Job succeeded
+[Calculator CI/CD/Build         ] ⭐ Run Set up job
+[Calculator CI/CD/Build         ] 🚀  Start image=catthehacker/ubuntu:act-latest
+[Calculator CI/CD/Build         ]   🐳  docker pull image=catthehacker/ubuntu:act-latest platform= username= forcePull=false
+[Calculator CI/CD/Build         ]   🐳  docker create image=catthehacker/ubuntu:act-latest platform= entrypoint=["tail" "-f" "/dev/null"] cmd=[] network="host"
+[Calculator CI/CD/Build         ]   🐳  docker run image=catthehacker/ubuntu:act-latest platform= entrypoint=["tail" "-f" "/dev/null"] cmd=[] network="host"
+[Calculator CI/CD/Build         ]   🐳  docker exec cmd=[node --no-warnings -e console.log(process.execPath)] user= workdir=
+[Calculator CI/CD/Build         ]   ✅  Success - Set up job
+[Calculator CI/CD/Build         ]   ☁  git clone 'https://github.com/actions/upload-artifact' # ref=v4
+[Calculator CI/CD/Build         ] ⭐ Run Main Checkout source code
+[Calculator CI/CD/Build         ]   🐳  docker cp src=/Users/utkarshpathak3107/Desktop/Learn_DevOps/Class_Assignments/CICD_GitHub_Actions/. dst=/Users/utkarshpathak3107/Desktop/Learn_DevOps/Class_Assignments/CICD_GitHub_Actions
+[Calculator CI/CD/Build         ]   ✅  Success - Main Checkout source code [16.274625ms]
+[Calculator CI/CD/Build         ] ⭐ Run Main Build application
+[Calculator CI/CD/Build         ]   🐳  docker exec cmd=[bash -e /var/run/act/workflow/1] user= workdir=
+[Calculator CI/CD/Build         ]   | Starting application build
+[Calculator CI/CD/Build         ]   | total 20
+[Calculator CI/CD/Build         ]   | drwxr-xr-x 3 root root 4096 Oct  6 18:16 .
+[Calculator CI/CD/Build         ]   | drwxr-xr-x 7 root root 4096 Oct  6 18:16 ..
+[Calculator CI/CD/Build         ]   | drwxr-xr-x 2 root root 4096 Oct  6 18:16 app
+[Calculator CI/CD/Build         ]   | -rw-r--r-- 1 root root  151 Oct  6 18:16 build-info.txt
+[Calculator CI/CD/Build         ]   | -rw-r--r-- 1 root root   30 Oct  6 18:16 requirements.txt
+[Calculator CI/CD/Build         ]   | Build completed successfully.
+[Calculator CI/CD/Build         ]   ✅  Success - Main Build application [66.590916ms]
+[Calculator CI/CD/Build         ] ⭐ Run Main Show build info
+[Calculator CI/CD/Build         ]   🐳  docker exec cmd=[bash -e /var/run/act/workflow/2] user= workdir=
+[Calculator CI/CD/Build         ]   | Application: Session 16 Calculator API
+[Calculator CI/CD/Build         ]   | Build Status: SUCCESS
+[Calculator CI/CD/Build         ]   | Commit: 9036109cc5945f20e1aa9efb40a876fd4a1f335f
+[Calculator CI/CD/Build         ]   | Build Date: Tue Oct  6 18:16:57 UTC 2026
+[Calculator CI/CD/Build         ]   ✅  Success - Main Show build info [51.065416ms]
+[Calculator CI/CD/Build         ] ⭐ Run Main Upload build artifact
+[Calculator CI/CD/Build         ]   🐳  docker cp src=/Users/utkarshpathak3107/.cache/act/actions-upload-artifact@v4/ dst=/var/run/act/actions/actions-upload-artifact@v4/
+[Calculator CI/CD/Build         ]   🐳  docker exec cmd=[/opt/acttoolcache/node/24.19.0/arm64/bin/node /var/run/act/actions/actions-upload-artifact@v4/dist/upload/index.js] user= workdir=
+[Calculator CI/CD/Build         ]   | (node:51) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+[Calculator CI/CD/Build         ]   | (Use `node --trace-deprecation ...` to show where the warning was created)
+[Calculator CI/CD/Build         ]   | With the provided path, there will be 5 files uploaded
+[Calculator CI/CD/Build         ]   | Artifact name is valid!
+[Calculator CI/CD/Build         ]   | Root directory input is valid!
+[Calculator CI/CD/Build         ]   | Beginning upload of artifact content to blob storage
+[Calculator CI/CD/Build         ]   | (node:51) [DEP0169] DeprecationWarning: `url.parse()` behavior is not standardized and prone to errors that have security implications. Use the WHATWG URL API instead. CVEs are not issued for `url.parse()` vulnerabilities.
+[Calculator CI/CD/Build         ]   | Uploaded bytes 1336
+[Calculator CI/CD/Build         ]   | Finished uploading artifact content to blob storage!
+[Calculator CI/CD/Build         ]   | SHA256 digest of uploaded artifact zip is 85014f696356032a152c3e2551de233715d2027a35e943638235b171f2cf0777
+[Calculator CI/CD/Build         ]   | Finalizing artifact upload
+[Calculator CI/CD/Build         ]   | Artifact calculator-build.zip successfully finalized. Artifact ID 1242866976
+[Calculator CI/CD/Build         ]   | Artifact calculator-build has been successfully uploaded! Final size is 1336 bytes. Artifact ID is 1242866976
+[Calculator CI/CD/Build         ]   | Artifact download URL: https://github.com/31UTKARSH07-ALPHA/Learn_DevOps/actions/runs/1/artifacts/1242866976
+[Calculator CI/CD/Build         ]   ✅  Success - Main Upload build artifact [3.300684375s]
+[Calculator CI/CD/Build         ]   ⚙  ::set-output:: artifact-url=https://github.com/31UTKARSH07-ALPHA/Learn_DevOps/actions/runs/1/artifacts/1242866976
+[Calculator CI/CD/Build         ]   ⚙  ::set-output:: artifact-id=1242866976
+[Calculator CI/CD/Build         ]   ⚙  ::set-output:: artifact-digest=85014f696356032a152c3e2551de233715d2027a35e943638235b171f2cf0777
+[Calculator CI/CD/Build         ] ⭐ Run Complete job
+[Calculator CI/CD/Build         ] Cleaning up container for job Build
+[Calculator CI/CD/Build         ]   ✅  Success - Complete job
+[Calculator CI/CD/Build         ] 🏁  Job succeeded
+[Calculator CI/CD/Docker Build & Push] ⭐ Run Set up job
+[Calculator CI/CD/Docker Build & Push] 🚀  Start image=catthehacker/ubuntu:act-latest
+[Calculator CI/CD/Docker Build & Push]   🐳  docker pull image=catthehacker/ubuntu:act-latest platform= username= forcePull=false
+[Calculator CI/CD/Docker Build & Push]   🐳  docker create image=catthehacker/ubuntu:act-latest platform= entrypoint=["tail" "-f" "/dev/null"] cmd=[] network="host"
+[Calculator CI/CD/Docker Build & Push]   🐳  docker run image=catthehacker/ubuntu:act-latest platform= entrypoint=["tail" "-f" "/dev/null"] cmd=[] network="host"
+[Calculator CI/CD/Docker Build & Push]   🐳  docker exec cmd=[node --no-warnings -e console.log(process.execPath)] user= workdir=
+[Calculator CI/CD/Docker Build & Push]   ✅  Success - Set up job
+[Calculator CI/CD/Docker Build & Push] ⭐ Run Main Checkout source code
+[Calculator CI/CD/Docker Build & Push]   🐳  docker cp src=/Users/utkarshpathak3107/Desktop/Learn_DevOps/Class_Assignments/CICD_GitHub_Actions/. dst=/Users/utkarshpathak3107/Desktop/Learn_DevOps/Class_Assignments/CICD_GitHub_Actions
+[Calculator CI/CD/Docker Build & Push]   ✅  Success - Main Checkout source code [13.565666ms]
+[Calculator CI/CD/Docker Build & Push] ⭐ Run Main Compute image tag
+[Calculator CI/CD/Docker Build & Push]   🐳  docker exec cmd=[bash -e /var/run/act/workflow/meta] user= workdir=
+[Calculator CI/CD/Docker Build & Push]   ✅  Success - Main Compute image tag [60.3405ms]
+[Calculator CI/CD/Docker Build & Push]   ⚙  ::set-output:: image=localhost:5001/calculator-api:9036109
+[Calculator CI/CD/Docker Build & Push] ⭐ Run Main Build image
+[Calculator CI/CD/Docker Build & Push]   🐳  docker exec cmd=[bash -e /var/run/act/workflow/2] user= workdir=
+[Calculator CI/CD/Docker Build & Push]   | #0 building with "default" instance using docker driver
+[Calculator CI/CD/Docker Build & Push]   | 
+[Calculator CI/CD/Docker Build & Push]   | #1 [internal] load build definition from Dockerfile
+[Calculator CI/CD/Docker Build & Push]   | #1 transferring dockerfile: 379B done
+[Calculator CI/CD/Docker Build & Push]   | #1 DONE 0.0s
+[Calculator CI/CD/Docker Build & Push]   | 
+[Calculator CI/CD/Docker Build & Push]   | #2 [internal] load metadata for docker.io/library/python:3.12-slim
+[Calculator CI/CD/Docker Build & Push]   | #2 DONE 0.0s
+[Calculator CI/CD/Docker Build & Push]   | 
+[Calculator CI/CD/Docker Build & Push]   | #3 [internal] load .dockerignore
+[Calculator CI/CD/Docker Build & Push]   | #3 transferring context: 107B done
+[Calculator CI/CD/Docker Build & Push]   | #3 DONE 0.0s
+[Calculator CI/CD/Docker Build & Push]   | 
+[Calculator CI/CD/Docker Build & Push]   | #4 [1/6] FROM docker.io/library/python:3.12-slim@sha256:78387bc3881b8273120a12ebe6c1ab22b018ccc2c9adf565ae1ac9b536e184ea
+[Calculator CI/CD/Docker Build & Push]   | #4 resolve docker.io/library/python:3.12-slim@sha256:78387bc3881b8273120a12ebe6c1ab22b018ccc2c9adf565ae1ac9b536e184ea done
+[Calculator CI/CD/Docker Build & Push]   | #4 DONE 0.0s
+[Calculator CI/CD/Docker Build & Push]   | 
+[Calculator CI/CD/Docker Build & Push]   | #5 [internal] load build context
+[Calculator CI/CD/Docker Build & Push]   | #5 transferring context: 1.21kB done
+[Calculator CI/CD/Docker Build & Push]   | #5 DONE 0.0s
+[Calculator CI/CD/Docker Build & Push]   | 
+[Calculator CI/CD/Docker Build & Push]   | #6 [2/6] WORKDIR /app
+[Calculator CI/CD/Docker Build & Push]   | #6 CACHED
+[Calculator CI/CD/Docker Build & Push]   | 
+[Calculator CI/CD/Docker Build & Push]   | #7 [3/6] COPY requirements.txt .
+[Calculator CI/CD/Docker Build & Push]   | #7 DONE 0.0s
+[Calculator CI/CD/Docker Build & Push]   | 
+[Calculator CI/CD/Docker Build & Push]   | #8 [4/6] RUN pip install --no-cache-dir -r requirements.txt
+[Calculator CI/CD/Docker Build & Push]   | #8 1.408 Collecting flask==3.1.2 (from -r requirements.txt (line 1))
+[Calculator CI/CD/Docker Build & Push]   | #8 1.592   Downloading flask-3.1.2-py3-none-any.whl.metadata (3.2 kB)
+[Calculator CI/CD/Docker Build & Push]   | #8 1.655 Collecting gunicorn==23.0.0 (from -r requirements.txt (line 2))
+[Calculator CI/CD/Docker Build & Push]   | #8 1.685   Downloading gunicorn-23.0.0-py3-none-any.whl.metadata (4.4 kB)
+[Calculator CI/CD/Docker Build & Push]   | #8 1.759 Collecting blinker>=1.9.0 (from flask==3.1.2->-r requirements.txt (line 1))
+[Calculator CI/CD/Docker Build & Push]   | #8 1.790   Downloading blinker-1.9.0-py3-none-any.whl.metadata (1.6 kB)
+[Calculator CI/CD/Docker Build & Push]   | #8 1.864 Collecting click>=8.1.3 (from flask==3.1.2->-r requirements.txt (line 1))
+[Calculator CI/CD/Docker Build & Push]   | #8 1.893   Downloading click-8.5.0-py3-none-any.whl.metadata (2.6 kB)
+[Calculator CI/CD/Docker Build & Push]   | #8 1.944 Collecting itsdangerous>=2.2.0 (from flask==3.1.2->-r requirements.txt (line 1))
+[Calculator CI/CD/Docker Build & Push]   | #8 1.974   Downloading itsdangerous-2.2.0-py3-none-any.whl.metadata (1.9 kB)
+[Calculator CI/CD/Docker Build & Push]   | #8 2.046 Collecting jinja2>=3.1.2 (from flask==3.1.2->-r requirements.txt (line 1))
+[Calculator CI/CD/Docker Build & Push]   | #8 2.076   Downloading jinja2-3.1.6-py3-none-any.whl.metadata (2.9 kB)
+[Calculator CI/CD/Docker Build & Push]   | #8 2.267 Collecting markupsafe>=2.1.1 (from flask==3.1.2->-r requirements.txt (line 1))
+[Calculator CI/CD/Docker Build & Push]   | #8 2.310   Downloading markupsafe-3.0.4-cp312-cp312-manylinux2014_aarch64.manylinux_2_17_aarch64.manylinux_2_28_aarch64.whl.metadata (2.7 kB)
+[Calculator CI/CD/Docker Build & Push]   | #8 2.401 Collecting werkzeug>=3.1.0 (from flask==3.1.2->-r requirements.txt (line 1))
+[Calculator CI/CD/Docker Build & Push]   | #8 2.431   Downloading werkzeug-3.1.9-py3-none-any.whl.metadata (4.1 kB)
+[Calculator CI/CD/Docker Build & Push]   | #8 2.489 Collecting packaging (from gunicorn==23.0.0->-r requirements.txt (line 2))
+[Calculator CI/CD/Docker Build & Push]   | #8 2.515   Downloading packaging-26.3-py3-none-any.whl.metadata (3.5 kB)
+[Calculator CI/CD/Docker Build & Push]   | #8 2.567 Downloading flask-3.1.2-py3-none-any.whl (103 kB)
+[Calculator CI/CD/Docker Build & Push]   | #8 2.648 Downloading gunicorn-23.0.0-py3-none-any.whl (85 kB)
+[Calculator CI/CD/Docker Build & Push]   | #8 2.693 Downloading blinker-1.9.0-py3-none-any.whl (8.5 kB)
+[Calculator CI/CD/Docker Build & Push]   | #8 2.737 Downloading click-8.5.0-py3-none-any.whl (125 kB)
+[Calculator CI/CD/Docker Build & Push]   | #8 2.772 Downloading itsdangerous-2.2.0-py3-none-any.whl (16 kB)
+[Calculator CI/CD/Docker Build & Push]   | #8 2.805 Downloading jinja2-3.1.6-py3-none-any.whl (134 kB)
+[Calculator CI/CD/Docker Build & Push]   | #8 2.854 Downloading markupsafe-3.0.4-cp312-cp312-manylinux2014_aarch64.manylinux_2_17_aarch64.manylinux_2_28_aarch64.whl (24 kB)
+[Calculator CI/CD/Docker Build & Push]   | #8 2.891 Downloading werkzeug-3.1.9-py3-none-any.whl (228 kB)
+[Calculator CI/CD/Docker Build & Push]   | #8 2.992 Downloading packaging-26.3-py3-none-any.whl (129 kB)
+[Calculator CI/CD/Docker Build & Push]   | #8 3.038 Installing collected packages: packaging, markupsafe, itsdangerous, click, blinker, werkzeug, jinja2, gunicorn, flask
+[Calculator CI/CD/Docker Build & Push]   | #8 3.533 Successfully installed blinker-1.9.0 click-8.5.0 flask-3.1.2 gunicorn-23.0.0 itsdangerous-2.2.0 jinja2-3.1.6 markupsafe-3.0.4 packaging-26.3 werkzeug-3.1.9
+[Calculator CI/CD/Docker Build & Push]   | #8 3.534 WARNING: Running pip as the 'root' user can result in broken permissions and conflicting behaviour with the system package manager, possibly rendering your system unusable. It is recommended to use a virtual environment instead: https://pip.pypa.io/warnings/venv. Use the --root-user-action option if you know what you are doing and want to suppress this warning.
+[Calculator CI/CD/Docker Build & Push]   | #8 3.736 
+[Calculator CI/CD/Docker Build & Push]   | #8 3.736 [notice] A new release of pip is available: 25.0.1 -> 26.2.1
+[Calculator CI/CD/Docker Build & Push]   | #8 3.736 [notice] To update, run: pip install --upgrade pip
+[Calculator CI/CD/Docker Build & Push]   | #8 DONE 3.9s
+[Calculator CI/CD/Docker Build & Push]   | 
+[Calculator CI/CD/Docker Build & Push]   | #9 [5/6] COPY app/ app/
+[Calculator CI/CD/Docker Build & Push]   | #9 DONE 0.0s
+[Calculator CI/CD/Docker Build & Push]   | 
+[Calculator CI/CD/Docker Build & Push]   | #10 [6/6] RUN useradd --create-home appuser
+[Calculator CI/CD/Docker Build & Push]   | #10 DONE 0.2s
+[Calculator CI/CD/Docker Build & Push]   | 
+[Calculator CI/CD/Docker Build & Push]   | #11 exporting to image
+[Calculator CI/CD/Docker Build & Push]   | #11 exporting layers
+[Calculator CI/CD/Docker Build & Push]   | #11 exporting layers 0.9s done
+[Calculator CI/CD/Docker Build & Push]   | #11 exporting manifest sha256:9d2f161a79361fb89147b87d9ea16f0d0cc782481ba9a14c158b2255c9692a4b
+[Calculator CI/CD/Docker Build & Push]   | #11 exporting manifest sha256:9d2f161a79361fb89147b87d9ea16f0d0cc782481ba9a14c158b2255c9692a4b done
+[Calculator CI/CD/Docker Build & Push]   | #11 exporting config sha256:f732950a807f3eb06cf840f4022ad725f95a3e8dfc931a0ac8cc9acd6d032d59 done
+[Calculator CI/CD/Docker Build & Push]   | #11 exporting attestation manifest sha256:d9a29c8768159e2333e24647278063b69cadb0dcf2b71cb46105040d93fbfd8a 0.0s done
+[Calculator CI/CD/Docker Build & Push]   | #11 exporting manifest list sha256:27735545da2740d634258a1186039c256a13a0a04349a4f91fb848ae5a0d203c done
+[Calculator CI/CD/Docker Build & Push]   | #11 naming to localhost:5001/calculator-api:9036109 done
+[Calculator CI/CD/Docker Build & Push]   | #11 unpacking to localhost:5001/calculator-api:9036109
+[Calculator CI/CD/Docker Build & Push]   | #11 unpacking to localhost:5001/calculator-api:9036109 0.2s done
+[Calculator CI/CD/Docker Build & Push]   | #11 DONE 1.3s
+[Calculator CI/CD/Docker Build & Push]   ✅  Success - Main Build image [5.894780167s]
+[Calculator CI/CD/Docker Build & Push] ⭐ Run Main Push image to registry
+[Calculator CI/CD/Docker Build & Push]   🐳  docker exec cmd=[bash -e /var/run/act/workflow/3] user= workdir=
+[Calculator CI/CD/Docker Build & Push]   | The push refers to repository [localhost:5001/calculator-api]
+[Calculator CI/CD/Docker Build & Push]   | 4583d8bcff06: Waiting
+[Calculator CI/CD/Docker Build & Push]   | 8aff2d3a9af8: Waiting
+[Calculator CI/CD/Docker Build & Push]   | 21474fdfe2c2: Waiting
+[Calculator CI/CD/Docker Build & Push]   | bf7af0229701: Waiting
+[Calculator CI/CD/Docker Build & Push]   | 2d0eb0133110: Waiting
+[Calculator CI/CD/Docker Build & Push]   | ab2cb3ee67af: Waiting
+[Calculator CI/CD/Docker Build & Push]   | 3550292b2150: Waiting
+[Calculator CI/CD/Docker Build & Push]   | 40bae9335aec: Waiting
+[Calculator CI/CD/Docker Build & Push]   | ab61974a0b03: Waiting
+[Calculator CI/CD/Docker Build & Push]   | a84b7dbb56f9: Waiting
+[Calculator CI/CD/Docker Build & Push]   | 4583d8bcff06: Waiting
+[Calculator CI/CD/Docker Build & Push]   | 8aff2d3a9af8: Waiting
+[Calculator CI/CD/Docker Build & Push]   | 21474fdfe2c2: Waiting
+[Calculator CI/CD/Docker Build & Push]   | bf7af0229701: Waiting
+[Calculator CI/CD/Docker Build & Push]   | 2d0eb0133110: Waiting
+[Calculator CI/CD/Docker Build & Push]   | ab2cb3ee67af: Waiting
+[Calculator CI/CD/Docker Build & Push]   | 3550292b2150: Waiting
+[Calculator CI/CD/Docker Build & Push]   | 40bae9335aec: Waiting
+[Calculator CI/CD/Docker Build & Push]   | ab61974a0b03: Waiting
+[Calculator CI/CD/Docker Build & Push]   | a84b7dbb56f9: Waiting
+[Calculator CI/CD/Docker Build & Push]   | ab61974a0b03: Waiting
+[Calculator CI/CD/Docker Build & Push]   | a84b7dbb56f9: Waiting
+[Calculator CI/CD/Docker Build & Push]   | 4583d8bcff06: Waiting
+[Calculator CI/CD/Docker Build & Push]   | 8aff2d3a9af8: Waiting
+[Calculator CI/CD/Docker Build & Push]   | 21474fdfe2c2: Waiting
+[Calculator CI/CD/Docker Build & Push]   | bf7af0229701: Waiting
+[Calculator CI/CD/Docker Build & Push]   | 2d0eb0133110: Waiting
+[Calculator CI/CD/Docker Build & Push]   | ab2cb3ee67af: Waiting
+[Calculator CI/CD/Docker Build & Push]   | 3550292b2150: Waiting
+[Calculator CI/CD/Docker Build & Push]   | 40bae9335aec: Waiting
+[Calculator CI/CD/Docker Build & Push]   | a84b7dbb56f9: Waiting
+[Calculator CI/CD/Docker Build & Push]   | 4583d8bcff06: Waiting
+[Calculator CI/CD/Docker Build & Push]   | 8aff2d3a9af8: Waiting
+[Calculator CI/CD/Docker Build & Push]   | 21474fdfe2c2: Waiting
+[Calculator CI/CD/Docker Build & Push]   | bf7af0229701: Waiting
+[Calculator CI/CD/Docker Build & Push]   | 2d0eb0133110: Waiting
+[Calculator CI/CD/Docker Build & Push]   | ab2cb3ee67af: Waiting
+[Calculator CI/CD/Docker Build & Push]   | 3550292b2150: Waiting
+[Calculator CI/CD/Docker Build & Push]   | 40bae9335aec: Waiting
+[Calculator CI/CD/Docker Build & Push]   | ab61974a0b03: Waiting
+[Calculator CI/CD/Docker Build & Push]   | 4583d8bcff06: Waiting
+[Calculator CI/CD/Docker Build & Push]   | 8aff2d3a9af8: Waiting
+[Calculator CI/CD/Docker Build & Push]   | 21474fdfe2c2: Waiting
+[Calculator CI/CD/Docker Build & Push]   | bf7af0229701: Waiting
+[Calculator CI/CD/Docker Build & Push]   | 2d0eb0133110: Waiting
+[Calculator CI/CD/Docker Build & Push]   | ab2cb3ee67af: Waiting
+[Calculator CI/CD/Docker Build & Push]   | 3550292b2150: Waiting
+[Calculator CI/CD/Docker Build & Push]   | 40bae9335aec: Waiting
+[Calculator CI/CD/Docker Build & Push]   | ab61974a0b03: Waiting
+[Calculator CI/CD/Docker Build & Push]   | a84b7dbb56f9: Waiting
+[Calculator CI/CD/Docker Build & Push]   | ab2cb3ee67af: Waiting
+[Calculator CI/CD/Docker Build & Push]   | 3550292b2150: Waiting
+[Calculator CI/CD/Docker Build & Push]   | 40bae9335aec: Waiting
+[Calculator CI/CD/Docker Build & Push]   | ab61974a0b03: Waiting
+[Calculator CI/CD/Docker Build & Push]   | a84b7dbb56f9: Waiting
+[Calculator CI/CD/Docker Build & Push]   | 4583d8bcff06: Waiting
+[Calculator CI/CD/Docker Build & Push]   | 8aff2d3a9af8: Waiting
+[Calculator CI/CD/Docker Build & Push]   | 21474fdfe2c2: Waiting
+[Calculator CI/CD/Docker Build & Push]   | bf7af0229701: Waiting
+[Calculator CI/CD/Docker Build & Push]   | 2d0eb0133110: Waiting
+[Calculator CI/CD/Docker Build & Push]   | 21474fdfe2c2: Pushed
+[Calculator CI/CD/Docker Build & Push]   | 2d0eb0133110: Pushed
+[Calculator CI/CD/Docker Build & Push]   | 3550292b2150: Pushed
+[Calculator CI/CD/Docker Build & Push]   | 40bae9335aec: Pushed
+[Calculator CI/CD/Docker Build & Push]   | a84b7dbb56f9: Pushed
+[Calculator CI/CD/Docker Build & Push]   | 4583d8bcff06: Pushed
+[Calculator CI/CD/Docker Build & Push]   | ab61974a0b03: Pushed
+[Calculator CI/CD/Docker Build & Push]   | 8aff2d3a9af8: Pushed
+[Calculator CI/CD/Docker Build & Push]   | ab2cb3ee67af: Pushed
+[Calculator CI/CD/Docker Build & Push]   | bf7af0229701: Pushed
+[Calculator CI/CD/Docker Build & Push]   | 9036109: digest: sha256:27735545da2740d634258a1186039c256a13a0a04349a4f91fb848ae5a0d203c size: 856
+[Calculator CI/CD/Docker Build & Push]   ✅  Success - Main Push image to registry [1.023206875s]
+[Calculator CI/CD/Docker Build & Push] ⭐ Run Complete job
+[Calculator CI/CD/Docker Build & Push] Cleaning up container for job Docker Build & Push
+[Calculator CI/CD/Docker Build & Push]   ✅  Success - Complete job
+[Calculator CI/CD/Docker Build & Push] 🏁  Job succeeded
+[Calculator CI/CD/Deploy to Staging  ] ⭐ Run Set up job
+[Calculator CI/CD/Deploy to Staging  ] 🚀  Start image=catthehacker/ubuntu:act-latest
+[Calculator CI/CD/Deploy to Staging  ]   🐳  docker pull image=catthehacker/ubuntu:act-latest platform= username= forcePull=false
+[Calculator CI/CD/Deploy to Staging  ]   🐳  docker create image=catthehacker/ubuntu:act-latest platform= entrypoint=["tail" "-f" "/dev/null"] cmd=[] network="host"
+[Calculator CI/CD/Deploy to Staging  ]   🐳  docker run image=catthehacker/ubuntu:act-latest platform= entrypoint=["tail" "-f" "/dev/null"] cmd=[] network="host"
+[Calculator CI/CD/Deploy to Staging  ]   🐳  docker exec cmd=[node --no-warnings -e console.log(process.execPath)] user= workdir=
+[Calculator CI/CD/Deploy to Staging  ]   ✅  Success - Set up job
+[Calculator CI/CD/Deploy to Staging  ] ⭐ Run Main Use the deploy secret
+[Calculator CI/CD/Deploy to Staging  ]   🐳  docker exec cmd=[bash -e /var/run/act/workflow/0] user= workdir=
+[Calculator CI/CD/Deploy to Staging  ]   | Authenticating deploy with token: ***
+[Calculator CI/CD/Deploy to Staging  ]   ✅  Success - Main Use the deploy secret [79.001708ms]
+[Calculator CI/CD/Deploy to Staging  ] ⭐ Run Main Deploy container
+[Calculator CI/CD/Deploy to Staging  ]   🐳  docker exec cmd=[bash -e /var/run/act/workflow/1] user= workdir=
+[Calculator CI/CD/Deploy to Staging  ]   | a598b0bf082a9f1d7b01f42d211ac8f0b5d821e624d5894b4011ddb8a2a7354b
+[Calculator CI/CD/Deploy to Staging  ]   ✅  Success - Main Deploy container [234.939333ms]
+[Calculator CI/CD/Deploy to Staging  ] ⭐ Run Main Smoke test
+[Calculator CI/CD/Deploy to Staging  ]   🐳  docker exec cmd=[bash -e /var/run/act/workflow/2] user= workdir=
+[Calculator CI/CD/Deploy to Staging  ]   | {"status":"ok","version":"9036109"}
+[Calculator CI/CD/Deploy to Staging  ]   | 
+[Calculator CI/CD/Deploy to Staging  ]   | {"a":6.0,"b":7.0,"op":"multiply","result":42.0}
+[Calculator CI/CD/Deploy to Staging  ]   ✅  Success - Main Smoke test [129.247209ms]
+[Calculator CI/CD/Deploy to Staging  ] ⭐ Run Complete job
+[Calculator CI/CD/Deploy to Staging  ] Cleaning up container for job Deploy to Staging
+[Calculator CI/CD/Deploy to Staging  ]   ✅  Success - Complete job
+[Calculator CI/CD/Deploy to Staging  ] 🏁  Job succeeded

@@ -1,0 +1,221 @@
+########## 1. hostname ##########
+$ hostname
+devops-lab
+
+$ hostname -f
+devops-lab
+
+########## 2. whoami ##########
+$ whoami
+root
+
+$ id
+uid=0(root) gid=0(root) groups=0(root)
+
+########## 3. ip a ##########
+$ ip a
+1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN group default qlen 1000
+    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+    inet 127.0.0.1/8 scope host lo
+       valid_lft forever preferred_lft forever
+    inet6 ::1/128 scope host 
+       valid_lft forever preferred_lft forever
+2: tunl0@NONE: <NOARP> mtu 1480 qdisc noop state DOWN group default qlen 1000
+    link/ipip 0.0.0.0 brd 0.0.0.0
+3: gre0@NONE: <NOARP> mtu 1476 qdisc noop state DOWN group default qlen 1000
+    link/gre 0.0.0.0 brd 0.0.0.0
+4: gretap0@NONE: <BROADCAST,MULTICAST> mtu 1462 qdisc noop state DOWN group default qlen 1000
+    link/ether 00:00:00:00:00:00 brd ff:ff:ff:ff:ff:ff
+5: erspan0@NONE: <BROADCAST,MULTICAST> mtu 1450 qdisc noop state DOWN group default qlen 1000
+    link/ether 00:00:00:00:00:00 brd ff:ff:ff:ff:ff:ff
+6: ip_vti0@NONE: <NOARP> mtu 1480 qdisc noop state DOWN group default qlen 1000
+    link/ipip 0.0.0.0 brd 0.0.0.0
+7: ip6_vti0@NONE: <NOARP> mtu 1428 qdisc noop state DOWN group default qlen 1000
+    link/tunnel6 :: brd :: permaddr 4e0f:94f8:c177::
+8: sit0@NONE: <NOARP> mtu 1480 qdisc noop state DOWN group default qlen 1000
+    link/sit 0.0.0.0 brd 0.0.0.0
+9: ip6tnl0@NONE: <NOARP> mtu 1452 qdisc noop state DOWN group default qlen 1000
+    link/tunnel6 :: brd :: permaddr 62fa:fc33:abed::
+10: ip6gre0@NONE: <NOARP> mtu 1448 qdisc noop state DOWN group default qlen 1000
+    link/gre6 :: brd :: permaddr 9a03:278f:27cf::
+11: eth0@if27: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 65535 qdisc noqueue state UP group default 
+    link/ether 96:62:5c:53:2a:b5 brd ff:ff:ff:ff:ff:ff link-netnsid 0
+    inet 172.17.0.2/16 brd 172.17.255.255 scope global eth0
+       valid_lft forever preferred_lft forever
+
+########## 4. hostname -I ##########
+$ hostname -I
+172.17.0.2 
+
+########## 5. ip route ##########
+$ ip route
+default via 172.17.0.1 dev eth0 
+172.17.0.0/16 dev eth0 proto kernel scope link src 172.17.0.2 
+
+$ ip route get 8.8.8.8
+8.8.8.8 via 172.17.0.1 dev eth0 src 172.17.0.2 uid 0 
+    cache 
+
+########## 6. ping ##########
+$ ping -c 4 8.8.8.8
+PING 8.8.8.8 (8.8.8.8) 56(84) bytes of data.
+64 bytes from 8.8.8.8: icmp_seq=1 ttl=63 time=13.1 ms
+64 bytes from 8.8.8.8: icmp_seq=2 ttl=63 time=11.6 ms
+64 bytes from 8.8.8.8: icmp_seq=3 ttl=63 time=11.5 ms
+64 bytes from 8.8.8.8: icmp_seq=4 ttl=63 time=11.5 ms
+
+--- 8.8.8.8 ping statistics ---
+4 packets transmitted, 4 received, 0% packet loss, time 3020ms
+rtt min/avg/max/mdev = 11.457/11.911/13.056/0.662 ms
+
+$ ping -c 3 google.com
+PING google.com (142.250.207.174) 56(84) bytes of data.
+64 bytes from pnbomb-bl-in-f14.1e100.net (142.250.207.174): icmp_seq=1 ttl=63 time=28.8 ms
+64 bytes from pnbomb-bl-in-f14.1e100.net (142.250.207.174): icmp_seq=2 ttl=63 time=27.4 ms
+64 bytes from pnbomb-bl-in-f14.1e100.net (142.250.207.174): icmp_seq=3 ttl=63 time=34.1 ms
+
+--- google.com ping statistics ---
+3 packets transmitted, 3 received, 0% packet loss, time 2011ms
+rtt min/avg/max/mdev = 27.413/30.128/34.124/2.885 ms
+
+########## 7. nslookup ##########
+$ nslookup google.com
+Server:		192.168.65.7
+Address:	192.168.65.7#53
+
+Non-authoritative answer:
+Name:	google.com
+Address: 142.250.207.174
+
+
+$ nslookup github.com
+Server:		192.168.65.7
+Address:	192.168.65.7#53
+
+Non-authoritative answer:
+Name:	github.com
+Address: 20.207.73.82
+
+
+########## 8. curl ##########
+$ curl -I https://www.google.com
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+HTTP/2 200 
+content-type: text/html; charset=ISO-8859-1
+content-security-policy-report-only: object-src 'none';base-uri 'self';script-src 'nonce-tjlajAZT4IJayl3MgzJUbA' 'strict-dynamic' 'report-sample' 'unsafe-eval' 'unsafe-inline' https: http:;report-uri https://csp.withgoogle.com/csp/gws/other-hp
+accept-ch: Sec-CH-Prefers-Color-Scheme
+p3p: CP="This is not a P3P policy! See g.co/p3phelp for more info."
+date: Thu, 03 Sep 2026 16:10:44 GMT
+server: gws
+x-xss-protection: 0
+x-frame-options: SAMEORIGIN
+expires: Thu, 03 Sep 2026 16:10:44 GMT
+cache-control: private
+set-cookie: __Secure-STRP=ANmZwa3nBf78v_i9KIR1wTLaRARw2EHZPFwFN_ep6UNn_ZVqYL88u_GK3dnbnwRhrQ2oPi_Uy3RWhMcMaSTkI9bXeLr6N081b4gX; expires=Thu, 03-Sep-2026 16:15:44 GMT; path=/; domain=.google.com; Secure; SameSite=strict
+set-cookie: AEC=AdJVEavpyg_nxUUROhEGhB1F-QTrMCQgOGUartOd12PCTb28SVjTrj2lXaw; expires=Tue, 02-Mar-2027 16:10:44 GMT; path=/; domain=.google.com; Secure; HttpOnly; SameSite=lax
+set-cookie: NID=534=A7NXZOIM-AdMfGt8lvlN3zkyksRjW9u2jQ269wcYmOg0eFt5revyeVHNcL_Nb3sJtqJdQiF52q5ocTywzAT_Qlcms8Z3PvW8pTTh1pPPIJ8l4ShFDyv5cXz01B7pVUborTWbXDSW81qMLSq_fZUkrHVMS-idUHi4oJdTKtDGf4UOuiojHu_BWeecobpeVasPJHifOZJByBpu5vXN6UIa; expires=Fri, 05-Mar-2027 16:10:44 GMT; path=/; domain=.google.com; HttpOnly
+alt-svc: h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+
+
+$ curl -s https://api.github.com/zen
+Mind your words, they are important.
+$ curl -s -o /dev/null -w 'http_code=%{http_code} time_total=%{time_total}s size=%{size_download}bytes\n' https://www.google.com
+http_code=200 time_total=0.178381s size=85676bytes
+
+########## 9. ss ##########
+$ ss -tuln
+Netid State  Recv-Q Send-Q Local Address:Port Peer Address:PortProcess
+tcp   LISTEN 0      511          0.0.0.0:80        0.0.0.0:*          
+tcp   LISTEN 0      4096         0.0.0.0:22        0.0.0.0:*          
+tcp   LISTEN 0      511             [::]:80           [::]:*          
+tcp   LISTEN 0      4096            [::]:22           [::]:*          
+
+$ ss -tp state listening
+Recv-Q Send-Q Local Address:Port Peer Address:PortProcess                                                                                                                                                                                                                                                              
+0      511          0.0.0.0:http      0.0.0.0:*    users:(("nginx",pid=234,fd=5),("nginx",pid=233,fd=5),("nginx",pid=231,fd=5),("nginx",pid=230,fd=5),("nginx",pid=229,fd=5),("nginx",pid=228,fd=5),("nginx",pid=227,fd=5),("nginx",pid=226,fd=5),("nginx",pid=225,fd=5),("nginx",pid=224,fd=5),("nginx",pid=223,fd=5))
+0      4096         0.0.0.0:ssh       0.0.0.0:*    users:(("sshd",pid=71,fd=3),("systemd",pid=1,fd=46))                                                                                                                                                                                                                
+0      511             [::]:http         [::]:*    users:(("nginx",pid=234,fd=6),("nginx",pid=233,fd=6),("nginx",pid=231,fd=6),("nginx",pid=230,fd=6),("nginx",pid=229,fd=6),("nginx",pid=228,fd=6),("nginx",pid=227,fd=6),("nginx",pid=226,fd=6),("nginx",pid=225,fd=6),("nginx",pid=224,fd=6),("nginx",pid=223,fd=6))
+0      4096            [::]:ssh          [::]:*    users:(("sshd",pid=71,fd=4),("systemd",pid=1,fd=47))                                                                                                                                                                                                                
+
+########## 10. /etc/hosts ##########
+$ cat /etc/hosts
+127.0.0.1	localhost
+::1	localhost ip6-localhost ip6-loopback
+fe00::	ip6-localnet
+ff00::	ip6-mcastprefix
+ff02::1	ip6-allnodes
+ff02::2	ip6-allrouters
+172.17.0.2	devops-lab
+
+$ cat /etc/resolv.conf
+# Generated by Docker Engine.
+# This file can be edited; Docker Engine will not make further changes once it
+# has been modified.
+
+nameserver 192.168.65.7
+
+# Based on host file: '/etc/resolv.conf' (legacy)
+# Overrides: []
+
+---- add a custom entry and prove name resolution uses it ----
+$ echo '127.0.0.1   myapp.local' >> /etc/hosts
+
+$ cat /etc/hosts
+127.0.0.1	localhost
+::1	localhost ip6-localhost ip6-loopback
+fe00::	ip6-localnet
+ff00::	ip6-mcastprefix
+ff02::1	ip6-allnodes
+ff02::2	ip6-allrouters
+172.17.0.2	devops-lab
+127.0.0.1   myapp.local
+
+$ ping -c 2 myapp.local
+PING myapp.local (127.0.0.1) 56(84) bytes of data.
+64 bytes from localhost (127.0.0.1): icmp_seq=1 ttl=64 time=0.056 ms
+64 bytes from localhost (127.0.0.1): icmp_seq=2 ttl=64 time=0.074 ms
+
+--- myapp.local ping statistics ---
+2 packets transmitted, 2 received, 0% packet loss, time 1045ms
+rtt min/avg/max/mdev = 0.056/0.065/0.074/0.009 ms
+
+########## 11. tracepath ##########
+$ tracepath -m 8 8.8.8.8
+ 1:  172.17.0.1                                            0.168ms 
+ 2:  no reply
+ 3:  no reply
+ 4:  no reply
+ 5:  no reply
+ 6:  no reply
+ 7:  no reply
+ 8:  no reply
+     Too many hops: pmtu 65535
+     Resume: pmtu 65535 
+
+########## 12. traceroute ##########
+$ traceroute -m 8 8.8.8.8
+traceroute to 8.8.8.8 (8.8.8.8), 8 hops max, 60 byte packets
+ 1  172.17.0.1 (172.17.0.1)  0.599 ms  0.401 ms  0.381 ms
+ 2  * * *
+ 3  * * *
+ 4  * * *
+ 5  * * *
+ 6  * * *
+ 7  * * *
+ 8  * * *
+
+########## 13. telnet ##########
+$ timeout 8 bash -c 'printf "HEAD / HTTP/1.0\r\n\r\n" | telnet www.google.com 80'
+Trying 142.251.157.119...
+Connected to www.google.com.
+Escape character is '^]'.
+Connection closed by foreign host.
+
+$ timeout 5 telnet localhost 22
+Trying ::1...
+Connected to localhost.
+Escape character is '^]'.
+Connection closed by foreign host.
+

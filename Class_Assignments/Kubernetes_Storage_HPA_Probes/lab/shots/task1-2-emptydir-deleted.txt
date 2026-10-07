@@ -1,0 +1,3 @@
+$ kubectl delete pod emptydir-demo --wait=true; kubectl apply -f 01-kubernetes-volumes/pod-volumes.yml >/dev/null && kubectl wait --for=condition=Ready pod/emptydir-demo --timeout=120s >/dev/null; kubectl exec emptydir-demo -c reader -- cat /shared/log.txt
+pod "emptydir-demo" deleted from default namespace
+Tue Oct  6 18:31:55 UTC 2026

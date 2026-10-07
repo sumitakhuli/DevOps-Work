@@ -1,0 +1,7 @@
+$ kubectl get pods -n notes; kubectl exec -n notes deploy/notes-deploy -- printenv ENVIRONMENT; kubectl exec -n notes deploy/notes-deploy -- nginx -v
+NAME                            READY   STATUS    RESTARTS   AGE
+notes-deploy-54f799c6f6-7kbm8   1/1     Running   0          15s
+notes-deploy-54f799c6f6-c8dqr   1/1     Running   0          16s
+notes-deploy-54f799c6f6-xmj6l   1/1     Running   0          16s
+production
+nginx version: nginx/1.25.5

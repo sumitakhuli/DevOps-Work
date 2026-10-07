@@ -1,0 +1,23 @@
+$ act push -W .github/workflows/devsecops.yml -P ubuntu-latest=catthehacker/ubuntu:act-latest --network kind --secret-file s17.secrets
+  (run 3 - Docker Build and Image Scan)
+[DevSecOps Pipeline/Docker Build          ]   | #12 naming to docker.io/library/session17-python:9036109 done
+[DevSecOps Pipeline/Docker Build          ]   | #12 unpacking to docker.io/library/session17-python:9036109 0.4s done
+[DevSecOps Pipeline/Docker Build          ]   | IMAGE                      ID             DISK USAGE   CONTENT SIZE   EXTRA
+[DevSecOps Pipeline/Docker Build          ]   | session17-python:9036109   635d57f7dcfd        226MB         49.1MB        
+[DevSecOps Pipeline/Docker Build          ]   | Artifact docker-image has been successfully uploaded! Final size is 48665470 bytes. Artifact ID is 3572604477
+[DevSecOps Pipeline/Docker Build          ] 🏁  Job succeeded
+[DevSecOps Pipeline/Image Scan - Trivy    ]   | Loaded image: session17-python:9036109
+[DevSecOps Pipeline/Image Scan - Trivy    ]   | Report Summary
+[DevSecOps Pipeline/Image Scan - Trivy    ]   | │                                    Target                                    │    Type    │ Vulnerabilities │
+[DevSecOps Pipeline/Image Scan - Trivy    ]   | │ session17-python:9036109 (debian 13.7)                                       │   debian   │        0        │
+[DevSecOps Pipeline/Image Scan - Trivy    ]   | │ usr/local/lib/python3.12/site-packages/blinker-1.9.0.dist-info/METADATA      │ python-pkg │        0        │
+[DevSecOps Pipeline/Image Scan - Trivy    ]   | │ usr/local/lib/python3.12/site-packages/click-8.5.0.dist-info/METADATA        │ python-pkg │        0        │
+[DevSecOps Pipeline/Image Scan - Trivy    ]   | │ usr/local/lib/python3.12/site-packages/flask-3.1.3.dist-info/METADATA        │ python-pkg │        0        │
+[DevSecOps Pipeline/Image Scan - Trivy    ]   | │ usr/local/lib/python3.12/site-packages/gunicorn-23.0.0.dist-info/METADATA    │ python-pkg │        0        │
+[DevSecOps Pipeline/Image Scan - Trivy    ]   | │ usr/local/lib/python3.12/site-packages/itsdangerous-2.2.0.dist-info/METADATA │ python-pkg │        0        │
+[DevSecOps Pipeline/Image Scan - Trivy    ]   | │ usr/local/lib/python3.12/site-packages/jinja2-3.1.6.dist-info/METADATA       │ python-pkg │        0        │
+[DevSecOps Pipeline/Image Scan - Trivy    ]   | │ usr/local/lib/python3.12/site-packages/markupsafe-3.0.4.dist-info/METADATA   │ python-pkg │        0        │
+[DevSecOps Pipeline/Image Scan - Trivy    ]   | │ usr/local/lib/python3.12/site-packages/packaging-26.3.dist-info/METADATA     │ python-pkg │        0        │
+[DevSecOps Pipeline/Image Scan - Trivy    ]   | │ usr/local/lib/python3.12/site-packages/pip-25.0.1.dist-info/METADATA         │ python-pkg │        0        │
+[DevSecOps Pipeline/Image Scan - Trivy    ]   | │ usr/local/lib/python3.12/site-packages/werkzeug-3.1.9.dist-info/METADATA     │ python-pkg │        0        │
+[DevSecOps Pipeline/Image Scan - Trivy    ] 🏁  Job succeeded

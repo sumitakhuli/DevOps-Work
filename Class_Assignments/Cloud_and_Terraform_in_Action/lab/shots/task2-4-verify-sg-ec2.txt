@@ -1,0 +1,12 @@
+$ AWS_ACCESS_KEY_ID=test AWS_SECRET_ACCESS_KEY=test aws --endpoint-url=http://localhost:4566 --region ap-south-1 ec2 describe-security-groups --filters Name=tag:Project,Values=s19-webapp --query 'SecurityGroups[].IpPermissions[].[IpProtocol,FromPort,ToPort,IpRanges[0].CidrIp,IpRanges[0].Description]' --output table; AWS_ACCESS_KEY_ID=test AWS_SECRET_ACCESS_KEY=test aws --endpoint-url=http://localhost:4566 --region ap-south-1 ec2 describe-instances --filters Name=tag:Project,Values=s19-webapp --query 'Reservations[].Instances[].[InstanceId,InstanceType,State.Name,PrivateIpAddress,PublicIpAddress,SubnetId,IamInstanceProfile.Arn]' --output table
+------------------------------------------------------------------
+|                     DescribeSecurityGroups                     |
++-----+-----+-----+-------------------+--------------------------+
+|  tcp|  22 |  22 |  203.0.113.10/32  |  SSH from admin IP only  |
+|  tcp|  80 |  80 |  0.0.0.0/0        |  HTTP                    |
++-----+-----+-----+-------------------+--------------------------+
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+|                                                                          DescribeInstances                                                                          |
++---------------------+-----------+----------+------------+-----------------+------------------+----------------------------------------------------------------------+
+|  i-fffcb0bc585566ee6|  t3.micro |  running |  10.20.1.4 |  54.214.199.118 |  subnet-8ad741b3 |  arn:aws:iam::000000000000:instance-profile/s19-webapp-ec2-profile   |
++---------------------+-----------+----------+------------+-----------------+------------------+----------------------------------------------------------------------+

@@ -1,0 +1,8 @@
+$ date +%T; curl -s localhost:9090/api/v1/alerts | jq -r ".data.alerts[] | \"\(.labels.alertname)  state=\(.state)  value=\(.value)  since=\(.activeAt)\""; echo; echo "# CPU cores used by shop-api:"; curl -s localhost:9090/api/v1/query --data-urlencode "query=rate(process_cpu_seconds_total{job=\"shop-api\"}[1m])" | jq -r ".data.result[0].value[1]"; docker stats --no-stream --format "table {{.Name}}\t{{.CPUPerc}}\t{{.MemUsage}}" s20-shop-api
+00:52:40
+HighCpuUsage  state=firing  value=1.0173990509608575e+00  since=2026-10-06T19:16:00.572278861Z
+
+# CPU cores used by shop-api:
+1.0158366515754833
+NAME           CPU %     MEM USAGE / LIMIT
+s20-shop-api   101.47%   42.78MiB / 7.75GiB

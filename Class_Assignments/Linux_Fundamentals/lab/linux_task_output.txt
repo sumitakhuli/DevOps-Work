@@ -1,0 +1,364 @@
+===== ENVIRONMENT =====
+$ cat /etc/os-release | head -3
+PRETTY_NAME="Ubuntu 24.04.4 LTS"
+NAME="Ubuntu"
+VERSION_ID="24.04"
+
+$ uname -a
+Linux devops-lab 6.12.76-linuxkit #1 SMP Fri May 29 10:00:01 UTC 2026 aarch64 aarch64 aarch64 GNU/Linux
+
+$ hostname
+devops-lab
+
+########## TASK 1: SOFT LINK & HARD LINK ##########
+$ echo 'This is the original file content.' > original.txt
+
+$ cat original.txt
+This is the original file content.
+
+---- create a SOFT link (symbolic link) ----
+$ ln -s original.txt soft.txt
+
+---- create a HARD link ----
+$ ln original.txt hard.txt
+
+---- inspect: -i shows the inode number, and column 2 is the link count ----
+$ ls -li
+total 8
+824827 -rw-r--r-- 2 root root 35 Sep  3 16:09 hard.txt
+824827 -rw-r--r-- 2 root root 35 Sep  3 16:09 original.txt
+824828 lrwxrwxrwx 1 root root 12 Sep  3 16:09 soft.txt -> original.txt
+
+$ stat -c '%n -> inode=%i links=%h size=%s type=%F' original.txt hard.txt soft.txt
+original.txt -> inode=824827 links=2 size=35 type=regular file
+hard.txt -> inode=824827 links=2 size=35 type=regular file
+soft.txt -> inode=824828 links=1 size=12 type=symbolic link
+
+---- both links read the same content ----
+$ cat soft.txt
+This is the original file content.
+
+$ cat hard.txt
+This is the original file content.
+
+---- what does the soft link actually point at? ----
+$ readlink soft.txt
+original.txt
+
+$ file original.txt soft.txt hard.txt
+original.txt: ASCII text
+soft.txt:     symbolic link to original.txt
+hard.txt:     ASCII text
+
+---- write through the hard link, original changes too (same inode) ----
+$ echo 'appended via hard link' >> hard.txt
+
+$ cat original.txt
+This is the original file content.
+appended via hard link
+
+---- NOW DELETE THE ORIGINAL: this is the key difference ----
+$ rm original.txt
+
+$ ls -li
+total 4
+824827 -rw-r--r-- 1 root root 58 Sep  3 16:09 hard.txt
+824828 lrwxrwxrwx 1 root root 12 Sep  3 16:09 soft.txt -> original.txt
+
+---- soft link is now DANGLING (broken) ----
+$ cat soft.txt
+cat: soft.txt: No such file or directory
+[exit code: 1]
+
+---- hard link still has all the data ----
+$ cat hard.txt
+This is the original file content.
+appended via hard link
+
+$ stat -c '%n -> inode=%i links=%h' hard.txt
+hard.txt -> inode=824827 links=1
+
+---- soft links CAN point at directories; hard links normally cannot ----
+$ mkdir mydir
+
+$ ln -s mydir dirlink
+
+$ ls -ld dirlink
+lrwxrwxrwx 1 root root 5 Sep  3 16:09 dirlink -> mydir
+
+$ ln mydir dirhard
+ln: mydir: hard link not allowed for directory
+[exit code: 1]
+
+---- cleanup / deleting links ----
+$ rm soft.txt
+
+$ unlink dirlink
+
+$ ls -li
+total 8
+824827 -rw-r--r-- 1 root root   58 Sep  3 16:09 hard.txt
+824829 drwxr-xr-x 2 root root 4096 Sep  3 16:09 mydir
+
+########## TASK 2: adduser vs useradd ##########
+$ which adduser useradd
+/usr/sbin/adduser
+/usr/sbin/useradd
+
+$ file /usr/sbin/adduser
+/usr/sbin/adduser: Perl script text executable
+
+$ file /usr/sbin/useradd
+/usr/sbin/useradd: ELF 64-bit LSB pie executable, ARM aarch64, version 1 (SYSV), dynamically linked, interpreter /lib/ld-linux-aarch64.so.1, BuildID[sha1]=483f79642f7a936acdeb2cb2fd1c4e70c2f0ef9d, for GNU/Linux 3.7.0, stripped
+
+---- useradd WITHOUT -m : no home directory is created ----
+$ useradd nohomeuser
+
+$ grep nohomeuser /etc/passwd
+nohomeuser:x:1001:1001::/home/nohomeuser:/bin/sh
+
+$ ls -la /home
+total 12
+drwxr-xr-x 3 root   root   4096 Aug 10 14:55 .
+drwxr-xr-x 1 root   root   4096 Sep  3 16:09 ..
+drwxr-x--- 2 ubuntu ubuntu 4096 Aug 10 14:55 ubuntu
+
+$ id nohomeuser
+uid=1001(nohomeuser) gid=1001(nohomeuser) groups=1001(nohomeuser)
+
+---- useradd WITH -m : home directory created, but no password, default shell from /etc/default/useradd ----
+$ useradd -m -s /bin/bash useradduser
+
+$ grep useradduser /etc/passwd
+useradduser:x:1002:1002::/home/useradduser:/bin/bash
+
+$ ls -la /home
+total 16
+drwxr-xr-x 1 root        root        4096 Sep  3 16:09 .
+drwxr-xr-x 1 root        root        4096 Sep  3 16:09 ..
+drwxr-x--- 2 ubuntu      ubuntu      4096 Aug 10 14:55 ubuntu
+drwxr-x--- 2 useradduser useradduser 4096 Sep  3 16:09 useradduser
+
+$ passwd -S useradduser
+useradduser L 2026-09-03 0 99999 7 -1
+
+---- adduser : the friendly wrapper. Normally interactive; --disabled-password --gecos '' makes it scriptable ----
+$ adduser --disabled-password --gecos '' testuser
+info: Adding user `testuser' ...
+info: Selecting UID/GID from range 1000 to 59999 ...
+info: Adding new group `testuser' (1003) ...
+info: Adding new user `testuser' (1003) with group `testuser (1003)' ...
+info: Creating home directory `/home/testuser' ...
+info: Copying files from `/etc/skel' ...
+info: Adding new user `testuser' to supplemental / extra groups `users' ...
+info: Adding user `testuser' to group `users' ...
+
+$ grep testuser /etc/passwd
+testuser:x:1003:1003:,,,:/home/testuser:/bin/bash
+
+$ ls -la /home
+total 20
+drwxr-xr-x 1 root        root        4096 Sep  3 16:09 .
+drwxr-xr-x 1 root        root        4096 Sep  3 16:09 ..
+drwxr-x--- 2 testuser    testuser    4096 Sep  3 16:09 testuser
+drwxr-x--- 2 ubuntu      ubuntu      4096 Aug 10 14:55 ubuntu
+drwxr-x--- 2 useradduser useradduser 4096 Sep  3 16:09 useradduser
+
+$ ls -la /home/testuser
+total 20
+drwxr-x--- 2 testuser testuser 4096 Sep  3 16:09 .
+drwxr-xr-x 1 root     root     4096 Sep  3 16:09 ..
+-rw-r--r-- 1 testuser testuser  220 Sep  3 16:09 .bash_logout
+-rw-r--r-- 1 testuser testuser 3771 Sep  3 16:09 .bashrc
+-rw-r--r-- 1 testuser testuser  807 Sep  3 16:09 .profile
+
+$ id testuser
+uid=1003(testuser) gid=1003(testuser) groups=1003(testuser),100(users)
+
+$ passwd -S testuser
+testuser L 2026-09-03 0 99999 7 -1
+
+$ groups testuser
+testuser : testuser users
+
+---- side by side ----
+$ grep -E 'nohomeuser|useradduser|testuser' /etc/passwd
+nohomeuser:x:1001:1001::/home/nohomeuser:/bin/sh
+useradduser:x:1002:1002::/home/useradduser:/bin/bash
+testuser:x:1003:1003:,,,:/home/testuser:/bin/bash
+
+$ ls -1 /home
+testuser
+ubuntu
+useradduser
+
+---- deleting a test user ----
+$ deluser --remove-home nohomeuser
+fatal: In order to use the --remove-home, --remove-all-files, and --backup features, you need to install the `perl' package. To accomplish that, run apt-get install perl.
+[exit code: 56]
+
+$ ls -1 /home
+testuser
+ubuntu
+useradduser
+
+########## TASK 3: journalctl ##########
+$ journalctl --version | head -2
+systemd 255 (255.4-1ubuntu8.17)
++PAM +AUDIT +SELINUX +APPARMOR +IMA +SMACK +SECCOMP +GCRYPT -GNUTLS +OPENSSL +ACL +BLKID +CURL +ELFUTILS +FIDO2 +IDN2 -IDN +IPTC +KMOD +LIBCRYPTSETUP +LIBFDISK +PCRE2 -PWQUALITY +P11KIT +QRENCODE +TPM2 +BZIP2 +LZ4 +XZ +ZLIB +ZSTD -BPF_FRAMEWORK -XKBCOMMON +UTMP +SYSVINIT default-hierarchy=unified
+
+---- how big is the journal / where does it live ----
+$ journalctl --disk-usage
+Archived and active journals take up 8.0M in the file system.
+
+---- view the most recent system logs ----
+$ journalctl -n 15 --no-pager
+Sep 03 16:09:23 devops-lab adduser[156]: Adding user `testuser' ...
+Sep 03 16:09:23 devops-lab adduser[156]: Selecting UID/GID from range 1000 to 59999 ...
+Sep 03 16:09:23 devops-lab adduser[156]: Adding new group `testuser' (1003) ...
+Sep 03 16:09:23 devops-lab groupadd[160]: group added to /etc/group: name=testuser, GID=1003
+Sep 03 16:09:23 devops-lab groupadd[160]: group added to /etc/gshadow: name=testuser
+Sep 03 16:09:23 devops-lab groupadd[160]: new group: name=testuser, GID=1003
+Sep 03 16:09:23 devops-lab adduser[156]: Adding new user `testuser' (1003) with group `testuser (1003)' ...
+Sep 03 16:09:23 devops-lab useradd[167]: new user: name=testuser, UID=1003, GID=1003, home=/home/testuser, shell=/bin/bash, from=none
+Sep 03 16:09:23 devops-lab adduser[156]: Creating home directory `/home/testuser' ...
+Sep 03 16:09:23 devops-lab adduser[156]: Copying files from `/etc/skel' ...
+Sep 03 16:09:23 devops-lab chfn[180]: changed user 'testuser' information
+Sep 03 16:09:23 devops-lab adduser[156]: Adding new user `testuser' to supplemental / extra groups `users' ...
+Sep 03 16:09:23 devops-lab adduser[156]: Adding user `testuser' to group `users' ...
+Sep 03 16:09:23 devops-lab gpasswd[188]: members of group users set by root to testuser
+Sep 03 16:09:23 devops-lab deluser[202]: In order to use the --remove-home, --remove-all-files, and --backup features, you need to install the `perl' package. To accomplish that, run apt-get install perl.
+
+---- logs from this boot only ----
+$ journalctl -b --no-pager | head -20
+Sep 03 16:08:46 devops-lab kernel: Booting Linux on physical CPU 0x0000000000 [0x610f0000]
+Sep 03 16:08:46 devops-lab kernel: Linux version 6.12.76-linuxkit (root@buildkitsandbox) (gcc (Alpine 15.2.0) 15.2.0, GNU ld (GNU Binutils) 2.45.1) #1 SMP Fri May 29 10:00:01 UTC 2026
+Sep 03 16:08:46 devops-lab kernel: OF: reserved mem: Reserved memory: No reserved-memory node in the DT
+Sep 03 16:08:46 devops-lab kernel: Zone ranges:
+Sep 03 16:08:46 devops-lab kernel:   DMA      [mem 0x0000000070000000-0x00000000ffffffff]
+Sep 03 16:08:46 devops-lab kernel:   DMA32    empty
+Sep 03 16:08:46 devops-lab kernel:   Normal   [mem 0x0000000100000000-0x000000026fffffff]
+Sep 03 16:08:46 devops-lab kernel: Movable zone start for each node
+Sep 03 16:08:46 devops-lab kernel: Early memory node ranges
+Sep 03 16:08:46 devops-lab kernel:   node   0: [mem 0x0000000070000000-0x000000026fffffff]
+Sep 03 16:08:46 devops-lab kernel: Initmem setup node 0 [mem 0x0000000070000000-0x000000026fffffff]
+Sep 03 16:08:46 devops-lab kernel: psci: probing for conduit method from DT.
+Sep 03 16:08:46 devops-lab kernel: psci: PSCIv1.1 detected in firmware.
+Sep 03 16:08:46 devops-lab kernel: psci: Using standard PSCI v0.2 function IDs
+Sep 03 16:08:46 devops-lab kernel: psci: Trusted OS migration not required
+Sep 03 16:08:46 devops-lab kernel: psci: SMC Calling Convention v1.1
+Sep 03 16:08:46 devops-lab kernel: percpu: Embedded 34 pages/cpu s100696 r8192 d30376 u139264
+Sep 03 16:08:46 devops-lab kernel: pcpu-alloc: s100696 r8192 d30376 u139264 alloc=34*4096
+Sep 03 16:08:46 devops-lab kernel: pcpu-alloc: [0] 00 [0] 01 [0] 02 [0] 03 [0] 04 [0] 05 [0] 06 [0] 07 
+Sep 03 16:08:46 devops-lab kernel: pcpu-alloc: [0] 08 [0] 09 
+
+---- LOGS FOR A SPECIFIC SERVICE using -u ----
+$ systemctl status ssh --no-pager | head -12
+● ssh.service - OpenBSD Secure Shell server
+     Loaded: loaded (/usr/lib/systemd/system/ssh.service; enabled; preset: enabled)
+     Active: active (running) since Thu 2026-09-03 16:08:46 UTC; 36s ago
+TriggeredBy: ● ssh.socket
+       Docs: man:sshd(8)
+             man:sshd_config(5)
+    Process: 67 ExecStartPre=/usr/sbin/sshd -t (code=exited, status=0/SUCCESS)
+   Main PID: 71 (sshd)
+      Tasks: 1 (limit: 9520)
+     Memory: 1.1M (peak: 1.7M)
+        CPU: 9ms
+     CGroup: /docker/e560e4561225e1528331f2d5a1d751b9d961d2c1a95064a98ef462cf412f6df1/system.slice/ssh.service
+
+$ journalctl -u ssh --no-pager
+Sep 03 16:08:46 devops-lab systemd[1]: Starting ssh.service - OpenBSD Secure Shell server...
+Sep 03 16:08:46 devops-lab sshd[71]: Server listening on 0.0.0.0 port 22.
+Sep 03 16:08:46 devops-lab sshd[71]: Server listening on :: port 22.
+Sep 03 16:08:46 devops-lab systemd[1]: Started ssh.service - OpenBSD Secure Shell server.
+
+---- start nginx and then read only its logs ----
+$ systemctl start nginx
+
+$ systemctl is-active nginx
+active
+
+$ journalctl -u nginx --no-pager
+Sep 03 16:08:46 devops-lab systemd[1]: Starting nginx.service - A high performance web server and a reverse proxy server...
+Sep 03 16:08:46 devops-lab systemd[1]: Started nginx.service - A high performance web server and a reverse proxy server.
+
+---- restart it and watch new entries appear for that unit ----
+$ systemctl restart nginx
+
+$ journalctl -u nginx --no-pager -n 10
+Sep 03 16:08:46 devops-lab systemd[1]: Starting nginx.service - A high performance web server and a reverse proxy server...
+Sep 03 16:08:46 devops-lab systemd[1]: Started nginx.service - A high performance web server and a reverse proxy server.
+Sep 03 16:09:23 devops-lab systemd[1]: Stopping nginx.service - A high performance web server and a reverse proxy server...
+Sep 03 16:09:23 devops-lab systemd[1]: nginx.service: Deactivated successfully.
+Sep 03 16:09:23 devops-lab systemd[1]: Stopped nginx.service - A high performance web server and a reverse proxy server.
+Sep 03 16:09:23 devops-lab systemd[1]: Starting nginx.service - A high performance web server and a reverse proxy server...
+Sep 03 16:09:23 devops-lab systemd[1]: Started nginx.service - A high performance web server and a reverse proxy server.
+
+---- filter by priority: errors and worse only ----
+$ journalctl -p err --no-pager | head -10
+Sep 03 16:09:23 devops-lab deluser[202]: In order to use the --remove-home, --remove-all-files, and --backup features, you need to install the `perl' package. To accomplish that, run apt-get install perl.
+
+---- filter by time ----
+$ journalctl --since '10 minutes ago' --no-pager | head -10
+Sep 03 16:08:46 devops-lab kernel: Booting Linux on physical CPU 0x0000000000 [0x610f0000]
+Sep 03 16:08:46 devops-lab kernel: Linux version 6.12.76-linuxkit (root@buildkitsandbox) (gcc (Alpine 15.2.0) 15.2.0, GNU ld (GNU Binutils) 2.45.1) #1 SMP Fri May 29 10:00:01 UTC 2026
+Sep 03 16:08:46 devops-lab kernel: OF: reserved mem: Reserved memory: No reserved-memory node in the DT
+Sep 03 16:08:46 devops-lab kernel: Zone ranges:
+Sep 03 16:08:46 devops-lab kernel:   DMA      [mem 0x0000000070000000-0x00000000ffffffff]
+Sep 03 16:08:46 devops-lab kernel:   DMA32    empty
+Sep 03 16:08:46 devops-lab kernel:   Normal   [mem 0x0000000100000000-0x000000026fffffff]
+Sep 03 16:08:46 devops-lab kernel: Movable zone start for each node
+Sep 03 16:08:46 devops-lab kernel: Early memory node ranges
+Sep 03 16:08:46 devops-lab kernel:   node   0: [mem 0x0000000070000000-0x000000026fffffff]
+
+---- follow mode (-f) streams live; shown with a timeout so it terminates here ----
+$ timeout 3 journalctl -u nginx -f --no-pager; echo '(stopped after 3s)'
+Sep 03 16:08:46 devops-lab systemd[1]: Starting nginx.service - A high performance web server and a reverse proxy server...
+Sep 03 16:08:46 devops-lab systemd[1]: Started nginx.service - A high performance web server and a reverse proxy server.
+Sep 03 16:09:23 devops-lab systemd[1]: Stopping nginx.service - A high performance web server and a reverse proxy server...
+Sep 03 16:09:23 devops-lab systemd[1]: nginx.service: Deactivated successfully.
+Sep 03 16:09:23 devops-lab systemd[1]: Stopped nginx.service - A high performance web server and a reverse proxy server.
+Sep 03 16:09:23 devops-lab systemd[1]: Starting nginx.service - A high performance web server and a reverse proxy server...
+Sep 03 16:09:23 devops-lab systemd[1]: Started nginx.service - A high performance web server and a reverse proxy server.
+(stopped after 3s)
+
+---- list which units have logs ----
+$ journalctl --field _SYSTEMD_UNIT | head -10
+ssh.service
+cron.service
+systemd-sysctl.service
+init.scope
+systemd-journald.service
+
+---- json output, useful for tooling ----
+$ journalctl -u nginx -n 1 -o json-pretty --no-pager | head -20
+{
+	"_TRANSPORT" : "journal",
+	"JOB_TYPE" : "start",
+	"__REALTIME_TIMESTAMP" : "1788451763349327",
+	"_CAP_EFFECTIVE" : "1ffffffffff",
+	"TID" : "1",
+	"_SYSTEMD_UNIT" : "init.scope",
+	"_CMDLINE" : "/sbin/init",
+	"_SYSTEMD_SLICE" : "-.slice",
+	"PRIORITY" : "6",
+	"_MACHINE_ID" : "41ffed55bb57447c8b1589a697f02b94",
+	"_SYSTEMD_CGROUP" : "/init.scope",
+	"_BOOT_ID" : "ac78e12524bf483a946c49d09178471b",
+	"_UID" : "0",
+	"__MONOTONIC_TIMESTAMP" : "382879492",
+	"CODE_FUNC" : "job_emit_done_message",
+	"JOB_RESULT" : "done",
+	"UNIT" : "nginx.service",
+	"MESSAGE" : "Started nginx.service - A high performance web server and a reverse proxy server.",
+	"__CURSOR" : "s=f422dec9bff14c899eb51ae916ba5bed;i=514;b=ac78e12524bf483a946c49d09178471b;m=16d24704;t=65a96600d674f;x=4ed9c25a3c89355c",
+
+---- kernel messages only ----
+$ journalctl -k --no-pager | head -5
+Sep 03 16:08:46 devops-lab kernel: Booting Linux on physical CPU 0x0000000000 [0x610f0000]
+Sep 03 16:08:46 devops-lab kernel: Linux version 6.12.76-linuxkit (root@buildkitsandbox) (gcc (Alpine 15.2.0) 15.2.0, GNU ld (GNU Binutils) 2.45.1) #1 SMP Fri May 29 10:00:01 UTC 2026
+Sep 03 16:08:46 devops-lab kernel: OF: reserved mem: Reserved memory: No reserved-memory node in the DT
+Sep 03 16:08:46 devops-lab kernel: Zone ranges:
+Sep 03 16:08:46 devops-lab kernel:   DMA      [mem 0x0000000070000000-0x00000000ffffffff]
+

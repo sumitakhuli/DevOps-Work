@@ -1,0 +1,64 @@
+myreport
+proc_list.txt
+===================================================
+        SYSTEM INFORMATION REPORT
+===================================================
+
+1. Current Date
+---------------
+Date : Thu Sep  3 16:13:01 UTC 2026
+Short: 2026-09-03 16:13:01
+
+2. Hostname
+-----------
+Hostname : devops-lab
+
+3. Username
+-----------
+Logged in as : root
+User details : uid=0(root) gid=0(root) groups=0(root)
+
+4. Disk Usage
+-------------
+Filesystem      Size  Used Avail Use% Mounted on
+overlay         453G   39G  391G  10% /
+tmpfs            64M     0   64M   0% /dev
+shm              64M     0   64M   0% /dev/shm
+tmpfs           3.9G   48K  3.9G   1% /run
+tmpfs           3.9G     0  3.9G   0% /run/lock
+/dev/vda1       453G   39G  391G  10% /etc/hosts
+
+5. Running Processes (top 10)
+-----------------------------
+USER         PID %CPU %MEM    VSZ   RSS TTY      STAT START   TIME COMMAND
+root           1  0.0  0.1  20660 11324 ?        Ss   16:08   0:00 /sbin/init
+root          30  0.0  0.1  33704 11244 ?        S<s  16:08   0:00 /usr/lib/systemd/systemd-journald
+root          65  0.0  0.0   4164  2372 ?        Ss   16:08   0:00 /usr/sbin/cron -f -P
+root          71  0.0  0.0  12116  7344 ?        Ss   16:08   0:00 sshd: /usr/sbin/sshd -D [listener] 0 of 10-100 startups
+root         223  0.0  0.0  10452  1572 ?        Ss   16:09   0:00 nginx: master process /usr/sbin/nginx -g daemon on; master_process on;
+www-data     224  0.0  0.0  10824  3272 ?        S    16:09   0:00 nginx: worker process
+www-data     225  0.0  0.0  10824  2884 ?        S    16:09   0:00 nginx: worker process
+www-data     226  0.0  0.0  10824  2704 ?        S    16:09   0:00 nginx: worker process
+www-data     227  0.0  0.0  10824  2748 ?        S    16:09   0:00 nginx: worker process
+
+Total running processes : 25
+
+6. User Input
+-------------
+Enter a name for the report directory: Enter a name for the report file: You entered directory : myreport
+You entered file      : proc_list.txt
+
+7. Creating Directory and File
+------------------------------
+Created directory : myreport
+Created file      : myreport/proc_list.txt
+
+9. Writing Process Information to File
+--------------------------------------
+Process information written to : myreport/proc_list.txt
+File size : 4.0K
+Line count: 38 lines
+
+===================================================
+        REPORT COMPLETE
+===================================================

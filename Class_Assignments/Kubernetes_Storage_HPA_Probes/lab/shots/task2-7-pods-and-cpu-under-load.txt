@@ -1,0 +1,15 @@
+$ kubectl get hpa php-apache; kubectl get pods -l app=php-apache -o wide; kubectl top pods -l app=php-apache
+NAME         REFERENCE               TARGETS         MINPODS   MAXPODS   REPLICAS   AGE
+php-apache   Deployment/php-apache   cpu: 139%/50%   1         5         5          6m5s
+NAME                          READY   STATUS    RESTARTS   AGE     IP            NODE       NOMINATED NODE   READINESS GATES
+php-apache-55d769b97b-6xrsk   1/1     Running   0          3m49s   10.244.0.39   minikube   <none>           <none>
+php-apache-55d769b97b-8htqm   1/1     Running   0          3m49s   10.244.0.40   minikube   <none>           <none>
+php-apache-55d769b97b-f5fxx   1/1     Running   0          3m49s   10.244.0.38   minikube   <none>           <none>
+php-apache-55d769b97b-kdtnh   1/1     Running   0          6m6s    10.244.0.36   minikube   <none>           <none>
+php-apache-55d769b97b-tnm64   1/1     Running   0          3m34s   10.244.0.41   minikube   <none>           <none>
+NAME                          CPU(cores)   MEMORY(bytes)   
+php-apache-55d769b97b-6xrsk   129m         39Mi            
+php-apache-55d769b97b-8htqm   150m         39Mi            
+php-apache-55d769b97b-f5fxx   149m         45Mi            
+php-apache-55d769b97b-kdtnh   136m         49Mi            
+php-apache-55d769b97b-tnm64   134m         37Mi            

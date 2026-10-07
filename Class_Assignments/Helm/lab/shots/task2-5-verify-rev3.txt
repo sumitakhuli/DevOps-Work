@@ -1,0 +1,8 @@
+$ kubectl get deploy web-web-chart -n helm-lab -o jsonpath="image={.spec.template.spec.containers[0].image}  replicas={.spec.replicas}  ready={.status.readyReplicas}{\"\n\"}"; kubectl get pods -n helm-lab -l app.kubernetes.io/instance=web; helm list -n helm-lab
+image=nginx:1.99-doesnotexist  replicas=2  ready=2
+NAME                             READY   STATUS         RESTARTS   AGE
+web-web-chart-5c6695df77-qcx9h   1/1     Running        0          79s
+web-web-chart-5c6695df77-zwfrq   1/1     Running        0          64s
+web-web-chart-686df668f-6z27h    0/1     ErrImagePull   0          61s
+NAME	NAMESPACE	REVISION	UPDATED                             	STATUS	CHART          	APP VERSION
+web 	helm-lab 	3       	2026-10-06 23:39:36.681148 +0530 IST	failed	web-chart-0.1.0	1.16.0     

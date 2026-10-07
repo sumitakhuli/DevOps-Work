@@ -1,0 +1,17 @@
+###SHOT:task4-3-externalname-traffic###
+$ kubectl exec dns-test-client -- curl -s -H 'Host: api.github.com' https://external-database-service
+HTTP 000
+command terminated with exit code 60
+# curl exit 60 = SSL certificate problem. GitHub's cert is issued for api.github.com,
+# but TLS was negotiated against the name external-database-service, so it does not match.
+
+$ kubectl exec dns-test-client -- curl -sk -o /dev/null -w 'HTTP %{http_code}' https://external-database-service
+HTTP 400
+# -k skips cert verification, so TLS completes - GitHub then rejects the request
+# because the SNI name it received is not one of its own hostnames.
+
+$ kubectl exec dns-test-client -- curl -s -o /dev/null -w 'HTTP %{http_code}' http://external-database-service
+HTTP 301
+# Over plain HTTP there is no certificate to verify. GitHub answers 301 (redirect to
+# HTTPS), which proves the traffic genuinely reached api.github.com via the CNAME.
+###END###

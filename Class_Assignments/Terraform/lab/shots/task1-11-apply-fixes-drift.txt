@@ -1,0 +1,18 @@
+$ terraform apply -no-color -auto-approve | grep -E "Modifying|Modifications complete|Apply complete"; AWS_ACCESS_KEY_ID=test AWS_SECRET_ACCESS_KEY=test aws --endpoint-url=http://localhost:4566 --region ap-south-1 s3api get-bucket-tagging --bucket sumit-24bcs10158-terraform-demo --output table; terraform plan -no-color | grep -E "No changes|Plan:"
+aws_s3_bucket.demo: Modifying... [id=sumit-24bcs10158-terraform-demo]
+aws_s3_bucket.demo: Modifications complete after 0s [id=sumit-24bcs10158-terraform-demo]
+Apply complete! Resources: 0 added, 1 changed, 0 destroyed.
+--------------------------------------------------------
+|                   GetBucketTagging                   |
++------------------------------------------------------+
+||                       TagSet                       ||
+|+--------------+-------------------------------------+|
+||      Key     |                Value                ||
+|+--------------+-------------------------------------+|
+||  ManagedBy   |  Terraform                          ||
+||  Name        |  sumit-24bcs10158-terraform-demo  ||
+||  Owner       |  Sumit Akhuli                     ||
+||  Project     |  Session18                          ||
+||  Environment |  dev                                ||
+|+--------------+-------------------------------------+|
+No changes. Your infrastructure matches the configuration.

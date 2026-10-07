@@ -1,0 +1,23 @@
+# Applied once by an admin (kubectl apply -f). Not inside the watched app/ path.
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: session20-mini
+  namespace: argocd
+spec:
+  project: default
+  source:
+    # Gitea running on the minikube Docker network (see README). On GitHub this would be
+    # https://github.com/<user>/<gitops-repo>.git
+    repoURL: http://192.168.49.3:3000/utkarsh/gitops-config.git
+    targetRevision: main
+    path: app
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: session20
+  syncPolicy:
+    automated:
+      prune: true     # delete resources that were removed from Git
+      selfHeal: true  # undo changes made to the cluster outside Git
+    syncOptions:
+      - CreateNamespace=true

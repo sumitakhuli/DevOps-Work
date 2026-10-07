@@ -1,0 +1,5 @@
+fdb8e98 00:41:48 Revert "remove the service"
+0af5a80 00:36:21 remove the service
+7100c47 00:35:51 fix: configmap apiVersion must be v1
+76ecc4f 00:30:19 v2: scale to 3 replicas, new page
+6360907 00:29:55 v1: session20-mini with 2 replicas

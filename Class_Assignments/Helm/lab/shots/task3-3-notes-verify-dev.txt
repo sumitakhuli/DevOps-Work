@@ -1,0 +1,5 @@
+$ kubectl exec -n notes deploy/notes-deploy -- printenv APP_NAME ENVIRONMENT; kubectl exec -n notes deploy/notes-deploy -- nginx -v; kubectl run curl-check -n notes --rm -i --restart=Never --image=curlimages/curl:8.10.1 -q -- curl -s http://notes-svc 2>/dev/null | grep -o "<title>.*</title>" | head -1
+notes-app
+development
+nginx version: nginx/1.24.0
+<title>Welcome to nginx!</title>

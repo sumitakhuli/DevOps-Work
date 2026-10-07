@@ -1,0 +1,7 @@
+$ date +%T; PAYMENT_FAILURE_RATE=0.6 docker compose up -d shop-api 2>&1 | tail -1; for i in 1 2 3 4; do docker run -d --rm --name s20-cpu-burst-$i --network monitoring_default curlimages/curl:8.10.1 sh -c "while true; do curl -s -o /dev/null http://shop-api:8000/api/report; done" >/dev/null; done; docker ps --filter name=s20-cpu-burst --format "{{.Names}} {{.Status}}"
+00:45:31
+ Container s20-shop-api Started 
+s20-cpu-burst-4 Up Less than a second
+s20-cpu-burst-3 Up Less than a second
+s20-cpu-burst-2 Up Less than a second
+s20-cpu-burst-1 Up Less than a second

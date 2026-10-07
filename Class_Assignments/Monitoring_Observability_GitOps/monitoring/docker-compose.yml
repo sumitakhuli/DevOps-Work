@@ -1,0 +1,42 @@
+services:
+  shop-api:
+    build: ./app
+    container_name: s20-shop-api
+    environment:
+      OTLP_ENDPOINT: http://jaeger:4318/v1/traces
+      PAYMENT_FAILURE_RATE: "${PAYMENT_FAILURE_RATE:-0.1}"
+    ports: ["8000:8000"]
+    depends_on: [jaeger]
+
+  loadgen:
+    image: curlimages/curl:8.10.1
+    container_name: s20-loadgen
+    entrypoint: ["/bin/sh", "/loadgen.sh"]
+    volumes: ["./app/loadgen.sh:/loadgen.sh:ro"]
+    depends_on: [shop-api]
+
+  prometheus:
+    image: prom/prometheus:v3.5.0
+    container_name: s20-prometheus
+    ports: ["9090:9090"]
+    volumes:
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - ./prometheus/alerts.yml:/etc/prometheus/alerts.yml:ro
+
+  grafana:
+    image: grafana/grafana:12.1.1
+    container_name: s20-grafana
+    ports: ["3001:3000"]
+    environment:
+      GF_AUTH_ANONYMOUS_ENABLED: "true"
+      GF_AUTH_ANONYMOUS_ORG_ROLE: Admin
+      GF_AUTH_DISABLE_LOGIN_FORM: "true"
+    volumes:
+      - ./grafana/provisioning:/etc/grafana/provisioning:ro
+      - ./grafana/dashboards:/var/lib/grafana/dashboards:ro
+    depends_on: [prometheus]
+
+  jaeger:
+    image: jaegertracing/jaeger:2.10.0
+    container_name: s20-jaeger
+    ports: ["16686:16686", "4318:4318"]

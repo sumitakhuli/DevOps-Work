@@ -1,0 +1,14 @@
+{
+  "name": "docker-multi-stage-demo",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Multi-stage Docker build demo for the Dockerfiles & Images homework",
+  "main": "server.js",
+  "scripts": {
+    "build": "esbuild server.js --bundle --platform=node --target=node20 --minify --outfile=dist/server.js",
+    "start": "node dist/server.js"
+  },
+  "devDependencies": {
+    "esbuild": "^0.24.0"
+  }
+}

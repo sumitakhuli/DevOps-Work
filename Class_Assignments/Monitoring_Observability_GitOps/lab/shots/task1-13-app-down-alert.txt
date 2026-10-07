@@ -1,0 +1,9 @@
+$ date +%T; docker stop s20-shop-api >/dev/null && echo "shop-api stopped"; until curl -s localhost:9090/api/v1/alerts | jq -e "[.data.alerts[] | select(.labels.alertname==\"ShopApiDown\" and .state==\"firing\")] | length == 1" >/dev/null; do sleep 3; done; date +%T; curl -s localhost:9090/api/v1/alerts | jq -r ".data.alerts[] | \"\(.labels.alertname) [\(.labels.severity)] state=\(.state)  \(.annotations.summary)\""; echo; curl -s localhost:9090/api/v1/targets | jq -r ".data.activeTargets[] | \"\(.labels.job)  health=\(.health)  \(.lastError)\""
+00:55:17
+shop-api stopped
+00:55:37
+ShopApiDown [critical] state=firing  shop-api is not responding to scrapes
+HighErrorRate [warning] state=firing  More than 5% of requests are failing
+
+prometheus  health=up  
+shop-api  health=down  Get "http://shop-api:8000/metrics": dial tcp: lookup shop-api on 127.0.0.11:53: no such host

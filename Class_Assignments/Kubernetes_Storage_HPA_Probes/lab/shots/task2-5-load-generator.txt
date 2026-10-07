@@ -1,0 +1,5 @@
+$ kubectl apply -f hpa/load-generator.yml; kubectl wait --for=condition=Ready pod/load-generator --timeout=90s; kubectl get pod load-generator
+pod/load-generator created
+pod/load-generator condition met
+NAME             READY   STATUS    RESTARTS   AGE
+load-generator   1/1     Running   0          1s

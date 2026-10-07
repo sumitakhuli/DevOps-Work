@@ -1,0 +1,30 @@
+$ terraform destroy -no-color -auto-approve | grep -E "Destroying|Destruction complete|Destroy complete"; echo "resources left in state: $(terraform state list | wc -l)"; AWS_ACCESS_KEY_ID=test AWS_SECRET_ACCESS_KEY=test aws --endpoint-url=http://localhost:4566 --region ap-south-1 ec2 describe-instances --query "Reservations[].Instances[].[InstanceId,State.Name]" --output text
+aws_s3_bucket_public_access_block.assets: Destroying... [id=s19-webapp-assets-24bcs10158]
+aws_iam_role_policy.read_assets: Destroying... [id=s19-webapp-ec2-role:read-assets-bucket]
+aws_instance.web: Destroying... [id=i-fffcb0bc585566ee6]
+aws_iam_role_policy.read_assets: Destruction complete after 0s
+aws_s3_bucket_public_access_block.assets: Destruction complete after 0s
+aws_instance.web: Destruction complete after 10s
+aws_route_table_association.public: Destroying... [id=rtbassoc-47b90b2e]
+aws_iam_instance_profile.web: Destroying... [id=s19-webapp-ec2-profile]
+aws_s3_object.index: Destroying... [id=s19-webapp-assets-24bcs10158/index.html]
+aws_security_group.web: Destroying... [id=sg-779ebd1578d34acd2]
+aws_s3_object.index: Destruction complete after 0s
+aws_s3_bucket.assets: Destroying... [id=s19-webapp-assets-24bcs10158]
+aws_iam_instance_profile.web: Destruction complete after 0s
+aws_route_table_association.public: Destruction complete after 0s
+aws_security_group.web: Destruction complete after 0s
+aws_s3_bucket.assets: Destruction complete after 0s
+aws_iam_role.web: Destroying... [id=s19-webapp-ec2-role]
+aws_subnet.public: Destroying... [id=subnet-8ad741b3]
+aws_route_table.public: Destroying... [id=rtb-499ed8ab]
+aws_iam_role.web: Destruction complete after 0s
+aws_subnet.public: Destruction complete after 0s
+aws_route_table.public: Destruction complete after 0s
+aws_internet_gateway.main: Destroying... [id=igw-273bad0c]
+aws_internet_gateway.main: Destruction complete after 0s
+aws_vpc.main: Destroying... [id=vpc-a788f4e9]
+aws_vpc.main: Destruction complete after 0s
+Destroy complete! Resources: 13 destroyed.
+resources left in state:        0
+i-fffcb0bc585566ee6	terminated

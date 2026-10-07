@@ -1,0 +1,28 @@
+$ terraform state list; echo; terraform state show aws_subnet.public | grep -E "resource|cidr_block |vpc_id|availability_zone |map_public"; echo; ls -la terraform.tfstate; grep -c "\"type\":" terraform.tfstate
+data.aws_ami.ubuntu
+data.aws_availability_zones.available
+aws_iam_instance_profile.web
+aws_iam_role.web
+aws_iam_role_policy.read_assets
+aws_instance.web
+aws_internet_gateway.main
+aws_route_table.public
+aws_route_table_association.public
+aws_s3_bucket.assets
+aws_s3_bucket_public_access_block.assets
+aws_s3_object.index
+aws_security_group.web
+aws_subnet.public
+aws_vpc.main
+
+resource "aws_subnet" "public" {
+    availability_zone                              = "ap-south-1a"
+    cidr_block                                     = "10.20.1.0/24"
+    enable_resource_name_dns_a_record_on_launch    = false
+    enable_resource_name_dns_aaaa_record_on_launch = false
+    ipv6_cidr_block                                = [90mnull[0m[0m
+    map_public_ip_on_launch                        = true
+    vpc_id                                         = "vpc-a788f4e9"
+
+-rw-r--r--@ 1 utkarshpathak3107  staff  31174  7 Oct 00:25 terraform.tfstate
+25

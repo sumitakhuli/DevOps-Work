@@ -1,0 +1,14 @@
+$ act push -W .github/workflows/devsecops.yml -P ubuntu-latest=catthehacker/ubuntu:act-latest --network kind --secret-file s17.secrets
+[DevSecOps Pipeline/Build] 🏁  Job succeeded
+[DevSecOps Pipeline/Secret Scan - Gitleaks] 🏁  Job succeeded
+[DevSecOps Pipeline/SAST - Bandit         ] 🏁  Job succeeded
+[DevSecOps Pipeline/Unit Test             ] 🏁  Job succeeded
+[DevSecOps Pipeline/SCA - pip-audit       ] 🏁  Job succeeded
+[DevSecOps Pipeline/Docker Build          ] 🏁  Job succeeded
+[DevSecOps Pipeline/Image Scan - Trivy    ] 🏁  Job succeeded
+[DevSecOps Pipeline/Security Gate         ] 🏁  Job succeeded
+[DevSecOps Pipeline/Push Image            ] 🏁  Job succeeded
+[DevSecOps Pipeline/Deploy to Kubernetes  ] 🏁  Job succeeded
+
+$ echo $?
+0

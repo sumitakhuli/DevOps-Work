@@ -1,0 +1,26 @@
+--- t+0s 00:04:31
+php-apache   Deployment/php-apache   cpu: 1%/50%   1     5     1     94s
+--- t+20s 00:04:51
+php-apache   Deployment/php-apache   cpu: 1%/50%   1     5     1     114s
+--- t+40s 00:05:11
+php-apache   Deployment/php-apache   cpu: 1%/50%   1     5     1     2m14s
+--- t+60s 00:05:31
+php-apache   Deployment/php-apache   cpu: 337%/50%   1     5     4     2m34s
+--- t+80s 00:05:51
+php-apache   Deployment/php-apache   cpu: 337%/50%   1     5     5     2m54s
+--- t+100s 00:06:11
+php-apache   Deployment/php-apache   cpu: 337%/50%   1     5     5     3m15s
+--- t+120s 00:06:32
+php-apache   Deployment/php-apache   cpu: 178%/50%   1     5     5     3m35s
+--- t+140s 00:06:52
+php-apache   Deployment/php-apache   cpu: 178%/50%   1     5     5     3m55s
+--- t+160s 00:07:12
+php-apache   Deployment/php-apache   cpu: 178%/50%   1     5     5     4m15s
+--- t+180s 00:07:32
+php-apache   Deployment/php-apache   cpu: 144%/50%   1     5     5     4m35s
+--- t+200s 00:07:52
+php-apache   Deployment/php-apache   cpu: 144%/50%   1     5     5     4m56s
+--- t+220s 00:08:13
+php-apache   Deployment/php-apache   cpu: 144%/50%   1     5     5     5m16s
+--- t+240s 00:08:33
+php-apache   Deployment/php-apache   cpu: 139%/50%   1     5     5     5m36s

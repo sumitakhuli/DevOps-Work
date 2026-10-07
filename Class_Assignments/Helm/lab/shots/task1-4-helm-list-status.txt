@@ -1,0 +1,25 @@
+$ helm list -n helm-lab; echo; helm status web -n helm-lab | head -12; echo; kubectl get deploy,pods,svc -n helm-lab
+NAME	NAMESPACE	REVISION	UPDATED                             	STATUS  	CHART          	APP VERSION
+web 	helm-lab 	1       	2026-10-06 23:38:39.624376 +0530 IST	deployed	web-chart-0.1.0	1.16.0     
+
+NAME: web
+LAST DEPLOYED: Tue Oct  6 23:38:39 2026
+NAMESPACE: helm-lab
+STATUS: deployed
+REVISION: 1
+DESCRIPTION: Install complete
+RESOURCES:
+==> v1/Pod(related)
+NAME                             READY   STATUS    RESTARTS   AGE
+web-web-chart-849df6fbdd-46x96   1/1     Running   0          15s
+
+==> v1/ServiceAccount
+
+NAME                            READY   UP-TO-DATE   AVAILABLE   AGE
+deployment.apps/web-web-chart   1/1     1            1           15s
+
+NAME                                 READY   STATUS    RESTARTS   AGE
+pod/web-web-chart-849df6fbdd-46x96   1/1     Running   0          15s
+
+NAME                    TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)   AGE
+service/web-web-chart   ClusterIP   10.102.250.13   <none>        80/TCP    15s

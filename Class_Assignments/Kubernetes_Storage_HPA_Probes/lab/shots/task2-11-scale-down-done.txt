@@ -1,0 +1,9 @@
+$ date +%H:%M:%S; kubectl get hpa php-apache; kubectl get pods -l app=php-apache; kubectl describe hpa php-apache | grep SuccessfulRescale
+00:16:16
+NAME         REFERENCE               TARGETS       MINPODS   MAXPODS   REPLICAS   AGE
+php-apache   Deployment/php-apache   cpu: 1%/50%   1         5         1          13m
+NAME                          READY   STATUS    RESTARTS   AGE
+php-apache-55d769b97b-6xrsk   1/1     Running   0          11m
+  Normal   SuccessfulRescale             11m                horizontal-pod-autoscaler  New size: 4; reason: cpu resource utilization (percentage of request) above target
+  Normal   SuccessfulRescale             10m                horizontal-pod-autoscaler  New size: 5; reason: cpu resource utilization (percentage of request) above target
+  Normal   SuccessfulRescale             18s                horizontal-pod-autoscaler  New size: 1; reason: All metrics below target

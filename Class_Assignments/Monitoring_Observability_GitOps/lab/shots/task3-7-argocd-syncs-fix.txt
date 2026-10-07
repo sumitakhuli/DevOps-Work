@@ -1,0 +1,12 @@
+$ NEW=$(cd /private/tmp/claude-501/-Users-utkarshpathak3107/82161c67-b573-47a2-b8ef-11417ea863e8/scratchpad/gitops-config && git rev-parse HEAD); kubectl annotate application session20-mini -n argocd argocd.argoproj.io/refresh=normal --overwrite >/dev/null; until [ "$(kubectl get application session20-mini -n argocd -o jsonpath={.status.sync.revision})" = "$NEW" ] && [ "$(kubectl get deploy session20-mini -n session20 -o jsonpath={.status.readyReplicas})" = "3" ]; do sleep 3; done; kubectl get application session20-mini -n argocd; kubectl get deploy,pods -n session20; kubectl get cm web-content -n session20 -o jsonpath="{.data.index\.html}"
+NAME             SYNC STATUS   HEALTH STATUS
+session20-mini   Synced        Healthy
+NAME                             READY   UP-TO-DATE   AVAILABLE   AGE
+deployment.apps/session20-mini   3/3     3            3           5m48s
+
+NAME                                  READY   STATUS    RESTARTS   AGE
+pod/session20-mini-65c66c8bf4-66gzn   1/1     Running   0          5m48s
+pod/session20-mini-65c66c8bf4-g57zj   1/1     Running   0          5m48s
+pod/session20-mini-65c66c8bf4-pqv46   1/1     Running   0          3s
+<h1>Session 20 - GitOps demo</h1>
+<p>Version: v2 - deployed by Argo CD from Git</p>

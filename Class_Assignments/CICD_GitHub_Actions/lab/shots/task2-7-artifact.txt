@@ -1,0 +1,15 @@
+$ unzip -l /private/tmp/claude-501/-Users-utkarshpathak3107/82161c67-b573-47a2-b8ef-11417ea863e8/scratchpad/artifacts/1/calculator-build/calculator-build.zip; unzip -p /private/tmp/claude-501/-Users-utkarshpathak3107/82161c67-b573-47a2-b8ef-11417ea863e8/scratchpad/artifacts/1/calculator-build/calculator-build.zip build-info.txt
+Archive:  /private/tmp/claude-501/-Users-utkarshpathak3107/82161c67-b573-47a2-b8ef-11417ea863e8/scratchpad/artifacts/1/calculator-build/calculator-build.zip
+  Length      Date    Time    Name
+---------  ---------- -----   ----
+        0  10-06-2026 18:17   app/__init__.py
+      776  10-06-2026 18:17   app/main.py
+      212  10-06-2026 18:17   app/calculator.py
+      151  10-06-2026 18:17   build-info.txt
+       30  10-06-2026 18:17   requirements.txt
+---------                     -------
+     1169                     5 files
+Application: Session 16 Calculator API
+Build Status: SUCCESS
+Commit: 9036109cc5945f20e1aa9efb40a876fd4a1f335f
+Build Date: Tue Oct  6 18:17:54 UTC 2026

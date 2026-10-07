@@ -1,0 +1,8 @@
+$ cd /private/tmp/claude-501/-Users-utkarshpathak3107/82161c67-b573-47a2-b8ef-11417ea863e8/scratchpad/gitops-config && git log --oneline && find app -type f | sort && grep -E 'replicas|image:' app/deployment.yaml
+6360907 v1: session20-mini with 2 replicas
+app/configmap.yaml
+app/deployment.yaml
+app/namespace.yaml
+app/service.yaml
+  replicas: 2
+          image: nginx:1.27-alpine

@@ -1,0 +1,19 @@
+$ echo '# health: up (1 = scrape worked)'; curl -s localhost:9090/api/v1/query --data-urlencode 'query=up' | jq -r '.data.result[] | "  \(.metric.endpoint // .metric.job // "") \(.metric.status // "")  \(.value[1])"'; echo '# CPU utilisation (cores)'; curl -s localhost:9090/api/v1/query --data-urlencode 'query=rate(process_cpu_seconds_total{job="shop-api"}[1m])' | jq -r '.data.result[] | "  \(.metric.endpoint // .metric.job // "") \(.metric.status // "")  \(.value[1])"'; echo '# memory (MiB)'; curl -s localhost:9090/api/v1/query --data-urlencode 'query=process_resident_memory_bytes{job="shop-api"} / 1024 / 1024' | jq -r '.data.result[] | "  \(.metric.endpoint // .metric.job // "") \(.metric.status // "")  \(.value[1])"'; echo '# requests per second by endpoint/status'; curl -s localhost:9090/api/v1/query --data-urlencode 'query=sum by (endpoint, status) (rate(shop_http_requests_total[1m]))' | jq -r '.data.result[] | "  \(.metric.endpoint // .metric.job // "") \(.metric.status // "")  \(.value[1])"'; echo '# error ratio'; curl -s localhost:9090/api/v1/query --data-urlencode 'query=sum(rate(shop_http_requests_total{status=~"5.."}[1m])) / sum(rate(shop_http_requests_total[1m]))' | jq -r '.data.result[] | "  \(.metric.endpoint // .metric.job // "") \(.metric.status // "")  \(.value[1])"'; echo '# p95 latency (s)'; curl -s localhost:9090/api/v1/query --data-urlencode 'query=histogram_quantile(0.95, sum by (le, endpoint) (rate(shop_http_request_duration_seconds_bucket[1m])))' | jq -r '.data.result[] | "  \(.metric.endpoint // .metric.job // "") \(.metric.status // "")  \(.value[1])"'
+# health: up (1 = scrape worked)
+  shop-api   1
+  prometheus   1
+# CPU utilisation (cores)
+  shop-api   0.05527272727272727
+# memory (MiB)
+  shop-api   48
+# requests per second by endpoint/status
+  /api/products 200  2.036363636363636
+  /api/checkout 200  1.7454545454545454
+  /api/report 200  2.036363636363636
+  /api/checkout 502  0.2909090909090909
+# error ratio
+     0.04761904761904762
+# p95 latency (s)
+  /api/report   0.04786666666666666
+  /api/products   0.0494074074074074
+  /api/checkout   0.8879999999999999

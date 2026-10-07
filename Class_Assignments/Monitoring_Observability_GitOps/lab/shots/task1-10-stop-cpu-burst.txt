@@ -1,0 +1,6 @@
+$ docker rm -f s20-cpu-burst-1 s20-cpu-burst-2 s20-cpu-burst-3 s20-cpu-burst-4; date +%T
+s20-cpu-burst-1
+s20-cpu-burst-2
+s20-cpu-burst-3
+s20-cpu-burst-4
+00:52:46

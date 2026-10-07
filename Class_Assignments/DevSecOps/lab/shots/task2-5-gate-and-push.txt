@@ -1,0 +1,23 @@
+$ act push -W .github/workflows/devsecops.yml -P ubuntu-latest=catthehacker/ubuntu:act-latest --network kind --secret-file s17.secrets
+  (run 3 - Security Gate and Push Image)
+[DevSecOps Pipeline/Security Gate         ]   | Unit Test    : success
+[DevSecOps Pipeline/Security Gate         ]   | SAST         : success
+[DevSecOps Pipeline/Security Gate         ]   | SCA          : success
+[DevSecOps Pipeline/Security Gate         ]   | Secret Scan  : success
+[DevSecOps Pipeline/Security Gate         ]   | Image Scan   : success
+[DevSecOps Pipeline/Security Gate         ]   | SECURITY GATE: PASSED
+[DevSecOps Pipeline/Security Gate         ] 🏁  Job succeeded
+[DevSecOps Pipeline/Push Image            ]   | SHA256 digest of downloaded artifact is 3cb89d001a911b8a217ecd77cc22d64103763ecb1b0faeec0f81421fb402475e
+[DevSecOps Pipeline/Push Image            ]   | 9ce356e2b148: Pushed
+[DevSecOps Pipeline/Push Image            ]   | 84602c7e1d09: Pushed
+[DevSecOps Pipeline/Push Image            ]   | be10505905af: Pushed
+[DevSecOps Pipeline/Push Image            ]   | b4cc07b60c4e: Pushed
+[DevSecOps Pipeline/Push Image            ]   | 0b7731e006e6: Pushed
+[DevSecOps Pipeline/Push Image            ]   | 387b25ff7b94: Pushed
+[DevSecOps Pipeline/Push Image            ]   | adf08d302736: Pushed
+[DevSecOps Pipeline/Push Image            ]   | 02ccbadad406: Pushed
+[DevSecOps Pipeline/Push Image            ]   | 6e2fcafe72a4: Pushed
+[DevSecOps Pipeline/Push Image            ]   | 4dbdca1a513d: Pushed
+[DevSecOps Pipeline/Push Image            ]   | bbeda6b4abb7: Pushed
+[DevSecOps Pipeline/Push Image            ]   | 9036109: digest: sha256:635d57f7dcfd40f49a4867228c5876e0602be5fe2945dc2fb39e261e3ee76e32 size: 856
+[DevSecOps Pipeline/Push Image            ] 🏁  Job succeeded

@@ -1,0 +1,24 @@
+$ kubectl apply -f mini-project/namespace.yaml -f mini-project/pvc.yaml -f mini-project/deployment.yaml -f mini-project/service.yaml -f mini-project/hpa.yaml && kubectl rollout status deploy/web-app -n production-webapp --timeout=180s; kubectl get pvc,deploy,pods,svc,hpa -n production-webapp
+namespace/production-webapp created
+persistentvolumeclaim/web-data created
+deployment.apps/web-app created
+service/web-service created
+horizontalpodautoscaler.autoscaling/web-app-hpa created
+Waiting for deployment "web-app" rollout to finish: 0 of 2 updated replicas are available...
+Waiting for deployment "web-app" rollout to finish: 1 of 2 updated replicas are available...
+deployment "web-app" successfully rolled out
+NAME                             STATUS   VOLUME                                     CAPACITY   ACCESS MODES   STORAGECLASS   VOLUMEATTRIBUTESCLASS   AGE
+persistentvolumeclaim/web-data   Bound    pvc-f031b87f-affe-4dfc-9e0f-3f6329673826   500Mi      RWO            standard       <unset>                 10s
+
+NAME                      READY   UP-TO-DATE   AVAILABLE   AGE
+deployment.apps/web-app   2/2     2            2           10s
+
+NAME                         READY   STATUS    RESTARTS   AGE
+pod/web-app-f9769fb4-9574s   1/1     Running   0          10s
+pod/web-app-f9769fb4-ldkkn   1/1     Running   0          10s
+
+NAME                  TYPE        CLUSTER-IP     EXTERNAL-IP   PORT(S)   AGE
+service/web-service   ClusterIP   10.101.39.29   <none>        80/TCP    10s
+
+NAME                                              REFERENCE            TARGETS              MINPODS   MAXPODS   REPLICAS   AGE
+horizontalpodautoscaler.autoscaling/web-app-hpa   Deployment/web-app   cpu: <unknown>/50%   2         5         2          10s

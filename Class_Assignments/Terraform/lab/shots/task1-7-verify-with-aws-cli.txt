@@ -1,0 +1,15 @@
+$ export AWS_ACCESS_KEY_ID=test AWS_SECRET_ACCESS_KEY=test AWS_DEFAULT_REGION=ap-south-1; E=--endpoint-url=http://localhost:4566; aws $E s3 ls; aws $E s3 ls s3://sumit-24bcs10158-terraform-demo/; aws $E s3 cp s3://sumit-24bcs10158-terraform-demo/welcome.txt -; aws $E s3api get-bucket-versioning --bucket sumit-24bcs10158-terraform-demo; aws $E s3api get-bucket-encryption --bucket sumit-24bcs10158-terraform-demo --query "ServerSideEncryptionConfiguration.Rules[0]"; aws $E s3api get-bucket-tagging --bucket sumit-24bcs10158-terraform-demo --output text
+2026-10-07 00:19:42 sumit-24bcs10158-terraform-demo
+2026-10-07 00:19:42         42 welcome.txt
+Created by Terraform for Session 18 - dev
+{
+    "Status": "Enabled"
+}
+{
+    "ApplyServerSideEncryptionByDefault": {
+        "SSEAlgorithm": "AES256"
+    },
+    "BucketKeyEnabled": false
+}
+
+aws: [ERROR]: An error occurred (NoSuchTagSet) when calling the GetBucketTagging operation: The TagSet does not exist

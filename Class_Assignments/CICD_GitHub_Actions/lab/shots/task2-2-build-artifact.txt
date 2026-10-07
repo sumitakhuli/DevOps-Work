@@ -1,0 +1,31 @@
+$ act push -W .github/workflows/ci-cd.yml -P ubuntu-latest=catthehacker/ubuntu:act-latest -s DEPLOY_TOKEN=****
+  (excerpt: Build job)
+[Calculator CI/CD/Build         ] ⭐ Run Main Build application
+[Calculator CI/CD/Build         ]   | Starting application build
+[Calculator CI/CD/Build         ]   | total 20
+[Calculator CI/CD/Build         ]   | drwxr-xr-x 3 root root 4096 Oct  6 18:16 .
+[Calculator CI/CD/Build         ]   | drwxr-xr-x 7 root root 4096 Oct  6 18:16 ..
+[Calculator CI/CD/Build         ]   | drwxr-xr-x 2 root root 4096 Oct  6 18:16 app
+[Calculator CI/CD/Build         ]   | -rw-r--r-- 1 root root  151 Oct  6 18:16 build-info.txt
+[Calculator CI/CD/Build         ]   | -rw-r--r-- 1 root root   30 Oct  6 18:16 requirements.txt
+[Calculator CI/CD/Build         ]   | Build completed successfully.
+[Calculator CI/CD/Build         ]   ✅  Success - Main Build application [66.590916ms]
+[Calculator CI/CD/Build         ] ⭐ Run Main Show build info
+[Calculator CI/CD/Build         ]   | Application: Session 16 Calculator API
+[Calculator CI/CD/Build         ]   | Build Status: SUCCESS
+[Calculator CI/CD/Build         ]   | Commit: 9036109cc5945f20e1aa9efb40a876fd4a1f335f
+[Calculator CI/CD/Build         ]   | Build Date: Tue Oct  6 18:16:57 UTC 2026
+[Calculator CI/CD/Build         ]   ✅  Success - Main Show build info [51.065416ms]
+[Calculator CI/CD/Build         ]   | Artifact name is valid!
+[Calculator CI/CD/Build         ]   | Root directory input is valid!
+[Calculator CI/CD/Build         ]   | Beginning upload of artifact content to blob storage
+[Calculator CI/CD/Build         ]   | (node:51) [DEP0169] DeprecationWarning: `url.parse()` behavior is not standardized and prone to errors that have security implications. Use the WHATWG URL API instead. CVEs are not issued for `url.parse()` vulnerabilities.
+[Calculator CI/CD/Build         ]   | Uploaded bytes 1336
+[Calculator CI/CD/Build         ]   | Finished uploading artifact content to blob storage!
+[Calculator CI/CD/Build         ]   | SHA256 digest of uploaded artifact zip is 85014f696356032a152c3e2551de233715d2027a35e943638235b171f2cf0777
+[Calculator CI/CD/Build         ]   | Finalizing artifact upload
+[Calculator CI/CD/Build         ]   | Artifact calculator-build.zip successfully finalized. Artifact ID 1242866976
+[Calculator CI/CD/Build         ]   | Artifact calculator-build has been successfully uploaded! Final size is 1336 bytes. Artifact ID is 1242866976
+[Calculator CI/CD/Build         ]   | Artifact download URL: https://github.com/31UTKARSH07-ALPHA/Learn_DevOps/actions/runs/1/artifacts/1242866976
+[Calculator CI/CD/Build         ]   ✅  Success - Main Upload build artifact [3.300684375s]
+[Calculator CI/CD/Build         ] 🏁  Job succeeded

@@ -1,0 +1,7 @@
+$ docker compose ps --format "table {{.Name}}\t{{.Image}}\t{{.Status}}\t{{.Ports}}" | cut -c1-150
+NAME             IMAGE                         STATUS          PORTS
+s20-grafana      grafana/grafana:12.1.1        Up 13 minutes   0.0.0.0:3001->3000/tcp, [::]:3001->3000/tcp
+s20-jaeger       jaegertracing/jaeger:2.10.0   Up 13 minutes   0.0.0.0:4318->4318/tcp, [::]:4318->4318/tcp, 0.0.0.0:16686->16686/tcp, [::]:16686->1668
+s20-loadgen      curlimages/curl:8.10.1        Up 13 minutes   
+s20-prometheus   prom/prometheus:v3.5.0        Up 13 minutes   0.0.0.0:9090->9090/tcp, [::]:9090->9090/tcp
+s20-shop-api     monitoring-shop-api           Up 13 minutes   0.0.0.0:8000->8000/tcp, [::]:8000->8000/tcp

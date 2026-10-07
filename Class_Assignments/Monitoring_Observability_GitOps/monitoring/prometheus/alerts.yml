@@ -1,0 +1,39 @@
+groups:
+  - name: shop-api
+    rules:
+      - alert: ShopApiDown
+        expr: up{job="shop-api"} == 0
+        for: 15s
+        labels:
+          severity: critical
+        annotations:
+          summary: "shop-api is not responding to scrapes"
+          description: "Prometheus could not reach {{ $labels.instance }} for 15s."
+
+      - alert: HighErrorRate
+        expr: |
+          sum(rate(shop_http_requests_total{status=~"5.."}[1m]))
+            / sum(rate(shop_http_requests_total[1m])) > 0.05
+        for: 30s
+        labels:
+          severity: warning
+        annotations:
+          summary: "More than 5% of requests are failing"
+          description: "Error ratio is {{ $value | humanizePercentage }}."
+
+      - alert: HighCpuUsage
+        expr: rate(process_cpu_seconds_total{job="shop-api"}[1m]) > 0.5
+        for: 30s
+        labels:
+          severity: warning
+        annotations:
+          summary: "shop-api is using more than half a CPU core"
+          description: "CPU usage is {{ $value | humanize }} cores."
+
+      - alert: HighMemoryUsage
+        expr: process_resident_memory_bytes{job="shop-api"} > 200 * 1024 * 1024
+        for: 30s
+        labels:
+          severity: warning
+        annotations:
+          summary: "shop-api resident memory above 200 MiB"

@@ -1,0 +1,191 @@
+re-applied lifecycle pods at 22:26:00; letting CrashLoopBackOff + liveness restarts develop
+###SHOT:task1-1-all-twelve-states###
+$ kubectl get pods -o wide
+NAME                                 READY   STATUS             RESTARTS      AGE     IP             NODE       NOMINATED NODE   READINESS GATES
+dns-test-client                      1/1     Terminating        0             24s     10.244.0.108   minikube   <none>           <none>
+lifecycle-crashloop                  0/1     Error              4 (93s ago)   2m31s   10.244.0.75    minikube   <none>           <none>
+lifecycle-failed                     0/1     Error              0             2m31s   10.244.0.74    minikube   <none>           <none>
+lifecycle-image-error                0/1     ImagePullBackOff   0             2m31s   10.244.0.76    minikube   <none>           <none>
+lifecycle-init                       1/1     Running            0             2m31s   10.244.0.80    minikube   <none>           <none>
+lifecycle-liveness                   1/1     Running            2 (30s ago)   2m31s   10.244.0.78    minikube   <none>           <none>
+lifecycle-multi-container            2/2     Running            0             2m31s   10.244.0.81    minikube   <none>           <none>
+lifecycle-pending                    0/1     Pending            0             2m31s   <none>         <none>     <none>           <none>
+lifecycle-readiness                  1/1     Running            0             2m31s   10.244.0.77    minikube   <none>           <none>
+lifecycle-running                    1/1     Running            0             2m31s   10.244.0.72    minikube   <none>           <none>
+lifecycle-startup                    1/1     Running            0             2m31s   10.244.0.79    minikube   <none>           <none>
+lifecycle-succeeded                  0/1     Completed          0             2m31s   10.244.0.73    minikube   <none>           <none>
+lifecycle-termination                1/1     Running            0             2m31s   10.244.0.82    minikube   <none>           <none>
+mysql-0                              0/1     ErrImagePull       0             44s     10.244.0.104   minikube   <none>           <none>
+web-app-clusterip-66865d4855-mg652   1/1     Running            0             57s     10.244.0.100   minikube   <none>           <none>
+web-app-clusterip-66865d4855-n9qm8   1/1     Running            0             57s     10.244.0.101   minikube   <none>           <none>
+web-app-clusterip-66865d4855-vbzm4   1/1     Running            0             57s     10.244.0.99    minikube   <none>           <none>
+
+###END###
+###SHOT:task1-4-crashloopbackoff###
+$ kubectl get pod lifecycle-crashloop
+NAME                  READY   STATUS   RESTARTS      AGE
+lifecycle-crashloop   0/1     Error    4 (93s ago)   2m31s
+
+$ kubectl logs lifecycle-crashloop
+Application started
+Application crashed
+
+$ kubectl describe pod lifecycle-crashloop | grep -A7 'Last State'
+    Last State:     Terminated
+      Reason:       Error
+      Exit Code:    1
+      Started:      Thu, 17 Sep 2026 22:26:55 +0530
+      Finished:     Thu, 17 Sep 2026 22:26:58 +0530
+    Ready:          False
+    Restart Count:  4
+    Environment:    <none>
+
+$ kubectl describe pod lifecycle-crashloop | grep -A4 'Events:' | tail -3
+  ----     ------     ----                 ----               -------
+  Normal   Scheduled  2m31s                default-scheduler  Successfully assigned default/lifecycle-crashloop to minikube
+  Normal   Pulled     43s (x5 over 2m30s)  kubelet            spec.containers{crashing-app}: Container image "busybox:1.36" already present on machine and can be accessed by the pod
+
+###END###
+###SHOT:task1-6-readiness-vs-liveness###
+$ kubectl get pod lifecycle-readiness lifecycle-liveness lifecycle-startup
+NAME                  READY   STATUS    RESTARTS      AGE
+lifecycle-readiness   1/1     Running   0             2m31s
+lifecycle-liveness    1/1     Running   2 (30s ago)   2m31s
+lifecycle-startup     1/1     Running   0             2m31s
+
+$ kubectl describe pod lifecycle-liveness | grep -E 'Liveness:|Restart Count:|Killing'
+    Restart Count:  2
+    Liveness:       exec [sh -c test -f /tmp/healthy] delay=5s timeout=1s period=5s successThreshold=1 failureThreshold=2
+  Normal   Killing    60s (x2 over 2m)     kubelet            spec.containers{app}: Container app failed liveness probe, will be restarted
+
+$ kubectl describe pod lifecycle-liveness | grep -A5 Events: | tail -4
+  ----     ------     ----                 ----               -------
+  Normal   Scheduled  2m31s                default-scheduler  Successfully assigned default/lifecycle-liveness to minikube
+  Normal   Pulled     30s (x3 over 2m30s)  kubelet            spec.containers{app}: Container image "busybox:1.36" already present on machine and can be accessed by the pod
+  Normal   Created    30s (x3 over 2m30s)  kubelet            spec.containers{app}: Container created
+
+###END###
+FIXUP DONE 22:28:31
+###SHOT:task3-4-rolling-no-downtime###
+$ kubectl exec curlbox -- sh -c 'for i in $(seq 1 60); do curl -s http://app-rolling-service | grep -o "VERSION: [^<]*" || echo "[OUTAGE] request failed"; sleep 0.5; done' &
+$ kubectl apply -f 01-rolling-update/deployment-v2.yaml   # rollout starts while the loop runs
+
+VERSION: v1
+VERSION: v1
+VERSION: v1
+VERSION: v1
+VERSION: v1
+VERSION: v1
+VERSION: v1
+VERSION: v1
+VERSION: v1
+VERSION: v1
+VERSION: v1
+VERSION: v1
+VERSION: v1
+VERSION: v1
+   ... (60 requests total)
+
+$ sort /tmp/rolling-poll.txt | uniq -c
+   2 [OUTAGE] request failed
+  34 VERSION: v1
+  24 VERSION: v2
+
+###END###
+ROLLING RE-CAPTURE DONE 22:29:15
+###SHOT:task4-3-the-switch-to-green###
+$ kubectl exec curlbox -- curl -s http://myapp-service | grep -o 'VERSION: [^<]*'
+
+$ kubectl apply -f 02-blue-green/service-green.yaml
+service/myapp-service configured
+
+$ kubectl describe svc myapp-service | grep Selector
+Selector:                 app=myapp,slot=green
+
+$ kubectl exec curlbox -- sh -c 'for i in $(seq 1 10); do curl -s --max-time 2 http://myapp-service | grep -o "VERSION: [^<]*" || echo "[no answer yet]"; sleep 0.4; done'
+[no answer yet]
+[no answer yet]
+[no answer yet]
+[no answer yet]
+[no answer yet]
+[no answer yet]
+[no answer yet]
+[no answer yet]
+[no answer yet]
+[no answer yet]
+
+$ kubectl get endpoints myapp-service
+Warning: v1 Endpoints is deprecated in v1.33+; use discovery.k8s.io/v1 EndpointSlice
+NAME            ENDPOINTS                                         AGE
+myapp-service   10.244.0.128:80,10.244.0.129:80,10.244.0.130:80   8s
+
+###END###
+###SHOT:task4-4-instant-rollback-to-blue###
+$ kubectl apply -f 02-blue-green/service-blue.yaml
+service/myapp-service configured
+
+$ kubectl exec curlbox -- curl -s http://myapp-service | grep -o 'VERSION: [^<]*'
+
+###END###
+###SHOT:task5-4-traffic-split-9-to-1###
+$ kubectl get pods -l app=myapp-canary -L version --no-headers | awk '{print $6}' | sort | uniq -c
+   9 v1
+   1 v2
+
+$ kubectl exec curlbox -- sh -c 'for i in $(seq 1 100); do curl -s http://myapp-canary-service | grep -o "STABLE v1\|CANARY v2"; done' | sort | uniq -c
+   8 CANARY v2
+  92 STABLE v1
+
+###END###
+###SHOT:task5-5-shift-to-30-percent###
+$ kubectl scale deployment app-canary --replicas=3
+deployment.apps/app-canary scaled
+
+$ kubectl scale deployment app-stable --replicas=7
+deployment.apps/app-stable scaled
+
+$ kubectl rollout status deployment/app-canary --timeout=240s
+Waiting for deployment "app-canary" rollout to finish: 1 of 3 updated replicas are available...
+Waiting for deployment "app-canary" rollout to finish: 2 of 3 updated replicas are available...
+deployment "app-canary" successfully rolled out
+
+$ kubectl rollout status deployment/app-stable --timeout=240s
+deployment "app-stable" successfully rolled out
+
+$ kubectl get pods -l app=myapp-canary -L version --no-headers | awk '{print $6}' | sort | uniq -c
+   7 v1
+   3 v2
+
+$ kubectl exec curlbox -- sh -c 'for i in $(seq 1 100); do ...; done' | sort | uniq -c
+  22 CANARY v2
+  78 STABLE v1
+
+###END###
+###SHOT:task5-6-promote-canary-to-100###
+$ kubectl scale deployment app-canary --replicas=9
+deployment.apps/app-canary scaled
+
+$ kubectl scale deployment app-stable --replicas=0
+deployment.apps/app-stable scaled
+
+$ kubectl rollout status deployment/app-canary --timeout=300s
+Waiting for deployment "app-canary" rollout to finish: 3 of 9 updated replicas are available...
+Waiting for deployment "app-canary" rollout to finish: 4 of 9 updated replicas are available...
+Waiting for deployment "app-canary" rollout to finish: 5 of 9 updated replicas are available...
+Waiting for deployment "app-canary" rollout to finish: 6 of 9 updated replicas are available...
+Waiting for deployment "app-canary" rollout to finish: 7 of 9 updated replicas are available...
+Waiting for deployment "app-canary" rollout to finish: 8 of 9 updated replicas are available...
+deployment "app-canary" successfully rolled out
+
+$ kubectl get endpoints myapp-canary-service -o jsonpath='{.subsets[0].addresses[*].ip}{"\n"}'
+Warning: v1 Endpoints is deprecated in v1.33+; use discovery.k8s.io/v1 EndpointSlice
+10.244.0.140 10.244.0.142 10.244.0.143 10.244.0.144 10.244.0.145 10.244.0.146 10.244.0.147 10.244.0.148 10.244.0.149
+
+$ kubectl exec curlbox -- sh -c 'for i in $(seq 1 40); do ...; done' | sort | uniq -c
+  40 CANARY v2
+
+$ kubectl delete deployment app-stable
+deployment.apps "app-stable" deleted from default namespace
+
+###END###
+ALL FIXUPS DONE 22:30:24

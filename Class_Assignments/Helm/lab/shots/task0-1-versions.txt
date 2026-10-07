@@ -1,0 +1,7 @@
+$ helm version --short; kubectl version; kubectl get nodes
+v4.3.0+gbec5b06
+Client Version: v1.37.0
+Kustomize Version: v5.8.1
+Server Version: v1.37.0
+NAME       STATUS   ROLES           AGE   VERSION
+minikube   Ready    control-plane   41m   v1.37.0

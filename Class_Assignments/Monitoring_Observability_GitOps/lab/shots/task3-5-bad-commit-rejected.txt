@@ -1,0 +1,17 @@
+$ kubectl get application session20-mini -n argocd; echo; kubectl get application session20-mini -n argocd -o jsonpath="{.status.operationState.phase}: {.status.operationState.message}{\"\n\"}{range .status.operationState.syncResult.resources[*]}{.kind}/{.name}: {.status} - {.message}{\"\n\"}{end}"; echo; kubectl get deploy session20-mini -n session20; cd /private/tmp/claude-501/-Users-utkarshpathak3107/82161c67-b573-47a2-b8ef-11417ea863e8/scratchpad/gitops-config && git show HEAD --stat --format="%h %s" | head -4 && git show HEAD -- app/configmap.yaml | grep -E "^[-+] *(api|<p>)"
+NAME             SYNC STATUS   HEALTH STATUS
+session20-mini   OutOfSync     Healthy
+
+Failed: one or more synchronization tasks are not valid: failed to discover server resources for group version v2: the server could not find the requested resource (retried 5 times).
+ConfigMap/web-content: SyncFailed - The Kubernetes API could not find version "v2" of /ConfigMap for requested resource session20/web-content. Version "v1" of /ConfigMap is installed on the destination cluster.
+
+NAME             READY   UP-TO-DATE   AVAILABLE   AGE
+session20-mini   2/2     2            2           5m45s
+76ecc4f v2: scale to 3 replicas, new page
+
+ app/configmap.yaml  | 4 ++--
+ app/deployment.yaml | 2 +-
+-apiVersion: v1
++apiVersion: v2
+-    <p>Version: v1 - deployed by Argo CD from Git</p>
++    <p>Version: v2 - deployed by Argo CD from Git</p>

@@ -1,0 +1,46 @@
+# emptyDir: one scratch directory shared by two containers of the same Pod.
+apiVersion: v1
+kind: Pod
+metadata:
+  name: emptydir-demo
+  labels:
+    app: emptydir-demo
+spec:
+  containers:
+    - name: writer
+      image: busybox:1.36
+      command: ["sh", "-c", "while true; do date >> /shared/log.txt; sleep 5; done"]
+      volumeMounts:
+        - name: shared
+          mountPath: /shared
+    - name: reader
+      image: busybox:1.36
+      command: ["sh", "-c", "sleep 3600"]
+      volumeMounts:
+        - name: shared
+          mountPath: /shared
+          readOnly: true
+  volumes:
+    - name: shared
+      emptyDir: {}
+---
+# hostPath: a directory on the node itself.
+apiVersion: v1
+kind: Pod
+metadata:
+  name: hostpath-demo
+  labels:
+    app: hostpath-demo
+spec:
+  containers:
+    - name: writer
+      image: busybox:1.36
+      command: ["sh", "-c", "echo written-by-$(hostname) >> /node-data/message; sleep 3600"]
+      volumeMounts:
+        - name: node-data
+          mountPath: /node-data
+  volumes:
+    - name: node-data
+      hostPath:
+        path: /tmp/session13-hostpath
+        type: DirectoryOrCreate

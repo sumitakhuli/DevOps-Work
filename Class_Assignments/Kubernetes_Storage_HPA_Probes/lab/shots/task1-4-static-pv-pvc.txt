@@ -1,0 +1,7 @@
+$ kubectl apply -f 01-kubernetes-volumes/static-pv-pvc.yml; sleep 3; kubectl get pv static-lab-pv; kubectl get pvc static-lab-claim
+persistentvolume/static-lab-pv created
+persistentvolumeclaim/static-lab-claim created
+NAME            CAPACITY   ACCESS MODES   RECLAIM POLICY   STATUS   CLAIM                      STORAGECLASS   VOLUMEATTRIBUTESCLASS   REASON   AGE
+static-lab-pv   1Gi        RWO            Retain           Bound    default/static-lab-claim   manual         <unset>                          3s
+NAME               STATUS   VOLUME          CAPACITY   ACCESS MODES   STORAGECLASS   VOLUMEATTRIBUTESCLASS   AGE
+static-lab-claim   Bound    static-lab-pv   1Gi        RWO            manual         <unset>                 3s

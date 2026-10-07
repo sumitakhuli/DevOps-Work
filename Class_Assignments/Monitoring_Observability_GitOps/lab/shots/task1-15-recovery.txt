@@ -1,0 +1,5 @@
+$ PAYMENT_FAILURE_RATE=0.1 docker compose up -d shop-api 2>&1 | tail -1; until [ "$(curl -s localhost:9090/api/v1/alerts | jq "[.data.alerts[] | select(.state==\"firing\" and .labels.alertname==\"ShopApiDown\")] | length")" = "0" ]; do sleep 3; done; date +%T; curl -s localhost:9090/api/v1/alerts | jq -r ".data.alerts[] | \"\(.labels.alertname) state=\(.state)\""; curl -s localhost:9090/api/v1/query --data-urlencode "query=up{job=\"shop-api\"}" | jq -r "\"up{job=shop-api} = \" + .data.result[0].value[1]"
+ Container s20-shop-api Started 
+00:55:48
+HighErrorRate state=firing
+up{job=shop-api} = 1

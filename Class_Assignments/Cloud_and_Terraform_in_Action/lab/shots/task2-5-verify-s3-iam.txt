@@ -1,0 +1,19 @@
+$ AWS_ACCESS_KEY_ID=test AWS_SECRET_ACCESS_KEY=test aws --endpoint-url=http://localhost:4566 --region ap-south-1 s3 ls s3://s19-webapp-assets-24bcs10158/; AWS_ACCESS_KEY_ID=test AWS_SECRET_ACCESS_KEY=test aws --endpoint-url=http://localhost:4566 --region ap-south-1 s3 cp s3://s19-webapp-assets-24bcs10158/index.html -; AWS_ACCESS_KEY_ID=test AWS_SECRET_ACCESS_KEY=test aws --endpoint-url=http://localhost:4566 --region ap-south-1 iam get-role-policy --role-name s19-webapp-ec2-role --policy-name read-assets-bucket --query PolicyDocument
+2026-10-07 00:25:05         44 index.html
+<h1>Session 19 - deployed by Terraform</h1>
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Action": [
+                "s3:GetObject",
+                "s3:ListBucket"
+            ],
+            "Effect": "Allow",
+            "Resource": [
+                "arn:aws:s3:::s19-webapp-assets-24bcs10158",
+                "arn:aws:s3:::s19-webapp-assets-24bcs10158/*"
+            ]
+        }
+    ]
+}

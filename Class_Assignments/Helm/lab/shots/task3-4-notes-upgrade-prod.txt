@@ -1,0 +1,16 @@
+$ helm upgrade notes notes-chart -n notes -f notes-chart/values-prod.yaml --wait --timeout 3m | head -7; kubectl get pods -n notes; kubectl get cm notes-config -n notes -o jsonpath="{.data}{\"\n\"}"
+Release "notes" has been upgraded. Happy Helming!
+NAME: notes
+LAST DEPLOYED: Tue Oct  6 23:41:33 2026
+NAMESPACE: notes
+STATUS: deployed
+REVISION: 2
+DESCRIPTION: Upgrade complete
+NAME                            READY   STATUS      RESTARTS   AGE
+notes-deploy-54f799c6f6-7kbm8   1/1     Running     0          0s
+notes-deploy-54f799c6f6-c8dqr   1/1     Running     0          1s
+notes-deploy-54f799c6f6-xmj6l   1/1     Running     0          1s
+notes-deploy-6bdbd76d95-9vpvv   0/1     Completed   0          17s
+notes-deploy-6bdbd76d95-bpr47   0/1     Completed   0          1s
+notes-deploy-6bdbd76d95-jpbzn   0/1     Completed   0          1s
+{"APP_NAME":"notes-app","ENVIRONMENT":"production"}

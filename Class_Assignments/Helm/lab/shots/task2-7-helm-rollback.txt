@@ -1,0 +1,2 @@
+$ helm rollback web 2 -n helm-lab --wait --timeout 3m
+Rollback was a success! Happy Helming!

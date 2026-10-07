@@ -1,0 +1,19 @@
+$ find notes-chart -type f | sort; echo; helm lint notes-chart; echo; helm template notes notes-chart -f notes-chart/values-prod.yaml | grep -E "^kind:|replicas:|image:|ENVIRONMENT"
+notes-chart/Chart.yaml
+notes-chart/templates/configmap.yaml
+notes-chart/templates/deployment.yaml
+notes-chart/templates/service.yaml
+notes-chart/values-prod.yaml
+notes-chart/values.yaml
+
+==> Linting notes-chart
+[INFO] Chart.yaml: icon is recommended
+
+1 chart(s) linted, 0 chart(s) failed
+
+kind: ConfigMap
+  ENVIRONMENT: "production"
+kind: Service
+kind: Deployment
+  replicas: 3
+          image: "nginx:1.25"

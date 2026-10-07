@@ -1,0 +1,7 @@
+$ kubectl get pod hostpath-demo -o wide; kubectl exec hostpath-demo -- cat /node-data/message; minikube ssh -- cat /tmp/session13-hostpath/message
+NAME            READY   STATUS    RESTARTS   AGE   IP            NODE       NOMINATED NODE   READINESS GATES
+hostpath-demo   1/1     Running   0          44s   10.244.0.31   minikube   <none>           <none>
+node-local-data
+written-by-hostpath-demo
+node-local-data
+written-by-hostpath-demo

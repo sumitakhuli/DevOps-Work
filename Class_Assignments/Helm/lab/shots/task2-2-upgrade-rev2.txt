@@ -1,0 +1,8 @@
+$ helm upgrade web web-chart -n helm-lab --set image.tag=1.26 --set replicaCount=2 --wait --timeout 3m | head -7
+Release "web" has been upgraded. Happy Helming!
+NAME: web
+LAST DEPLOYED: Tue Oct  6 23:39:18 2026
+NAMESPACE: helm-lab
+STATUS: deployed
+REVISION: 2
+DESCRIPTION: Upgrade complete

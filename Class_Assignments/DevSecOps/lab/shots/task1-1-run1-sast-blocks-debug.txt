@@ -1,0 +1,25 @@
+$ act push -W .github/workflows/devsecops.yml -P ubuntu-latest=catthehacker/ubuntu:act-latest --network kind --secret-file s17.secrets
+  (run 1 - SAST and Security Gate jobs)
+[DevSecOps Pipeline/SAST - Bandit         ]   | >> Issue: [B201:flask_debug_true] A Flask app appears to be run with debug=True, which exposes the Werkzeug debugger and allows the execution of arbitrary code.
+[DevSecOps Pipeline/SAST - Bandit         ]   |    Severity: High   Confidence: Medium
+[DevSecOps Pipeline/SAST - Bandit         ]   |    Location: app/app.py:234:4
+[DevSecOps Pipeline/SAST - Bandit         ]   | 234	    app.run(host="0.0.0.0", port=5001, debug=True)
+[DevSecOps Pipeline/SAST - Bandit         ]   | >> Issue: [B104:hardcoded_bind_all_interfaces] Possible binding to all interfaces.
+[DevSecOps Pipeline/SAST - Bandit         ]   |    Severity: Medium   Confidence: Medium
+[DevSecOps Pipeline/SAST - Bandit         ]   |    Location: app/app.py:234:17
+[DevSecOps Pipeline/SAST - Bandit         ]   | 234	    app.run(host="0.0.0.0", port=5001, debug=True)
+[DevSecOps Pipeline/SAST - Bandit         ]   | 	Total issues (by severity):
+[DevSecOps Pipeline/SAST - Bandit         ]   | 		Medium: 1
+[DevSecOps Pipeline/SAST - Bandit         ]   | 		High: 1
+[DevSecOps Pipeline/SAST - Bandit         ]   | 	Total issues (by confidence):
+[DevSecOps Pipeline/SAST - Bandit         ]   | 		Medium: 2
+[DevSecOps Pipeline/SAST - Bandit         ]   | 		High: 5
+[DevSecOps Pipeline/SAST - Bandit         ] exitcode '1': failure
+[DevSecOps Pipeline/SAST - Bandit         ] 🏁  Job failed
+[DevSecOps Pipeline/Security Gate         ]   | Unit Test    : success
+[DevSecOps Pipeline/Security Gate         ]   | SAST         : failure
+[DevSecOps Pipeline/Security Gate         ]   | SCA          : success
+[DevSecOps Pipeline/Security Gate         ]   | Secret Scan  : success
+[DevSecOps Pipeline/Security Gate         ]   | Image Scan   : skipped
+[DevSecOps Pipeline/Security Gate         ]   | SECURITY GATE: FAILED - image will NOT be pushed or deployed
+[DevSecOps Pipeline/Security Gate         ] 🏁  Job failed

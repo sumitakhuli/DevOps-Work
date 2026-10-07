@@ -1,0 +1,9 @@
+$ act push -W .github/workflows/ci-cd.yml -P ubuntu-latest=catthehacker/ubuntu:act-latest -s DEPLOY_TOKEN=****
+[Calculator CI/CD/Security Check] 🏁  Job succeeded
+[Calculator CI/CD/Test          ] 🏁  Job succeeded
+[Calculator CI/CD/Build         ] 🏁  Job succeeded
+[Calculator CI/CD/Docker Build & Push] 🏁  Job succeeded
+[Calculator CI/CD/Deploy to Staging  ] 🏁  Job succeeded
+
+$ echo $?
+0

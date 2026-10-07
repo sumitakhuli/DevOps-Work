@@ -1,0 +1,12 @@
+$ kubectl apply -f 01-kubernetes-volumes/pod-volumes.yml && kubectl wait --for=condition=Ready pod/emptydir-demo pod/hostpath-demo --timeout=120s && sleep 12; kubectl get pod emptydir-demo; kubectl exec emptydir-demo -c reader -- cat /shared/log.txt; kubectl exec emptydir-demo -c reader -- sh -c "echo hack > /shared/log.txt"
+pod/emptydir-demo created
+pod/hostpath-demo created
+pod/emptydir-demo condition met
+pod/hostpath-demo condition met
+NAME            READY   STATUS    RESTARTS   AGE
+emptydir-demo   2/2     Running   0          13s
+Tue Oct  6 18:31:12 UTC 2026
+Tue Oct  6 18:31:17 UTC 2026
+Tue Oct  6 18:31:22 UTC 2026
+sh: can't create /shared/log.txt: Read-only file system
+command terminated with exit code 1

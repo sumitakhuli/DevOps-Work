@@ -1,0 +1,11 @@
+$ kubectl get deploy web-web-chart -n helm-lab -o jsonpath="image={.spec.template.spec.containers[0].image}  replicas={.spec.replicas}  ready={.status.readyReplicas}{\"\n\"}"; kubectl get pods -n helm-lab -l app.kubernetes.io/instance=web; kubectl run curl-check -n helm-lab --rm -i --restart=Never --image=curlimages/curl:8.10.1 -q -- curl -sI http://web-web-chart | grep -E 'HTTP|Server'
+image=nginx:1.26  replicas=2  ready=2
+NAME                             READY   STATUS      RESTARTS   AGE
+web-web-chart-5c6695df77-qcx9h   1/1     Running     0          16s
+web-web-chart-5c6695df77-zwfrq   1/1     Running     0          1s
+web-web-chart-849df6fbdd-46x96   0/1     Completed   0          55s
+warning: couldn't attach to pod/curl-check, falling back to streaming logs: unable to upgrade connection: container curl-check not found in pod curl-check_helm-lab
+HTTP/1.1 200 OK
+Server: nginx/1.26.3
+HTTP/1.1 200 OK
+Server: nginx/1.26.3

@@ -1,0 +1,9 @@
+$ kubectl get hpa php-apache; kubectl describe hpa php-apache | grep -E "resource cpu|ScalingActive|desired"
+NAME         REFERENCE               TARGETS       MINPODS   MAXPODS   REPLICAS   AGE
+php-apache   Deployment/php-apache   cpu: 1%/50%   1         5         1          84s
+  resource cpu on pods  (as a percentage of request):  1% (1m) / 50%
+Deployment pods:                                       1 current / 1 desired
+  ScalingActive   True    ValidMetricFound    the HPA was able to successfully calculate a replica count from cpu resource utilization (percentage of request)
+  ScalingLimited  False   DesiredWithinRange  the desired count is within the acceptable range
+  Warning  FailedGetResourceMetric       84s                horizontal-pod-autoscaler  failed to get cpu utilization: unable to get metrics for resource cpu: no metrics returned from resource metrics API
+  Warning  FailedComputeMetricsReplicas  84s                horizontal-pod-autoscaler  invalid metrics (1 invalid out of 1), first error is: failed to get cpu resource metric value: failed to get cpu utilization: unable to get metrics for resource cpu: no metrics returned from resource metrics API

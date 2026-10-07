@@ -1,0 +1,224 @@
+name: DevSecOps Pipeline
+
+# Code -> Build -> Unit Test -> SAST -> SCA -> Secret Scan -> Docker Build
+#      -> Image Scan -> Security Gate -> Push Image -> Deploy to Kubernetes
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+env:
+  IMAGE_NAME: session17-python
+  # Local registry for this demo (registry:2 on localhost:5001).
+  # On GitHub: docker.io/<user> or ghcr.io/<user>.
+  REGISTRY: localhost:5001
+  PYTHON_VERSION: "3.12"
+  GITLEAKS_VERSION: "8.30.1"
+  TRIVY_VERSION: "0.75.0"
+
+jobs:
+  # ------------------------------------------------------------------
+  # 1. Build: install dependencies and make sure the code compiles
+  # ------------------------------------------------------------------
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+      - name: Compile application
+        run: python -m compileall -q app && echo "Build OK - all modules compiled"
+
+  # ------------------------------------------------------------------
+  # 2. Unit tests with coverage
+  # ------------------------------------------------------------------
+  unit-test:
+    name: Unit Test
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+      - run: pip install -r requirements-dev.txt
+      - name: Run tests
+        run: pytest -v --cov=app --cov-report=term-missing
+
+  # ------------------------------------------------------------------
+  # 3. SAST - static analysis of our own code (Bandit)
+  # ------------------------------------------------------------------
+  sast:
+    name: SAST - Bandit
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+      - run: pip install bandit==1.8.6
+      - name: Scan source code
+        # fail on MEDIUM or higher severity with MEDIUM or higher confidence
+        run: bandit -r app --severity-level medium --confidence-level medium
+
+  # ------------------------------------------------------------------
+  # 4. SCA - known CVEs in third-party dependencies (pip-audit)
+  # ------------------------------------------------------------------
+  sca:
+    name: SCA - pip-audit
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+      - run: pip install pip-audit==2.9.0
+      - name: Audit requirements.txt
+        run: pip-audit -r requirements.txt --strict --desc
+
+  # ------------------------------------------------------------------
+  # 5. Secret scanning (Gitleaks)
+  # ------------------------------------------------------------------
+  secret-scan:
+    name: Secret Scan - Gitleaks
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Gitleaks
+        run: |
+          ARCH=$(uname -m); [ "$ARCH" = "aarch64" ] && ARCH=arm64 || ARCH=x64
+          curl -sSL "https://github.com/gitleaks/gitleaks/releases/download/v${GITLEAKS_VERSION}/gitleaks_${GITLEAKS_VERSION}_linux_${ARCH}.tar.gz" \
+            | tar -xz -C /usr/local/bin gitleaks
+          gitleaks version
+      - name: Scan files for secrets
+        run: gitleaks dir . --redact --verbose --no-banner
+
+  # ------------------------------------------------------------------
+  # 6. Docker build (image handed to the next jobs as an artifact)
+  # ------------------------------------------------------------------
+  docker-build:
+    name: Docker Build
+    needs: [unit-test, sast, sca, secret-scan]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build image
+        run: |
+          docker build --pull -t ${IMAGE_NAME}:${GITHUB_SHA::7} .
+          docker image ls ${IMAGE_NAME}
+          docker save ${IMAGE_NAME}:${GITHUB_SHA::7} -o image.tar
+      - uses: actions/upload-artifact@v4
+        with:
+          name: docker-image
+          path: image.tar
+          retention-days: 1
+
+  # ------------------------------------------------------------------
+  # 7. Container image scan (Trivy)
+  # ------------------------------------------------------------------
+  image-scan:
+    name: Image Scan - Trivy
+    needs: docker-build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: docker-image
+      - run: docker load -i image.tar
+      - name: Install Trivy
+        run: |
+          curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh \
+            | sh -s -- -b /usr/local/bin v${TRIVY_VERSION}
+      - name: Scan image (fail on fixable HIGH/CRITICAL)
+        run: |
+          trivy image --quiet --scanners vuln --ignore-unfixed \
+            --severity HIGH,CRITICAL --exit-code 1 \
+            ${IMAGE_NAME}:${GITHUB_SHA::7}
+
+  # ------------------------------------------------------------------
+  # 8. Security gate: every check must have passed
+  # ------------------------------------------------------------------
+  security-gate:
+    name: Security Gate
+    needs: [unit-test, sast, sca, secret-scan, image-scan]
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - name: Evaluate security results
+        run: |
+          echo "Unit Test    : ${{ needs.unit-test.result }}"
+          echo "SAST         : ${{ needs.sast.result }}"
+          echo "SCA          : ${{ needs.sca.result }}"
+          echo "Secret Scan  : ${{ needs.secret-scan.result }}"
+          echo "Image Scan   : ${{ needs.image-scan.result }}"
+          if [ "${{ contains(needs.*.result, 'failure') || contains(needs.*.result, 'cancelled') || contains(needs.*.result, 'skipped') }}" = "true" ]; then
+            echo "SECURITY GATE: FAILED - image will NOT be pushed or deployed"
+            exit 1
+          fi
+          echo "SECURITY GATE: PASSED"
+
+  # ------------------------------------------------------------------
+  # 9. Push image to the container registry
+  # ------------------------------------------------------------------
+  push:
+    name: Push Image
+    needs: security-gate
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    outputs:
+      image: ${{ steps.push.outputs.image }}
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: docker-image
+      - id: push
+        run: |
+          docker load -i image.tar
+          IMAGE=${REGISTRY}/${IMAGE_NAME}:${GITHUB_SHA::7}
+          docker tag ${IMAGE_NAME}:${GITHUB_SHA::7} $IMAGE
+          docker push $IMAGE
+          echo "image=$IMAGE" >> "$GITHUB_OUTPUT"
+
+  # ------------------------------------------------------------------
+  # 10. Deploy to Kubernetes
+  # ------------------------------------------------------------------
+  deploy:
+    name: Deploy to Kubernetes
+    needs: push
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Configure kubectl
+        env:
+          KUBE_CONFIG: ${{ secrets.KUBE_CONFIG }}
+        run: |
+          if ! command -v kubectl >/dev/null; then
+            ARCH=$(uname -m); [ "$ARCH" = "aarch64" ] && ARCH=arm64 || ARCH=amd64
+            curl -sSLo /usr/local/bin/kubectl "https://dl.k8s.io/release/$(curl -sSL https://dl.k8s.io/release/stable.txt)/bin/linux/${ARCH}/kubectl"
+            chmod +x /usr/local/bin/kubectl
+          fi
+          mkdir -p ~/.kube
+          echo "$KUBE_CONFIG" | base64 -d > ~/.kube/config
+          kubectl get nodes
+      - name: Apply manifests
+        run: |
+          sed -i "s|__IMAGE__|${{ needs.push.outputs.image }}|" k8s/deployment.yaml
+          kubectl apply -f k8s/
+          kubectl rollout status deployment/session17-python --timeout=120s
+          kubectl get deploy,pods,svc -l app=session17-python -o wide
+      - name: Smoke test
+        run: |
+          kubectl port-forward service/session17-python 8080:80 >/dev/null 2>&1 &
+          sleep 4
+          curl -sf http://localhost:8080/health
+          echo
+          curl -sf http://localhost:8080/api/status

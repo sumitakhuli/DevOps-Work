@@ -1,0 +1,6 @@
+$ kubectl exec -n production-webapp web-app-f9769fb4-ldkkn -- rm /usr/share/nginx/html/index.html; sleep 25; kubectl get pods -n production-webapp; kubectl get endpointslices -n production-webapp -o jsonpath='{range .items[*].endpoints[*]}{.targetRef.name} ready={.conditions.ready}{"\n"}{end}'
+NAME                     READY   STATUS    RESTARTS      AGE
+web-app-f9769fb4-ldkkn   1/1     Running   1 (10s ago)   56s
+web-app-f9769fb4-xmzt7   1/1     Running   0             35s
+web-app-f9769fb4-ldkkn ready=true
+web-app-f9769fb4-xmzt7 ready=true

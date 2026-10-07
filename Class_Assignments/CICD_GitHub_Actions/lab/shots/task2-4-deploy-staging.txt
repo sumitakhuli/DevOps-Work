@@ -1,0 +1,17 @@
+$ act push -W .github/workflows/ci-cd.yml -P ubuntu-latest=catthehacker/ubuntu:act-latest -s DEPLOY_TOKEN=****
+  (excerpt: Deploy to Staging job)
+[Calculator CI/CD/Deploy to Staging  ] ⭐ Run Main Use the deploy secret
+[Calculator CI/CD/Deploy to Staging  ]   | Authenticating deploy with token: ***
+[Calculator CI/CD/Deploy to Staging  ]   ✅  Success - Main Use the deploy secret [79.001708ms]
+[Calculator CI/CD/Deploy to Staging  ] ⭐ Run Main Deploy container
+[Calculator CI/CD/Deploy to Staging  ]   | a598b0bf082a9f1d7b01f42d211ac8f0b5d821e624d5894b4011ddb8a2a7354b
+[Calculator CI/CD/Deploy to Staging  ]   ✅  Success - Main Deploy container [234.939333ms]
+[Calculator CI/CD/Deploy to Staging  ] ⭐ Run Main Smoke test
+[Calculator CI/CD/Deploy to Staging  ]   | {"status":"ok","version":"9036109"}
+[Calculator CI/CD/Deploy to Staging  ]   | 
+[Calculator CI/CD/Deploy to Staging  ]   | {"a":6.0,"b":7.0,"op":"multiply","result":42.0}
+[Calculator CI/CD/Deploy to Staging  ]   ✅  Success - Main Smoke test [129.247209ms]
+[Calculator CI/CD/Deploy to Staging  ] ⭐ Run Complete job
+[Calculator CI/CD/Deploy to Staging  ] Cleaning up container for job Deploy to Staging
+[Calculator CI/CD/Deploy to Staging  ]   ✅  Success - Complete job
+[Calculator CI/CD/Deploy to Staging  ] 🏁  Job succeeded

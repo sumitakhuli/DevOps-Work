@@ -1,0 +1,13 @@
+$ cd /private/tmp/claude-501/-Users-utkarshpathak3107/82161c67-b573-47a2-b8ef-11417ea863e8/scratchpad/gitops-config && git revert --no-edit HEAD >/dev/null && git push -q origin main 2>&1 | grep -v -E "Process"; git log --oneline; NEW=$(git rev-parse HEAD); kubectl annotate application session20-mini -n argocd argocd.argoproj.io/refresh=normal --overwrite >/dev/null; for i in $(seq 1 60); do [ "$(kubectl get application session20-mini -n argocd -o jsonpath={.status.sync.revision})" = "$NEW" ] && kubectl get svc session20-mini -n session20 >/dev/null 2>&1 && break; sleep 2; done; kubectl get application session20-mini -n argocd; kubectl get svc,deploy -n session20
+fdb8e98 Revert "remove the service"
+0af5a80 remove the service
+7100c47 fix: configmap apiVersion must be v1
+76ecc4f v2: scale to 3 replicas, new page
+6360907 v1: session20-mini with 2 replicas
+NAME             SYNC STATUS   HEALTH STATUS
+session20-mini   Synced        Healthy
+NAME                     TYPE        CLUSTER-IP     EXTERNAL-IP   PORT(S)   AGE
+service/session20-mini   ClusterIP   10.96.215.45   <none>        80/TCP    2s
+
+NAME                             READY   UP-TO-DATE   AVAILABLE   AGE
+deployment.apps/session20-mini   3/3     3            3           11m

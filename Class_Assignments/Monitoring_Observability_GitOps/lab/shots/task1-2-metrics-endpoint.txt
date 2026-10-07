@@ -1,0 +1,12 @@
+$ curl -s localhost:8000/metrics | grep -E "^# (HELP|TYPE) shop_http_requests_total|^shop_http_requests_total|^shop_http_request_duration_seconds_(count|sum)\{endpoint=\"/api/checkout|^process_(cpu_seconds_total|resident_memory_bytes)|^shop_app_healthy"
+process_resident_memory_bytes 5.0331648e+07
+process_cpu_seconds_total 5.21
+# HELP shop_http_requests_total HTTP requests
+# TYPE shop_http_requests_total counter
+shop_http_requests_total{endpoint="/api/products",status="200"} 188.0
+shop_http_requests_total{endpoint="/api/checkout",status="200"} 167.0
+shop_http_requests_total{endpoint="/api/report",status="200"} 187.0
+shop_http_requests_total{endpoint="/api/checkout",status="502"} 21.0
+shop_http_request_duration_seconds_count{endpoint="/api/checkout"} 188.0
+shop_http_request_duration_seconds_sum{endpoint="/api/checkout"} 43.39433301500139
+shop_app_healthy 1.0

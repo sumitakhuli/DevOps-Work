@@ -1,0 +1,317 @@
+===== SESSION 11 CAPTURE Thu Sep 17 22:27:34 IST 2026 =====
+###SHOT:task1-1-clusterip-deployed###
+$ kubectl apply -f 01-clusterip/app-deployment.yaml
+deployment.apps/web-app-clusterip created
+
+$ kubectl rollout status deployment/web-app-clusterip --timeout=180s
+Waiting for deployment "web-app-clusterip" rollout to finish: 0 out of 3 new replicas have been updated...
+Waiting for deployment "web-app-clusterip" rollout to finish: 0 of 3 updated replicas are available...
+Waiting for deployment "web-app-clusterip" rollout to finish: 1 of 3 updated replicas are available...
+Waiting for deployment "web-app-clusterip" rollout to finish: 2 of 3 updated replicas are available...
+deployment "web-app-clusterip" successfully rolled out
+
+$ kubectl get pods -l app=web-clusterip -o wide
+NAME                                 READY   STATUS      RESTARTS   AGE   IP             NODE       NOMINATED NODE   READINESS GATES
+web-app-clusterip-66865d4855-mg652   1/1     Running     0          1s    10.244.0.100   minikube   <none>           <none>
+web-app-clusterip-66865d4855-n9qm8   1/1     Running     0          1s    10.244.0.101   minikube   <none>           <none>
+web-app-clusterip-66865d4855-v2fv4   0/1     Completed   0          91s   10.244.0.83    minikube   <none>           <none>
+web-app-clusterip-66865d4855-vbzm4   1/1     Running     0          1s    10.244.0.99    minikube   <none>           <none>
+
+###END###
+###SHOT:task1-2-clusterip-service-and-endpoints###
+$ kubectl apply -f 01-clusterip/service.yaml
+service/web-service-clusterip created
+
+$ kubectl get svc web-service-clusterip
+NAME                    TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)    AGE
+web-service-clusterip   ClusterIP   10.106.195.228   <none>        8080/TCP   0s
+
+$ kubectl get endpoints web-service-clusterip
+Warning: v1 Endpoints is deprecated in v1.33+; use discovery.k8s.io/v1 EndpointSlice
+NAME                    ENDPOINTS                                        AGE
+web-service-clusterip   10.244.0.100:80,10.244.0.101:80,10.244.0.99:80   0s
+
+###END###
+###SHOT:task1-3-three-ways-to-reach-the-service###
+$ kubectl exec curl-client -- curl -s http://web-service-clusterip:8080 | grep -o '<title>.*</title>'
+<title>Welcome to nginx!</title>
+
+$ kubectl exec curl-client -- curl -s http://10.106.195.228:8080 | grep -o '<title>.*</title>'
+<title>Welcome to nginx!</title>
+
+$ kubectl exec curl-client -- curl -s http://web-service-clusterip.default.svc.cluster.local:8080 | grep -o '<title>.*</title>'
+<title>Welcome to nginx!</title>
+
+###END###
+###SHOT:task1-4-clusterip-load-balances###
+$ for i in $(seq 1 6); do kubectl exec curl-client -- curl -s -o /dev/null -w '%{http_code} ' http://web-service-clusterip:8080; done
+200 200 200 200 200 200 
+
+$ kubectl get endpoints web-service-clusterip -o jsonpath='{range .subsets[*].addresses[*]}{.ip}{"\n"}{end}'
+Warning: v1 Endpoints is deprecated in v1.33+; use discovery.k8s.io/v1 EndpointSlice
+10.244.0.100
+10.244.0.101
+10.244.0.99
+
+###END###
+###SHOT:task6-1-coredns-running###
+$ kubectl get pods -n kube-system -l k8s-app=kube-dns
+NAME                       READY   STATUS    RESTARTS        AGE
+coredns-559f6c778d-lwmtz   1/1     Running   2 (7m41s ago)   2d3h
+
+$ kubectl get svc -n kube-system kube-dns
+NAME       TYPE        CLUSTER-IP   EXTERNAL-IP   PORT(S)                  AGE
+kube-dns   ClusterIP   10.96.0.10   <none>        53/UDP,53/TCP,9153/TCP   2d3h
+
+###END###
+###SHOT:task6-2-resolv-conf-and-search-domains###
+$ kubectl exec curl-client -- cat /etc/resolv.conf
+search default.svc.cluster.local svc.cluster.local cluster.local
+nameserver 10.96.0.10
+options ndots:5
+
+###END###
+###SHOT:task6-3-fqdn-resolution###
+$ kubectl exec curl-client -- nslookup web-service-clusterip
+Server:		10.96.0.10
+Address:	10.96.0.10:53
+
+** server can't find web-service-clusterip.cluster.local: NXDOMAIN
+
+
+** server can't find web-service-clusterip.cluster.local: NXDOMAIN
+
+** server can't find web-service-clusterip.svc.cluster.local: NXDOMAIN
+
+** server can't find web-service-clusterip.svc.cluster.local: NXDOMAIN
+
+Name:	web-service-clusterip.default.svc.cluster.local
+Address: 10.106.195.228
+
+command terminated with exit code 1
+
+$ kubectl exec curl-client -- nslookup kubernetes.default.svc.cluster.local
+Server:		10.96.0.10
+Address:	10.96.0.10:53
+
+
+Name:	kubernetes.default.svc.cluster.local
+Address: 10.96.0.1
+
+
+###END###
+###SHOT:task2-1-nodeport-service###
+$ kubectl apply -f 02-nodeport/app-deployment.yaml
+deployment.apps/web-app-nodeport created
+
+$ kubectl rollout status deployment/web-app-nodeport --timeout=180s
+Waiting for deployment "web-app-nodeport" rollout to finish: 0 of 2 updated replicas are available...
+Waiting for deployment "web-app-nodeport" rollout to finish: 1 of 2 updated replicas are available...
+deployment "web-app-nodeport" successfully rolled out
+
+$ kubectl apply -f 02-nodeport/service.yaml
+service/web-service-nodeport created
+
+$ kubectl get svc web-service-nodeport
+NAME                   TYPE       CLUSTER-IP      EXTERNAL-IP   PORT(S)        AGE
+web-service-nodeport   NodePort   10.100.86.194   <none>        80:30080/TCP   0s
+
+$ kubectl get nodes -o wide
+NAME       STATUS   ROLES           AGE    VERSION   INTERNAL-IP    EXTERNAL-IP   OS-IMAGE                         KERNEL-VERSION             CONTAINER-RUNTIME
+minikube   Ready    control-plane   2d3h   v1.37.0   192.168.49.2   <none>        Debian GNU/Linux 12 (bookworm)   6.12.76-linuxkit (arm64)   containerd://2.3.4
+
+###END###
+###SHOT:task2-2-nodeport-from-host###
+$ minikube service web-service-nodeport --url
+http://127.0.0.1:52575
+
+$ curl -s -o /dev/null -w 'HTTP %{http_code} from %{url_effective}\n' http://127.0.0.1:52575
+HTTP 200 from http://127.0.0.1:52575/
+
+$ curl -s http://127.0.0.1:52575 | grep -o '<title>.*</title>'
+<title>Welcome to nginx!</title>
+
+###END###
+/tmp/claude-501/-Users-utkarshpathak3107/a3b6f990-5f77-4cd7-82b8-7462c87e1953/scratchpad/s11.sh: line 81: 63914 Terminated: 15          minikube service web-service-nodeport --url > /tmp/np-url.txt 2> /dev/null
+###SHOT:task2-3-nodeport-direct-nodeip-fails-on-macos###
+$ minikube ip
+192.168.49.2
+
+$ curl -s --max-time 5 http://$(minikube ip):30080
+curl: (28) Connection timed out - node IP is not routable from the macOS host (docker driver)
+
+###END###
+###SHOT:task3-1-loadbalancer-pending###
+$ kubectl apply -f 03-loadbalancer/app-deployment.yaml
+deployment.apps/web-app-loadbalancer created
+
+$ kubectl rollout status deployment/web-app-loadbalancer --timeout=180s
+Waiting for deployment "web-app-loadbalancer" rollout to finish: 0 of 3 updated replicas are available...
+Waiting for deployment "web-app-loadbalancer" rollout to finish: 1 of 3 updated replicas are available...
+Waiting for deployment "web-app-loadbalancer" rollout to finish: 2 of 3 updated replicas are available...
+deployment "web-app-loadbalancer" successfully rolled out
+
+$ kubectl apply -f 03-loadbalancer/service.yaml
+service/web-service-loadbalancer created
+
+$ kubectl get svc web-service-loadbalancer
+NAME                       TYPE           CLUSTER-IP     EXTERNAL-IP   PORT(S)        AGE
+web-service-loadbalancer   LoadBalancer   10.98.17.206   <pending>     80:32743/TCP   8s
+
+$ kubectl describe svc web-service-loadbalancer | grep -E 'Type|LoadBalancer Ingress|NodePort|Endpoints'
+Type:                     LoadBalancer
+NodePort:                 http  32743/TCP
+Endpoints:                10.244.0.106:80,10.244.0.105:80,10.244.0.107:80
+
+###END###
+###SHOT:task3-2-loadbalancer-reachable-via-minikube###
+$ minikube service web-service-loadbalancer --url
+http://127.0.0.1:52597
+
+$ curl -s -o /dev/null -w 'HTTP %{http_code}\n' http://127.0.0.1:52597
+HTTP 200
+
+###END###
+/tmp/claude-501/-Users-utkarshpathak3107/a3b6f990-5f77-4cd7-82b8-7462c87e1953/scratchpad/s11.sh: line 113: 64669 Terminated: 15          minikube service web-service-loadbalancer --url > /tmp/lb-url.txt 2> /dev/null
+###SHOT:task4-1-externalname-service###
+$ kubectl apply -f 04-externalname/service.yaml
+service/external-database-service created
+
+$ kubectl get svc external-database-service
+NAME                        TYPE           CLUSTER-IP   EXTERNAL-IP      PORT(S)   AGE
+external-database-service   ExternalName   <none>       api.github.com   <none>    0s
+
+###END###
+###SHOT:task4-2-externalname-cname-resolution###
+$ kubectl exec dns-test-client -- nslookup external-database-service
+Server:		10.96.0.10
+Address:	10.96.0.10:53
+
+** server can't find external-database-service.cluster.local: NXDOMAIN
+
+** server can't find external-database-service.svc.cluster.local: NXDOMAIN
+
+** server can't find external-database-service.cluster.local: NXDOMAIN
+
+** server can't find external-database-service.svc.cluster.local: NXDOMAIN
+
+external-database-service.default.svc.cluster.local	canonical name = api.github.com
+
+external-database-service.default.svc.cluster.local	canonical name = api.github.com
+Name:	api.github.com
+Address: 20.207.73.85
+
+command terminated with exit code 1
+
+###END###
+###SHOT:task4-3-externalname-traffic###
+$ kubectl exec dns-test-client -- curl -s -o /dev/null -w 'HTTP %{http_code}\n' -H 'Host: api.github.com' https://external-database-service
+HTTP 000
+command terminated with exit code 60
+
+###END###
+###SHOT:task5-1-headless-service-no-clusterip###
+$ kubectl apply -f 05-headless/service.yaml
+service/web-service-headless created
+
+$ kubectl get svc web-service-headless
+NAME                   TYPE        CLUSTER-IP   EXTERNAL-IP   PORT(S)   AGE
+web-service-headless   ClusterIP   None         <none>        80/TCP    0s
+
+###END###
+###SHOT:task5-2-statefulset-stable-identities###
+$ kubectl apply -f 05-headless/app-statefulset.yaml
+statefulset.apps/web-stateful created
+
+$ kubectl rollout status statefulset/web-stateful --timeout=240s
+Waiting for 3 pods to be ready...
+Waiting for 2 pods to be ready...
+Waiting for 2 pods to be ready...
+Waiting for 1 pods to be ready...
+Waiting for 1 pods to be ready...
+partitioned roll out complete: 3 new pods have been updated...
+
+$ kubectl get pods -l app=web-headless -o wide
+NAME             READY   STATUS    RESTARTS   AGE   IP             NODE       NOMINATED NODE   READINESS GATES
+web-stateful-0   1/1     Running   0          2s    10.244.0.114   minikube   <none>           <none>
+web-stateful-1   1/1     Running   0          1s    10.244.0.115   minikube   <none>           <none>
+web-stateful-2   1/1     Running   0          1s    10.244.0.116   minikube   <none>           <none>
+
+###END###
+###SHOT:task5-3-headless-dns-returns-all-pod-ips###
+$ kubectl exec headless-dns-client -- nslookup web-service-headless
+Server:		10.96.0.10
+Address:	10.96.0.10:53
+
+** server can't find web-service-headless.cluster.local: NXDOMAIN
+
+** server can't find web-service-headless.cluster.local: NXDOMAIN
+
+Name:	web-service-headless.default.svc.cluster.local
+Address: 10.244.0.116
+Name:	web-service-headless.default.svc.cluster.local
+Address: 10.244.0.114
+Name:	web-service-headless.default.svc.cluster.local
+Address: 10.244.0.115
+
+** server can't find web-service-headless.svc.cluster.local: NXDOMAIN
+
+** server can't find web-service-headless.svc.cluster.local: NXDOMAIN
+
+
+command terminated with exit code 1
+
+###END###
+###SHOT:task5-4-per-pod-dns-record###
+$ kubectl exec headless-dns-client -- nslookup web-stateful-0.web-service-headless.default.svc.cluster.local
+Server:		10.96.0.10
+Address:	10.96.0.10:53
+
+
+Name:	web-stateful-0.web-service-headless.default.svc.cluster.local
+Address: 10.244.0.114
+
+
+$ kubectl exec headless-dns-client -- curl -s -o /dev/null -w 'HTTP %{http_code} from web-stateful-0\n' http://web-stateful-0.web-service-headless
+HTTP 200 from web-stateful-0
+
+###END###
+###SHOT:task7-1-empty-endpoints-bug###
+$ kubectl apply -f deployment/backend-deployment.yaml
+deployment.apps/yatri-backend created
+
+$ kubectl rollout status deployment/yatri-backend --timeout=240s
+Waiting for deployment "yatri-backend" rollout to finish: 0 of 3 updated replicas are available...
+Waiting for deployment "yatri-backend" rollout to finish: 1 of 3 updated replicas are available...
+Waiting for deployment "yatri-backend" rollout to finish: 2 of 3 updated replicas are available...
+deployment "yatri-backend" successfully rolled out
+
+$ kubectl apply -f troubleshooting/empty-endpoints.yaml
+service/broken-backend-service created
+
+$ kubectl get svc broken-backend-service
+NAME                     TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)   AGE
+broken-backend-service   ClusterIP   10.108.226.79   <none>        80/TCP    0s
+
+$ kubectl get endpoints broken-backend-service
+Warning: v1 Endpoints is deprecated in v1.33+; use discovery.k8s.io/v1 EndpointSlice
+NAME                     ENDPOINTS   AGE
+broken-backend-service   <none>      0s
+
+###END###
+###SHOT:task7-2-diagnosing-the-selector-typo###
+$ kubectl describe svc broken-backend-service | grep -E 'Selector|Endpoints'
+Selector:                 app=wrong-backend-name
+Endpoints:                
+
+$ kubectl get pods -l app=yatri-backend --show-labels
+NAME                            READY   STATUS    RESTARTS   AGE   LABELS
+yatri-backend-dc5888c55-c5bcw   1/1     Running   0          1s    app=yatri-backend,pod-template-hash=dc5888c55,tier=api
+yatri-backend-dc5888c55-cgk7j   1/1     Running   0          1s    app=yatri-backend,pod-template-hash=dc5888c55,tier=api
+yatri-backend-dc5888c55-pc5rm   1/1     Running   0          1s    app=yatri-backend,pod-template-hash=dc5888c55,tier=api
+
+$ kubectl get pods -l app=wrong-backend-name
+No resources found in default namespace.
+
+###END###
+===== SESSION 11 CAPTURE DONE Thu Sep 17 22:29:13 IST 2026 =====

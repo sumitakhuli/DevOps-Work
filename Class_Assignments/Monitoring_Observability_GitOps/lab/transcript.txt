@@ -1,0 +1,321 @@
+$ kubectl get pods -n argocd; echo; kubectl get crd | grep argoproj
+NAME                                                READY   STATUS    RESTARTS   AGE
+argocd-application-controller-0                     1/1     Running   0          2m1s
+argocd-applicationset-controller-7fb7c76f76-x84n7   1/1     Running   0          2m2s
+argocd-dex-server-7d54f7f9d6-zk28w                  1/1     Running   0          2m2s
+argocd-notifications-controller-7fcfd67447-htzj2    1/1     Running   0          2m2s
+argocd-redis-6bf744486c-7wkhg                       1/1     Running   0          2m2s
+argocd-repo-server-57b98df6c6-g949c                 1/1     Running   0          2m2s
+argocd-server-665b8b6947-htxzh                      1/1     Running   0          2m2s
+
+applications.argoproj.io      Namespaced   v1alpha1(storage)   2026-10-06T18:58:02Z
+applicationsets.argoproj.io   Namespaced   v1alpha1(storage)   2026-10-06T18:58:03Z
+appprojects.argoproj.io       Namespaced   v1alpha1(storage)   2026-10-06T18:58:03Z
+
+$ cd /private/tmp/claude-501/-Users-utkarshpathak3107/82161c67-b573-47a2-b8ef-11417ea863e8/scratchpad/gitops-config && git log --oneline && find app -type f | sort && grep -E 'replicas|image:' app/deployment.yaml
+6360907 v1: session20-mini with 2 replicas
+app/configmap.yaml
+app/deployment.yaml
+app/namespace.yaml
+app/service.yaml
+  replicas: 2
+          image: nginx:1.27-alpine
+
+$ kubectl apply -f gitops/argocd-application.yaml; until [ "$(kubectl get application session20-mini -n argocd -o jsonpath={.status.health.status})" = "Healthy" ]; do sleep 3; done; kubectl get application session20-mini -n argocd -o wide; echo; kubectl get all,cm -n session20 -l app=session20-mini 2>/dev/null; kubectl get deploy,pods,svc,cm -n session20
+application.argoproj.io/session20-mini created
+NAME             SYNC STATUS   HEALTH STATUS   REVISION                                   PROJECT
+session20-mini   Synced        Healthy         6360907495980bc46bf3b36f74bd64d5bb162e90   default
+
+NAME                                  READY   STATUS    RESTARTS   AGE
+pod/session20-mini-65c66c8bf4-66gzn   1/1     Running   0          2s
+pod/session20-mini-65c66c8bf4-g57zj   1/1     Running   0          2s
+
+NAME                             READY   UP-TO-DATE   AVAILABLE   AGE
+deployment.apps/session20-mini   2/2     2            2           2s
+
+NAME                                        DESIRED   CURRENT   READY   AGE
+replicaset.apps/session20-mini-65c66c8bf4   2         2         2       2s
+NAME                             READY   UP-TO-DATE   AVAILABLE   AGE
+deployment.apps/session20-mini   2/2     2            2           2s
+
+NAME                                  READY   STATUS    RESTARTS   AGE
+pod/session20-mini-65c66c8bf4-66gzn   1/1     Running   0          2s
+pod/session20-mini-65c66c8bf4-g57zj   1/1     Running   0          2s
+
+NAME                     TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)   AGE
+service/session20-mini   ClusterIP   10.104.143.84   <none>        80/TCP    2s
+
+NAME                         DATA   AGE
+configmap/kube-root-ca.crt   1      2s
+configmap/web-content        1      2s
+
+$ cd /private/tmp/claude-501/-Users-utkarshpathak3107/82161c67-b573-47a2-b8ef-11417ea863e8/scratchpad/gitops-config && sed -i '' 's/replicas: 2/replicas: 3/' app/deployment.yaml && sed -i '' 's/Version: v1/Version: v2/' app/configmap.yaml && git diff --stat && git diff | grep -E '^[-+] ' && git commit -qam 'v2: scale to 3 replicas, new page' && git push -q origin main 2>&1 | grep -v Processed; git log --oneline
+ app/configmap.yaml  | 4 ++--
+ app/deployment.yaml | 2 +-
+ 2 files changed, 3 insertions(+), 3 deletions(-)
+-    <p>Version: v1 - deployed by Argo CD from Git</p>
++    <p>Version: v2 - deployed by Argo CD from Git</p>
+-  replicas: 2
++  replicas: 3
+remote: . Processing 1 references        
+76ecc4f v2: scale to 3 replicas, new page
+6360907 v1: session20-mini with 2 replicas
+
+$ kubectl get application session20-mini -n argocd; echo; kubectl get application session20-mini -n argocd -o jsonpath="{.status.operationState.phase}: {.status.operationState.message}{\"\n\"}{range .status.operationState.syncResult.resources[*]}{.kind}/{.name}: {.status} - {.message}{\"\n\"}{end}"; echo; kubectl get deploy session20-mini -n session20; cd /private/tmp/claude-501/-Users-utkarshpathak3107/82161c67-b573-47a2-b8ef-11417ea863e8/scratchpad/gitops-config && git show HEAD --stat --format="%h %s" | head -4 && git show HEAD -- app/configmap.yaml | grep -E "^[-+] *(api|<p>)"
+NAME             SYNC STATUS   HEALTH STATUS
+session20-mini   OutOfSync     Healthy
+
+Failed: one or more synchronization tasks are not valid: failed to discover server resources for group version v2: the server could not find the requested resource (retried 5 times).
+ConfigMap/web-content: SyncFailed - The Kubernetes API could not find version "v2" of /ConfigMap for requested resource session20/web-content. Version "v1" of /ConfigMap is installed on the destination cluster.
+
+NAME             READY   UP-TO-DATE   AVAILABLE   AGE
+session20-mini   2/2     2            2           5m45s
+76ecc4f v2: scale to 3 replicas, new page
+
+ app/configmap.yaml  | 4 ++--
+ app/deployment.yaml | 2 +-
+-apiVersion: v1
++apiVersion: v2
+-    <p>Version: v1 - deployed by Argo CD from Git</p>
++    <p>Version: v2 - deployed by Argo CD from Git</p>
+
+$ cd /private/tmp/claude-501/-Users-utkarshpathak3107/82161c67-b573-47a2-b8ef-11417ea863e8/scratchpad/gitops-config && sed -i '' 's/^apiVersion: v2/apiVersion: v1/' app/configmap.yaml && git diff | grep -E '^[-+][a-z]' && git commit -qam 'fix: configmap apiVersion must be v1' && git push -q origin main 2>&1 | grep -v -E 'Processed|Processing'; git log --oneline
+-apiVersion: v2
++apiVersion: v1
+7100c47 fix: configmap apiVersion must be v1
+76ecc4f v2: scale to 3 replicas, new page
+6360907 v1: session20-mini with 2 replicas
+
+$ NEW=$(cd /private/tmp/claude-501/-Users-utkarshpathak3107/82161c67-b573-47a2-b8ef-11417ea863e8/scratchpad/gitops-config && git rev-parse HEAD); kubectl annotate application session20-mini -n argocd argocd.argoproj.io/refresh=normal --overwrite >/dev/null; until [ "$(kubectl get application session20-mini -n argocd -o jsonpath={.status.sync.revision})" = "$NEW" ] && [ "$(kubectl get deploy session20-mini -n session20 -o jsonpath={.status.readyReplicas})" = "3" ]; do sleep 3; done; kubectl get application session20-mini -n argocd; kubectl get deploy,pods -n session20; kubectl get cm web-content -n session20 -o jsonpath="{.data.index\.html}"
+NAME             SYNC STATUS   HEALTH STATUS
+session20-mini   Synced        Healthy
+NAME                             READY   UP-TO-DATE   AVAILABLE   AGE
+deployment.apps/session20-mini   3/3     3            3           5m48s
+
+NAME                                  READY   STATUS    RESTARTS   AGE
+pod/session20-mini-65c66c8bf4-66gzn   1/1     Running   0          5m48s
+pod/session20-mini-65c66c8bf4-g57zj   1/1     Running   0          5m48s
+pod/session20-mini-65c66c8bf4-pqv46   1/1     Running   0          3s
+<h1>Session 20 - GitOps demo</h1>
+<p>Version: v2 - deployed by Argo CD from Git</p>
+
+$ date +%T; kubectl scale deploy session20-mini -n session20 --replicas=6; kubectl patch cm web-content -n session20 --type merge -p "{\"data\":{\"index.html\":\"<h1>hacked by hand</h1>\"}}"; kubectl get deploy session20-mini -n session20; sleep 1; until [ "$(kubectl get deploy session20-mini -n session20 -o jsonpath={.spec.replicas})" = "3" ] && kubectl get cm web-content -n session20 -o jsonpath="{.data.index\.html}" | grep -q v2; do sleep 1; done; date +%T; kubectl get deploy session20-mini -n session20; kubectl get cm web-content -n session20 -o jsonpath="{.data.index\.html}"; kubectl get application session20-mini -n argocd -o jsonpath="{range .status.history[*]}{.id} {.revision} {.deployedAt}{\"\n\"}{end}" | tail -3; kubectl get events -n session20 --sort-by=.lastTimestamp | grep -E "Scaled|Killing" | tail -4
+00:36:03
+deployment.apps/session20-mini scaled
+configmap/web-content patched
+NAME             READY   UP-TO-DATE   AVAILABLE   AGE
+session20-mini   3/6     6            3           5m58s
+00:36:10
+NAME             READY   UP-TO-DATE   AVAILABLE   AGE
+session20-mini   3/3     3            3           6m4s
+<h1>Session 20 - GitOps demo</h1>
+<p>Version: v2 - deployed by Argo CD from Git</p>
+0 6360907495980bc46bf3b36f74bd64d5bb162e90 2026-10-06T19:00:06Z
+1 7100c47a54c8f5a23c29233dd79f505c88c09fad 2026-10-06T19:05:51Z
+6m4s        Normal   ScalingReplicaSet   deployment/session20-mini              Scaled up replica set session20-mini-65c66c8bf4 from 0 to 2
+19s         Normal   ScalingReplicaSet   deployment/session20-mini              Scaled up replica set session20-mini-65c66c8bf4 from 2 to 3
+7s          Normal   ScalingReplicaSet   deployment/session20-mini              Scaled up replica set session20-mini-65c66c8bf4 from 3 to 6
+6s          Normal   ScalingReplicaSet   deployment/session20-mini              Scaled down replica set session20-mini-65c66c8bf4 from 6 to 3
+
+$ kubectl get svc -n session20; cd /private/tmp/claude-501/-Users-utkarshpathak3107/82161c67-b573-47a2-b8ef-11417ea863e8/scratchpad/gitops-config && git rm -q app/service.yaml && git commit -qm "remove the service" && git push -q origin main 2>&1 | grep -v -E "Process"; git log --oneline | head -2; NEW=$(git rev-parse HEAD); kubectl annotate application session20-mini -n argocd argocd.argoproj.io/refresh=normal --overwrite >/dev/null; until [ "$(kubectl get application session20-mini -n argocd -o jsonpath={.status.sync.revision})" = "$NEW" ] && ! kubectl get svc session20-mini -n session20 >/dev/null 2>&1; do sleep 2; done; kubectl get application session20-mini -n argocd -o jsonpath="{range .status.operationState.syncResult.resources[*]}{.kind}/{.name}: {.status} {.message}{\"\n\"}{end}"; kubectl get svc -n session20
+NAME             TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)   AGE
+session20-mini   ClusterIP   10.104.143.84   <none>        80/TCP    6m15s
+0af5a80 remove the service
+7100c47 fix: configmap apiVersion must be v1
+Service/session20-mini: Pruned pruned
+Namespace/session20: Synced namespace/session20 unchanged
+ConfigMap/web-content: Synced configmap/web-content unchanged
+Deployment/session20-mini: Synced deployment.apps/session20-mini unchanged
+No resources found in session20 namespace.
+
+$ cd /private/tmp/claude-501/-Users-utkarshpathak3107/82161c67-b573-47a2-b8ef-11417ea863e8/scratchpad/gitops-config && git revert --no-edit HEAD >/dev/null && git push -q origin main 2>&1 | grep -v -E "Process"; git log --oneline; NEW=$(git rev-parse HEAD); kubectl annotate application session20-mini -n argocd argocd.argoproj.io/refresh=normal --overwrite >/dev/null; for i in $(seq 1 60); do [ "$(kubectl get application session20-mini -n argocd -o jsonpath={.status.sync.revision})" = "$NEW" ] && kubectl get svc session20-mini -n session20 >/dev/null 2>&1 && break; sleep 2; done; kubectl get application session20-mini -n argocd; kubectl get svc,deploy -n session20
+fdb8e98 Revert "remove the service"
+0af5a80 remove the service
+7100c47 fix: configmap apiVersion must be v1
+76ecc4f v2: scale to 3 replicas, new page
+6360907 v1: session20-mini with 2 replicas
+NAME             SYNC STATUS   HEALTH STATUS
+session20-mini   Synced        Healthy
+NAME                     TYPE        CLUSTER-IP     EXTERNAL-IP   PORT(S)   AGE
+service/session20-mini   ClusterIP   10.96.215.45   <none>        80/TCP    2s
+
+NAME                             READY   UP-TO-DATE   AVAILABLE   AGE
+deployment.apps/session20-mini   3/3     3            3           11m
+
+$ docker compose ps --format "table {{.Name}}\t{{.Image}}\t{{.Status}}\t{{.Ports}}" | cut -c1-150
+NAME             IMAGE                         STATUS          PORTS
+s20-grafana      grafana/grafana:12.1.1        Up 13 minutes   0.0.0.0:3001->3000/tcp, [::]:3001->3000/tcp
+s20-jaeger       jaegertracing/jaeger:2.10.0   Up 13 minutes   0.0.0.0:4318->4318/tcp, [::]:4318->4318/tcp, 0.0.0.0:16686->16686/tcp, [::]:16686->1668
+s20-loadgen      curlimages/curl:8.10.1        Up 13 minutes   
+s20-prometheus   prom/prometheus:v3.5.0        Up 13 minutes   0.0.0.0:9090->9090/tcp, [::]:9090->9090/tcp
+s20-shop-api     monitoring-shop-api           Up 13 minutes   0.0.0.0:8000->8000/tcp, [::]:8000->8000/tcp
+
+$ curl -s localhost:8000/metrics | grep -E "^# (HELP|TYPE) shop_http_requests_total|^shop_http_requests_total|^shop_http_request_duration_seconds_(count|sum)\{endpoint=\"/api/checkout|^process_(cpu_seconds_total|resident_memory_bytes)|^shop_app_healthy"
+process_resident_memory_bytes 5.0688e+07
+process_cpu_seconds_total 41.54
+# HELP shop_http_requests_total HTTP requests
+# TYPE shop_http_requests_total counter
+shop_http_requests_total{endpoint="/api/products",status="200"} 1552.0
+shop_http_requests_total{endpoint="/api/checkout",status="200"} 1409.0
+shop_http_requests_total{endpoint="/api/report",status="200"} 1551.0
+shop_http_requests_total{endpoint="/api/checkout",status="502"} 142.0
+shop_http_request_duration_seconds_count{endpoint="/api/checkout"} 1551.0
+shop_http_request_duration_seconds_sum{endpoint="/api/checkout"} 353.482207568999
+shop_app_healthy 0.0
+
+$ echo '# health (1 = up)'; curl -s localhost:9090/api/v1/query --data-urlencode 'query=up' | jq -r '.data.result[] | "\(.metric.endpoint // .metric.job // "") \(.metric.status // "")  \(.value[1])"'; echo '# CPU utilisation (cores)'; curl -s localhost:9090/api/v1/query --data-urlencode 'query=rate(process_cpu_seconds_total{job="shop-api"}[1m])' | jq -r '.data.result[] | "\(.metric.endpoint // .metric.job // "") \(.metric.status // "")  \(.value[1])"'; echo '# memory (MiB)'; curl -s localhost:9090/api/v1/query --data-urlencode 'query=process_resident_memory_bytes{job="shop-api"} / 1024 / 1024' | jq -r '.data.result[] | "\(.metric.endpoint // .metric.job // "") \(.metric.status // "")  \(.value[1])"'; echo '# requests per second by endpoint/status'; curl -s localhost:9090/api/v1/query --data-urlencode 'query=sum by (endpoint, status) (rate(shop_http_requests_total[1m]))' | jq -r '.data.result[] | "\(.metric.endpoint // .metric.job // "") \(.metric.status // "")  \(.value[1])"'; echo '# error ratio'; curl -s localhost:9090/api/v1/query --data-urlencode 'query=sum(rate(shop_http_requests_total{status=~"5.."}[1m])) / sum(rate(shop_http_requests_total[1m]))' | jq -r '.data.result[] | "\(.metric.endpoint // .metric.job // "") \(.metric.status // "")  \(.value[1])"'; echo '# p95 latency (s)'; curl -s localhost:9090/api/v1/query --data-urlencode 'query=histogram_quantile(0.95, sum by (le, endpoint) (rate(shop_http_request_duration_seconds_bucket[1m])))' | jq -r '.data.result[] | "\(.metric.endpoint // .metric.job // "") \(.metric.status // "")  \(.value[1])"'
+# health (1 = up)
+shop-api   1
+prometheus   1
+# CPU utilisation (cores)
+shop-api   0.05072819505809195
+# memory (MiB)
+shop-api   48.33984375
+# requests per second by endpoint/status
+/api/products 200  1.927307769232168
+/api/checkout 200  1.745486281568756
+/api/report 200  1.927307769232168
+/api/checkout 502  0.18182148766341208
+# error ratio
+   0.031446540880503145
+# p95 latency (s)
+/api/products   0.05583333333333328
+/api/checkout   0.9086206896551724
+/api/report   0.04781443298969072
+
+$ docker logs --tail 6 s20-shop-api 2>&1; echo; echo "# only errors, as fields:"; docker logs --since 2m s20-shop-api 2>&1 | jq -c "select(.level==\"ERROR\") | {ts, msg, duration_ms, trace_id}" | tail -4; echo; echo "errors in last 2 min: $(docker logs --since 2m s20-shop-api 2>&1 | jq -r "select(.level==\"ERROR\") | .msg" | wc -l)"
+{"ts": "2026-10-06T19:12:17", "level": "ERROR", "msg": "POST /api/checkout 502", "trace_id": "25327a27685c04a364c41514523bb3fd", "endpoint": "/api/checkout", "status": 502, "duration_ms": 90.4}
+{"ts": "2026-10-06T19:12:17", "level": "INFO", "msg": "GET /api/report 200", "trace_id": "1d3784ca875a24b3e64544e3fadc62f4", "endpoint": "/api/report", "status": 200, "duration_ms": 21.2}
+{"ts": "2026-10-06T19:12:17", "level": "INFO", "msg": "GET /api/products 200", "trace_id": "0c1533d30000f010462eeca68468f310", "endpoint": "/api/products", "status": 200, "duration_ms": 43.5}
+{"ts": "2026-10-06T19:12:18", "level": "INFO", "msg": "POST /api/checkout 200", "trace_id": "07018087f8bc6cc63d7a03d99f84217c", "endpoint": "/api/checkout", "status": 200, "duration_ms": 93.1}
+{"ts": "2026-10-06T19:12:18", "level": "INFO", "msg": "GET /api/report 200", "trace_id": "148069a107ac41ff8df34f93b88fc8df", "endpoint": "/api/report", "status": 200, "duration_ms": 19.3}
+{"ts": "2026-10-06T19:12:18", "level": "INFO", "msg": "GET /api/products 200", "trace_id": "483d692209c11023614113d1bebecce0", "endpoint": "/api/products", "status": 200, "duration_ms": 34.6}
+
+# only errors, as fields:
+{"ts":"2026-10-06T19:12:02","msg":"POST /api/checkout 502","duration_ms":109.5,"trace_id":"cd5788330a238341498e02e222426c9b"}
+{"ts":"2026-10-06T19:12:02","msg":"POST /api/checkout 502","duration_ms":80.2,"trace_id":"e58b7a15f04e120b73ef0bcf9c5676cc"}
+{"ts":"2026-10-06T19:12:13","msg":"POST /api/checkout 502","duration_ms":86.2,"trace_id":"eb154c860478932f04bb9445d894ac0a"}
+{"ts":"2026-10-06T19:12:17","msg":"POST /api/checkout 502","duration_ms":90.4,"trace_id":"25327a27685c04a364c41514523bb3fd"}
+
+errors in last 2 min:       18
+
+$ kubectl top nodes; echo; kubectl top pods -n session20; echo; kubectl top pods -n argocd --sort-by=memory | head -4; echo; kubectl get events -n session20 --sort-by=.lastTimestamp | tail -5 | cut -c1-140; echo; kubectl logs -n session20 deploy/session20-mini --tail=3
+NAME       CPU(cores)   CPU(%)   MEMORY(bytes)   MEMORY(%)   
+minikube   217m         2%       1982Mi          24%         
+
+NAME                              CPU(cores)   MEMORY(bytes)   
+session20-mini-65c66c8bf4-66gzn   0m           8Mi             
+session20-mini-65c66c8bf4-g57zj   0m           8Mi             
+session20-mini-65c66c8bf4-pqv46   0m           8Mi             
+
+NAME                                                CPU(cores)   MEMORY(bytes)   
+argocd-application-controller-0                     14m          164Mi           
+argocd-repo-server-57b98df6c6-g949c                 2m           47Mi            
+argocd-server-665b8b6947-htxzh                      1m           23Mi            
+
+6m44s       Normal   ScalingReplicaSet   deployment/session20-mini              Scaled up replica set session20-mini-65c66c8bf4 from 3 to 6
+6m43s       Normal   SuccessfulDelete    replicaset/session20-mini-65c66c8bf4   Deleted pod: session20-mini-65c66c8bf4-5nc6d
+6m43s       Normal   SuccessfulDelete    replicaset/session20-mini-65c66c8bf4   Deleted pod: session20-mini-65c66c8bf4-x6jng
+6m43s       Normal   SuccessfulDelete    replicaset/session20-mini-65c66c8bf4   Deleted pod: session20-mini-65c66c8bf4-dhgl4
+6m43s       Normal   ScalingReplicaSet   deployment/session20-mini              Scaled down replica set session20-mini-65c66c8bf4 from 6 to 
+
+Found 3 pods, using pod/session20-mini-65c66c8bf4-66gzn
+2026/10/06 19:00:06 [notice] 1#1: start worker process 37
+2026/10/06 19:00:06 [notice] 1#1: start worker process 38
+2026/10/06 19:00:06 [notice] 1#1: start worker process 39
+
+$ curl -s localhost:8000/metrics | grep -E "^# (HELP|TYPE) shop_http_requests_total|^shop_http_requests_total|^shop_http_request_duration_seconds_(count|sum)\{endpoint=\"/api/checkout|^process_(cpu_seconds_total|resident_memory_bytes)|^shop_app_healthy"
+process_resident_memory_bytes 5.0331648e+07
+process_cpu_seconds_total 5.21
+# HELP shop_http_requests_total HTTP requests
+# TYPE shop_http_requests_total counter
+shop_http_requests_total{endpoint="/api/products",status="200"} 188.0
+shop_http_requests_total{endpoint="/api/checkout",status="200"} 167.0
+shop_http_requests_total{endpoint="/api/report",status="200"} 187.0
+shop_http_requests_total{endpoint="/api/checkout",status="502"} 21.0
+shop_http_request_duration_seconds_count{endpoint="/api/checkout"} 188.0
+shop_http_request_duration_seconds_sum{endpoint="/api/checkout"} 43.39433301500139
+shop_app_healthy 1.0
+
+$ echo '# health: up (1 = scrape worked)'; curl -s localhost:9090/api/v1/query --data-urlencode 'query=up' | jq -r '.data.result[] | "  \(.metric.endpoint // .metric.job // "") \(.metric.status // "")  \(.value[1])"'; echo '# CPU utilisation (cores)'; curl -s localhost:9090/api/v1/query --data-urlencode 'query=rate(process_cpu_seconds_total{job="shop-api"}[1m])' | jq -r '.data.result[] | "  \(.metric.endpoint // .metric.job // "") \(.metric.status // "")  \(.value[1])"'; echo '# memory (MiB)'; curl -s localhost:9090/api/v1/query --data-urlencode 'query=process_resident_memory_bytes{job="shop-api"} / 1024 / 1024' | jq -r '.data.result[] | "  \(.metric.endpoint // .metric.job // "") \(.metric.status // "")  \(.value[1])"'; echo '# requests per second by endpoint/status'; curl -s localhost:9090/api/v1/query --data-urlencode 'query=sum by (endpoint, status) (rate(shop_http_requests_total[1m]))' | jq -r '.data.result[] | "  \(.metric.endpoint // .metric.job // "") \(.metric.status // "")  \(.value[1])"'; echo '# error ratio'; curl -s localhost:9090/api/v1/query --data-urlencode 'query=sum(rate(shop_http_requests_total{status=~"5.."}[1m])) / sum(rate(shop_http_requests_total[1m]))' | jq -r '.data.result[] | "  \(.metric.endpoint // .metric.job // "") \(.metric.status // "")  \(.value[1])"'; echo '# p95 latency (s)'; curl -s localhost:9090/api/v1/query --data-urlencode 'query=histogram_quantile(0.95, sum by (le, endpoint) (rate(shop_http_request_duration_seconds_bucket[1m])))' | jq -r '.data.result[] | "  \(.metric.endpoint // .metric.job // "") \(.metric.status // "")  \(.value[1])"'
+# health: up (1 = scrape worked)
+  shop-api   1
+  prometheus   1
+# CPU utilisation (cores)
+  shop-api   0.05527272727272727
+# memory (MiB)
+  shop-api   48
+# requests per second by endpoint/status
+  /api/products 200  2.036363636363636
+  /api/checkout 200  1.7454545454545454
+  /api/report 200  2.036363636363636
+  /api/checkout 502  0.2909090909090909
+# error ratio
+     0.04761904761904762
+# p95 latency (s)
+  /api/report   0.04786666666666666
+  /api/products   0.0494074074074074
+  /api/checkout   0.8879999999999999
+
+$ date +%T; PAYMENT_FAILURE_RATE=0.6 docker compose up -d shop-api 2>&1 | tail -1; for i in 1 2 3 4; do docker run -d --rm --name s20-cpu-burst-$i --network monitoring_default curlimages/curl:8.10.1 sh -c "while true; do curl -s -o /dev/null http://shop-api:8000/api/report; done" >/dev/null; done; docker ps --filter name=s20-cpu-burst --format "{{.Names}} {{.Status}}"
+00:45:31
+ Container s20-shop-api Started 
+s20-cpu-burst-4 Up Less than a second
+s20-cpu-burst-3 Up Less than a second
+s20-cpu-burst-2 Up Less than a second
+s20-cpu-burst-1 Up Less than a second
+
+$ date +%T; curl -s localhost:9090/api/v1/alerts | jq -r ".data.alerts[] | \"\(.labels.alertname)  state=\(.state)  value=\(.value)  since=\(.activeAt)\""; echo; echo "# CPU cores used by shop-api:"; curl -s localhost:9090/api/v1/query --data-urlencode "query=rate(process_cpu_seconds_total{job=\"shop-api\"}[1m])" | jq -r ".data.result[0].value[1]"; docker stats --no-stream --format "table {{.Name}}\t{{.CPUPerc}}\t{{.MemUsage}}" s20-shop-api
+00:52:40
+HighCpuUsage  state=firing  value=1.0173990509608575e+00  since=2026-10-06T19:16:00.572278861Z
+
+# CPU cores used by shop-api:
+1.0158366515754833
+NAME           CPU %     MEM USAGE / LIMIT
+s20-shop-api   101.47%   42.78MiB / 7.75GiB
+
+$ docker rm -f s20-cpu-burst-1 s20-cpu-burst-2 s20-cpu-burst-3 s20-cpu-burst-4; date +%T
+s20-cpu-burst-1
+s20-cpu-burst-2
+s20-cpu-burst-3
+s20-cpu-burst-4
+00:52:46
+
+$ date +%T; curl -s localhost:9090/api/v1/alerts | jq -r ".data.alerts[] | \"\(.labels.alertname)  state=\(.state)  value=\(.value)\"  "; echo; echo "# error ratio:"; curl -s localhost:9090/api/v1/query --data-urlencode "query=sum(rate(shop_http_requests_total{status=~\"5..\"}[1m])) / sum(rate(shop_http_requests_total[1m]))" | jq -r ".data.result[0].value[1]"; echo; echo "# matching log lines (last 30 s):"; docker logs --since 30s s20-shop-api 2>&1 | jq -r "select(.level==\"ERROR\") | \"\(.ts) \(.msg) trace=\(.trace_id)\"" | tail -4
+00:54:21
+HighErrorRate  state=firing  value=1.829652996845426e-01
+
+# error ratio:
+0.1829652996845426
+
+# matching log lines (last 30 s):
+2026-10-06T19:24:15 POST /api/checkout 502 trace=4229bb0764c4ca4492d884cfbd8c5037
+2026-10-06T19:24:15 POST /api/checkout 502 trace=9097bdb7b38078446b4d69a6f790503c
+2026-10-06T19:24:19 POST /api/checkout 502 trace=16426475f9ab3228c89bce41eb1ae2ef
+2026-10-06T19:24:20 POST /api/checkout 502 trace=3a5150bab9d77180a6a6b25da6ad4717
+
+$ echo '# 1. a log line says checkout failed, with trace_id e3b8abdbc0142f1304965cb9f40f5d72'; docker logs s20-shop-api 2>&1 | grep e3b8abdbc0142f1304965cb9f40f5d72; echo; echo '# 2. the same id in Jaeger shows where the time went and what failed:'; curl -s localhost:16686/api/traces/e3b8abdbc0142f1304965cb9f40f5d72 | jq -r '.data[0].spans | sort_by(.startTime) | .[] | "\(.operationName)  \(.duration/1000|floor) ms  error=\([.tags[]|select(.key=="error" or .key=="otel.status_description")|.value]|join(" "))"'
+# 1. a log line says checkout failed, with trace_id e3b8abdbc0142f1304965cb9f40f5d72
+{"ts": "2026-10-06T19:24:25", "level": "ERROR", "msg": "POST /api/checkout 502", "trace_id": "e3b8abdbc0142f1304965cb9f40f5d72", "endpoint": "/api/checkout", "status": 502, "duration_ms": 89.4}
+
+# 2. the same id in Jaeger shows where the time went and what failed:
+POST /api/checkout  90 ms  error=true
+inventory.reserve  38 ms  error=
+payment.charge  50 ms  error=true card declined by provider
+
+$ date +%T; docker stop s20-shop-api >/dev/null && echo "shop-api stopped"; until curl -s localhost:9090/api/v1/alerts | jq -e "[.data.alerts[] | select(.labels.alertname==\"ShopApiDown\" and .state==\"firing\")] | length == 1" >/dev/null; do sleep 3; done; date +%T; curl -s localhost:9090/api/v1/alerts | jq -r ".data.alerts[] | \"\(.labels.alertname) [\(.labels.severity)] state=\(.state)  \(.annotations.summary)\""; echo; curl -s localhost:9090/api/v1/targets | jq -r ".data.activeTargets[] | \"\(.labels.job)  health=\(.health)  \(.lastError)\""
+00:55:17
+shop-api stopped
+00:55:37
+ShopApiDown [critical] state=firing  shop-api is not responding to scrapes
+HighErrorRate [warning] state=firing  More than 5% of requests are failing
+
+prometheus  health=up  
+shop-api  health=down  Get "http://shop-api:8000/metrics": dial tcp: lookup shop-api on 127.0.0.11:53: no such host
+
+$ PAYMENT_FAILURE_RATE=0.1 docker compose up -d shop-api 2>&1 | tail -1; until [ "$(curl -s localhost:9090/api/v1/alerts | jq "[.data.alerts[] | select(.state==\"firing\" and .labels.alertname==\"ShopApiDown\")] | length")" = "0" ]; do sleep 3; done; date +%T; curl -s localhost:9090/api/v1/alerts | jq -r ".data.alerts[] | \"\(.labels.alertname) state=\(.state)\""; curl -s localhost:9090/api/v1/query --data-urlencode "query=up{job=\"shop-api\"}" | jq -r "\"up{job=shop-api} = \" + .data.result[0].value[1]"
+ Container s20-shop-api Started 
+00:55:48
+HighErrorRate state=firing
+up{job=shop-api} = 1
+

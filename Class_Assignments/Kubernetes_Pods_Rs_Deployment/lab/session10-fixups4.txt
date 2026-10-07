@@ -1,0 +1,22 @@
+###SHOT:task2-7-statefulset-fixed-on-arm64###
+$ kubectl set image statefulset/mysql mysql=mysql:8.4   # 8.4 publishes an arm64 manifest
+statefulset.apps/mysql image updated
+
+$ kubectl delete pod mysql-0   # force the stuck pod to be recreated with the new image
+pod "mysql-0" deleted from default namespace
+
+$ kubectl get pods -l app=mysql
+NAME      READY   STATUS    RESTARTS   AGE
+mysql-0   1/1     Running   0          90s
+mysql-1   1/1     Running   0          54s
+mysql-2   1/1     Running   0          53s
+
+$ kubectl get pod mysql-0 -o jsonpath='{.spec.containers[0].image}'
+mysql:8.4
+
+$ kubectl describe pod mysql-0 | grep -A3 Events: | tail -2
+  ----    ------     ----  ----               -------
+  Normal  Scheduled  90s   default-scheduler  Successfully assigned default/mysql-0 to minikube
+  Normal  Pulling    90s   kubelet            spec.containers{mysql}: Pulling image "mysql:8.4"
+
+###END###

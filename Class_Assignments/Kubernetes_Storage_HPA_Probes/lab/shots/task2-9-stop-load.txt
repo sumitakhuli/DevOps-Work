@@ -1,0 +1,3 @@
+$ kubectl delete pod load-generator --wait=true; date +%H:%M:%S
+pod "load-generator" deleted from default namespace
+00:09:32

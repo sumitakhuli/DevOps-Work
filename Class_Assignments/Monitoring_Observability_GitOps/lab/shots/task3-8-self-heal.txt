@@ -1,0 +1,17 @@
+$ date +%T; kubectl scale deploy session20-mini -n session20 --replicas=6; kubectl patch cm web-content -n session20 --type merge -p "{\"data\":{\"index.html\":\"<h1>hacked by hand</h1>\"}}"; kubectl get deploy session20-mini -n session20; sleep 1; until [ "$(kubectl get deploy session20-mini -n session20 -o jsonpath={.spec.replicas})" = "3" ] && kubectl get cm web-content -n session20 -o jsonpath="{.data.index\.html}" | grep -q v2; do sleep 1; done; date +%T; kubectl get deploy session20-mini -n session20; kubectl get cm web-content -n session20 -o jsonpath="{.data.index\.html}"; kubectl get application session20-mini -n argocd -o jsonpath="{range .status.history[*]}{.id} {.revision} {.deployedAt}{\"\n\"}{end}" | tail -3; kubectl get events -n session20 --sort-by=.lastTimestamp | grep -E "Scaled|Killing" | tail -4
+00:36:03
+deployment.apps/session20-mini scaled
+configmap/web-content patched
+NAME             READY   UP-TO-DATE   AVAILABLE   AGE
+session20-mini   3/6     6            3           5m58s
+00:36:10
+NAME             READY   UP-TO-DATE   AVAILABLE   AGE
+session20-mini   3/3     3            3           6m4s
+<h1>Session 20 - GitOps demo</h1>
+<p>Version: v2 - deployed by Argo CD from Git</p>
+0 6360907495980bc46bf3b36f74bd64d5bb162e90 2026-10-06T19:00:06Z
+1 7100c47a54c8f5a23c29233dd79f505c88c09fad 2026-10-06T19:05:51Z
+6m4s        Normal   ScalingReplicaSet   deployment/session20-mini              Scaled up replica set session20-mini-65c66c8bf4 from 0 to 2
+19s         Normal   ScalingReplicaSet   deployment/session20-mini              Scaled up replica set session20-mini-65c66c8bf4 from 2 to 3
+7s          Normal   ScalingReplicaSet   deployment/session20-mini              Scaled up replica set session20-mini-65c66c8bf4 from 3 to 6
+6s          Normal   ScalingReplicaSet   deployment/session20-mini              Scaled down replica set session20-mini-65c66c8bf4 from 6 to 3

@@ -1,0 +1,12 @@
+$ kubectl version; kubectl get nodes; minikube addons list | grep -E "metrics-server|storage-provisioner|default-storageclass"; kubectl get storageclass
+Client Version: v1.37.0
+Kustomize Version: v5.8.1
+Server Version: v1.37.0
+NAME       STATUS   ROLES           AGE   VERSION
+minikube   Ready    control-plane   63m   v1.37.0
+│ [32mdefault-storageclass[0m        │ [32mminikube[0m │ [32menabled ✅[0m │ [32mKubernetes[0m                             │
+│ [32mmetrics-server[0m              │ [32mminikube[0m │ [32menabled ✅[0m │ [32mKubernetes[0m                             │
+│ [32mstorage-provisioner[0m         │ [32mminikube[0m │ [32menabled ✅[0m │ [32mminikube[0m                               │
+│ storage-provisioner-rancher │ minikube │ disabled   │ 3rd party (Rancher)                    │
+NAME                 PROVISIONER                RECLAIMPOLICY   VOLUMEBINDINGMODE   ALLOWVOLUMEEXPANSION   AGE
+standard (default)   k8s.io/minikube-hostpath   Delete          Immediate           false                  63m

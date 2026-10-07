@@ -1,0 +1,14 @@
+$ helm create web-chart && find web-chart -type f | sort
+Creating web-chart
+web-chart/.helmignore
+web-chart/Chart.yaml
+web-chart/templates/_helpers.tpl
+web-chart/templates/deployment.yaml
+web-chart/templates/hpa.yaml
+web-chart/templates/httproute.yaml
+web-chart/templates/ingress.yaml
+web-chart/templates/NOTES.txt
+web-chart/templates/service.yaml
+web-chart/templates/serviceaccount.yaml
+web-chart/templates/tests/test-connection.yaml
+web-chart/values.yaml

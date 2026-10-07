@@ -1,0 +1,13 @@
+$ kubectl get pv | grep -c dynamic-lab-claim; kubectl apply -f 01-kubernetes-volumes/dynamic-pvc.yml; sleep 4; kubectl get pvc dynamic-lab-claim; kubectl get pv | grep -E "NAME|dynamic-lab-claim"; kubectl describe pvc dynamic-lab-claim | sed -n "/Events/,\$p"
+0
+persistentvolumeclaim/dynamic-lab-claim created
+NAME                STATUS   VOLUME                                     CAPACITY   ACCESS MODES   STORAGECLASS   VOLUMEATTRIBUTESCLASS   AGE
+dynamic-lab-claim   Bound    pvc-e03fa5c4-63db-4326-85e6-657d1f1b483b   1Gi        RWO            standard       <unset>                 4s
+NAME                                       CAPACITY   ACCESS MODES   RECLAIM POLICY   STATUS   CLAIM                       STORAGECLASS   VOLUMEATTRIBUTESCLASS   REASON   AGE
+pvc-e03fa5c4-63db-4326-85e6-657d1f1b483b   1Gi        RWO            Delete           Bound    default/dynamic-lab-claim   standard       <unset>                          4s
+Events:
+  Type    Reason                 Age   From                                                                    Message
+  ----    ------                 ----  ----                                                                    -------
+  Normal  ExternalProvisioning   4s    persistentvolume-controller                                             Waiting for a volume to be created either by the external provisioner 'k8s.io/minikube-hostpath' or manually by the system administrator. If volume creation is delayed, please verify that the provisioner is running and correctly registered.
+  Normal  Provisioning           4s    k8s.io/minikube-hostpath_minikube_e089e9d3-4cb7-4b55-be59-6dda492c7178  External provisioner is provisioning volume for claim "default/dynamic-lab-claim"
+  Normal  ProvisioningSucceeded  4s    k8s.io/minikube-hostpath_minikube_e089e9d3-4cb7-4b55-be59-6dda492c7178  Successfully provisioned volume pvc-e03fa5c4-63db-4326-85e6-657d1f1b483b

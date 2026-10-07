@@ -1,0 +1,4 @@
+$ kubectl get deploy web-web-chart -n helm-lab -o jsonpath="image={.spec.template.spec.containers[0].image}  replicas={.spec.replicas}  ready={.status.readyReplicas}{\"\n\"}"; curl -sI --max-time 5 http://localhost >/dev/null 2>&1; kubectl run curl-check -n helm-lab --rm -i --restart=Never --image=curlimages/curl:8.10.1 -q -- curl -sI http://web-web-chart | grep -E 'HTTP|Server'
+image=nginx:1.25  replicas=1  ready=1
+HTTP/1.1 200 OK
+Server: nginx/1.25.5

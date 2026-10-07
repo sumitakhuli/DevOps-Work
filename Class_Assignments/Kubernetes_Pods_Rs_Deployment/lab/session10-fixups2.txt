@@ -1,0 +1,57 @@
+###SHOT:task2-5-replicaset-selfheal###
+$ kubectl get rs myapp-rs
+NAME       DESIRED   CURRENT   READY   AGE
+myapp-rs   3         3         3       42s
+
+$ kubectl get pods -l app=web --no-headers
+myapp-rs-9nhdh   1/1   Running   0     42s
+myapp-rs-nrkcz   1/1   Running   0     42s
+myapp-rs-xf7cp   1/1   Running   0     42s
+
+$ kubectl delete pod myapp-rs-9nhdh
+pod "myapp-rs-9nhdh" deleted from default namespace
+
+$ kubectl get pods -l app=web --no-headers
+myapp-rs-6phkr   1/1   Running   0     6s
+myapp-rs-nrkcz   1/1   Running   0     48s
+myapp-rs-xf7cp   1/1   Running   0     48s
+
+# The ReplicaSet controller noticed the count had dropped below replicas: 3 and created
+# a replacement pod immediately - note the new pod name and its AGE.
+###END###
+###SHOT:task2-6-statefulset-arm64-failure###
+$ kubectl get sts mysql
+NAME    READY   AGE
+mysql   0/3     48s
+
+$ kubectl get pods -l app=mysql
+NAME      READY   STATUS         RESTARTS   AGE
+mysql-0   0/1     ErrImagePull   0          48s
+
+$ kubectl describe pod mysql-0 | grep -A4 'Events:' | tail -3
+  ----     ------     ----               ----               -------
+  Normal   Scheduled  49s                default-scheduler  Successfully assigned default/mysql-0 to minikube
+  Normal   Pulling    21s (x2 over 48s)  kubelet            spec.containers{mysql}: Pulling image "mysql:5.7"
+
+$ docker image inspect mysql:5.7 --format '{{.Architecture}}' 2>/dev/null || echo 'image not pullable for this platform'
+
+image not pullable for this platform
+
+###END###
+###SHOT:task2-7-statefulset-vs-deployment-naming###
+$ kubectl get pods -l app=mysql -o custom-columns=NAME:.metadata.name,PHASE:.status.phase
+NAME      PHASE
+mysql-0   Pending
+
+$ kubectl get pods -l app=myapp -o custom-columns=NAME:.metadata.name,PHASE:.status.phase
+NAME                     PHASE
+myapp-5b9587f95d-58vj2   Running
+myapp-5b9587f95d-fgpcq   Running
+myapp-5b9587f95d-pbpkk   Running
+
+$ kubectl get pvc
+NAME                               STATUS   VOLUME                                     CAPACITY   ACCESS MODES   STORAGECLASS   VOLUMEATTRIBUTESCLASS   AGE
+mysql-persistent-storage-mysql-0   Bound    pvc-ff8d7cd0-59ab-4c16-bcf1-7ff5161c491f   5Gi        RWO            standard       <unset>                 5m28s
+
+###END###
+FIX2 DONE 22:27:22

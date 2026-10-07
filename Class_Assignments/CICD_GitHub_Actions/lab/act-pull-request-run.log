@@ -1,0 +1,155 @@
+time="2026-10-06T23:47:49+05:30" level=info msg="Using docker host 'unix:///var/run/docker.sock', and daemon socket 'unix:///var/run/docker.sock'"
+level=warning msg= ⚠ You are using Apple M-series chip and you have not specified container architecture, you might encounter issues while running act. If so, try running it with '--container-architecture linux/amd64'. ⚠ 
+
+time="2026-10-06T23:47:49+05:30" level=info msg="Start server on http://10.114.2.89:34567"
+[Calculator CI/CD/Test          ] ⭐ Run Set up job
+[Calculator CI/CD/Test          ] 🚀  Start image=catthehacker/ubuntu:act-latest
+[Calculator CI/CD/Security Check] ⭐ Run Set up job
+[Calculator CI/CD/Security Check] 🚀  Start image=catthehacker/ubuntu:act-latest
+[Calculator CI/CD/Security Check]   🐳  docker pull image=catthehacker/ubuntu:act-latest platform= username= forcePull=false
+[Calculator CI/CD/Test          ]   🐳  docker pull image=catthehacker/ubuntu:act-latest platform= username= forcePull=false
+[Calculator CI/CD/Security Check]   🐳  docker create image=catthehacker/ubuntu:act-latest platform= entrypoint=["tail" "-f" "/dev/null"] cmd=[] network="host"
+[Calculator CI/CD/Test          ]   🐳  docker create image=catthehacker/ubuntu:act-latest platform= entrypoint=["tail" "-f" "/dev/null"] cmd=[] network="host"
+[Calculator CI/CD/Security Check]   🐳  docker run image=catthehacker/ubuntu:act-latest platform= entrypoint=["tail" "-f" "/dev/null"] cmd=[] network="host"
+[Calculator CI/CD/Test          ]   🐳  docker run image=catthehacker/ubuntu:act-latest platform= entrypoint=["tail" "-f" "/dev/null"] cmd=[] network="host"
+[Calculator CI/CD/Security Check]   🐳  docker exec cmd=[node --no-warnings -e console.log(process.execPath)] user= workdir=
+[Calculator CI/CD/Test          ]   🐳  docker exec cmd=[node --no-warnings -e console.log(process.execPath)] user= workdir=
+[Calculator CI/CD/Test          ]   ✅  Success - Set up job
+[Calculator CI/CD/Security Check]   ✅  Success - Set up job
+[Calculator CI/CD/Test          ]   ☁  git clone 'https://github.com/actions/setup-python' # ref=v5
+[Calculator CI/CD/Security Check] ⭐ Run Main Checkout source code
+[Calculator CI/CD/Security Check]   🐳  docker cp src=/Users/utkarshpathak3107/Desktop/Learn_DevOps/Class_Assignments/CICD_GitHub_Actions/. dst=/Users/utkarshpathak3107/Desktop/Learn_DevOps/Class_Assignments/CICD_GitHub_Actions
+[Calculator CI/CD/Security Check]   ✅  Success - Main Checkout source code [20.577958ms]
+[Calculator CI/CD/Security Check] ⭐ Run Main Check for committed secret files
+[Calculator CI/CD/Security Check]   🐳  docker exec cmd=[bash -e /var/run/act/workflow/1] user= workdir=
+[Calculator CI/CD/Security Check]   | No .env / .pem / .key files found.
+[Calculator CI/CD/Security Check]   ✅  Success - Main Check for committed secret files [68.613041ms]
+[Calculator CI/CD/Security Check] ⭐ Run Complete job
+[Calculator CI/CD/Security Check] Cleaning up container for job Security Check
+[Calculator CI/CD/Security Check]   ✅  Success - Complete job
+[Calculator CI/CD/Security Check] 🏁  Job succeeded
+[Calculator CI/CD/Test          ] ⭐ Run Main Checkout source code
+[Calculator CI/CD/Test          ]   🐳  docker cp src=/Users/utkarshpathak3107/Desktop/Learn_DevOps/Class_Assignments/CICD_GitHub_Actions/. dst=/Users/utkarshpathak3107/Desktop/Learn_DevOps/Class_Assignments/CICD_GitHub_Actions
+[Calculator CI/CD/Test          ]   ✅  Success - Main Checkout source code [10.513ms]
+[Calculator CI/CD/Test          ] ⭐ Run Main Setup Python
+[Calculator CI/CD/Test          ]   🐳  docker cp src=/Users/utkarshpathak3107/.cache/act/actions-setup-python@v5/ dst=/var/run/act/actions/actions-setup-python@v5/
+[Calculator CI/CD/Test          ]   🐳  docker exec cmd=[/opt/acttoolcache/node/24.19.0/arm64/bin/node /var/run/act/actions/actions-setup-python@v5/dist/setup/index.js] user= workdir=
+[Calculator CI/CD/Test          ]   ❓  ::group::Installed versions
+[Calculator CI/CD/Test          ]   | (node:32) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+[Calculator CI/CD/Test          ]   | (Use `node --trace-deprecation ...` to show where the warning was created)
+[Calculator CI/CD/Test          ]   | Successfully set up CPython (3.12.15)
+[Calculator CI/CD/Test          ]   ❓  ::endgroup::
+[Calculator CI/CD/Test          ]   ❓ add-matcher /run/act/actions/actions-setup-python@v5/.github/python.json
+[Calculator CI/CD/Test          ]   ✅  Success - Main Setup Python [780.450417ms]
+[Calculator CI/CD/Test          ]   ⚙  ::set-env:: PKG_CONFIG_PATH=/opt/hostedtoolcache/Python/3.12.15/arm64/lib/pkgconfig
+[Calculator CI/CD/Test          ]   ⚙  ::set-env:: Python_ROOT_DIR=/opt/hostedtoolcache/Python/3.12.15/arm64
+[Calculator CI/CD/Test          ]   ⚙  ::set-env:: Python2_ROOT_DIR=/opt/hostedtoolcache/Python/3.12.15/arm64
+[Calculator CI/CD/Test          ]   ⚙  ::set-env:: Python3_ROOT_DIR=/opt/hostedtoolcache/Python/3.12.15/arm64
+[Calculator CI/CD/Test          ]   ⚙  ::set-env:: LD_LIBRARY_PATH=/opt/hostedtoolcache/Python/3.12.15/arm64/lib
+[Calculator CI/CD/Test          ]   ⚙  ::set-env:: pythonLocation=/opt/hostedtoolcache/Python/3.12.15/arm64
+[Calculator CI/CD/Test          ]   ⚙  ::set-output:: python-version=3.12.15
+[Calculator CI/CD/Test          ]   ⚙  ::set-output:: python-path=/opt/hostedtoolcache/Python/3.12.15/arm64/bin/python
+[Calculator CI/CD/Test          ]   ⚙  ::add-path:: /opt/hostedtoolcache/Python/3.12.15/arm64
+[Calculator CI/CD/Test          ]   ⚙  ::add-path:: /opt/hostedtoolcache/Python/3.12.15/arm64/bin
+[Calculator CI/CD/Test          ] ⭐ Run Main Install dependencies
+[Calculator CI/CD/Test          ]   🐳  docker exec cmd=[bash -e /var/run/act/workflow/2] user= workdir=
+[Calculator CI/CD/Test          ]   | Requirement already satisfied: pip in /opt/hostedtoolcache/Python/3.12.15/arm64/lib/python3.12/site-packages (26.2.1)
+[Calculator CI/CD/Test          ]   | WARNING: Running pip as the 'root' user can result in broken permissions and conflicting behaviour with the system package manager, possibly rendering your system unusable. It is recommended to use a virtual environment instead: https://pip.pypa.io/warnings/venv. Use the --root-user-action option if you know what you are doing and want to suppress this warning.
+[Calculator CI/CD/Test          ]   | Requirement already satisfied: flask==3.1.2 in /opt/hostedtoolcache/Python/3.12.15/arm64/lib/python3.12/site-packages (from -r /Users/utkarshpathak3107/Desktop/Learn_DevOps/Class_Assignments/CICD_GitHub_Actions/requirements.txt (line 1)) (3.1.2)
+[Calculator CI/CD/Test          ]   | Requirement already satisfied: gunicorn==23.0.0 in /opt/hostedtoolcache/Python/3.12.15/arm64/lib/python3.12/site-packages (from -r /Users/utkarshpathak3107/Desktop/Learn_DevOps/Class_Assignments/CICD_GitHub_Actions/requirements.txt (line 2)) (23.0.0)
+[Calculator CI/CD/Test          ]   | Requirement already satisfied: pytest==8.4.2 in /opt/hostedtoolcache/Python/3.12.15/arm64/lib/python3.12/site-packages (from -r requirements-dev.txt (line 2)) (8.4.2)
+[Calculator CI/CD/Test          ]   | Requirement already satisfied: blinker>=1.9.0 in /opt/hostedtoolcache/Python/3.12.15/arm64/lib/python3.12/site-packages (from flask==3.1.2->-r /Users/utkarshpathak3107/Desktop/Learn_DevOps/Class_Assignments/CICD_GitHub_Actions/requirements.txt (line 1)) (1.9.0)
+[Calculator CI/CD/Test          ]   | Requirement already satisfied: click>=8.1.3 in /opt/hostedtoolcache/Python/3.12.15/arm64/lib/python3.12/site-packages (from flask==3.1.2->-r /Users/utkarshpathak3107/Desktop/Learn_DevOps/Class_Assignments/CICD_GitHub_Actions/requirements.txt (line 1)) (8.5.0)
+[Calculator CI/CD/Test          ]   | Requirement already satisfied: itsdangerous>=2.2.0 in /opt/hostedtoolcache/Python/3.12.15/arm64/lib/python3.12/site-packages (from flask==3.1.2->-r /Users/utkarshpathak3107/Desktop/Learn_DevOps/Class_Assignments/CICD_GitHub_Actions/requirements.txt (line 1)) (2.2.0)
+[Calculator CI/CD/Test          ]   | Requirement already satisfied: jinja2>=3.1.2 in /opt/hostedtoolcache/Python/3.12.15/arm64/lib/python3.12/site-packages (from flask==3.1.2->-r /Users/utkarshpathak3107/Desktop/Learn_DevOps/Class_Assignments/CICD_GitHub_Actions/requirements.txt (line 1)) (3.1.6)
+[Calculator CI/CD/Test          ]   | Requirement already satisfied: markupsafe>=2.1.1 in /opt/hostedtoolcache/Python/3.12.15/arm64/lib/python3.12/site-packages (from flask==3.1.2->-r /Users/utkarshpathak3107/Desktop/Learn_DevOps/Class_Assignments/CICD_GitHub_Actions/requirements.txt (line 1)) (3.0.4)
+[Calculator CI/CD/Test          ]   | Requirement already satisfied: werkzeug>=3.1.0 in /opt/hostedtoolcache/Python/3.12.15/arm64/lib/python3.12/site-packages (from flask==3.1.2->-r /Users/utkarshpathak3107/Desktop/Learn_DevOps/Class_Assignments/CICD_GitHub_Actions/requirements.txt (line 1)) (3.1.9)
+[Calculator CI/CD/Test          ]   | Requirement already satisfied: packaging in /opt/hostedtoolcache/Python/3.12.15/arm64/lib/python3.12/site-packages (from gunicorn==23.0.0->-r /Users/utkarshpathak3107/Desktop/Learn_DevOps/Class_Assignments/CICD_GitHub_Actions/requirements.txt (line 2)) (26.3)
+[Calculator CI/CD/Test          ]   | Requirement already satisfied: iniconfig>=1 in /opt/hostedtoolcache/Python/3.12.15/arm64/lib/python3.12/site-packages (from pytest==8.4.2->-r requirements-dev.txt (line 2)) (2.3.0)
+[Calculator CI/CD/Test          ]   | Requirement already satisfied: pluggy<2,>=1.5 in /opt/hostedtoolcache/Python/3.12.15/arm64/lib/python3.12/site-packages (from pytest==8.4.2->-r requirements-dev.txt (line 2)) (1.6.0)
+[Calculator CI/CD/Test          ]   | Requirement already satisfied: pygments>=2.7.2 in /opt/hostedtoolcache/Python/3.12.15/arm64/lib/python3.12/site-packages (from pytest==8.4.2->-r requirements-dev.txt (line 2)) (2.21.0)
+[Calculator CI/CD/Test          ]   | WARNING: Running pip as the 'root' user can result in broken permissions and conflicting behaviour with the system package manager, possibly rendering your system unusable. It is recommended to use a virtual environment instead: https://pip.pypa.io/warnings/venv. Use the --root-user-action option if you know what you are doing and want to suppress this warning.
+[Calculator CI/CD/Test          ]   ✅  Success - Main Install dependencies [688.399834ms]
+[Calculator CI/CD/Test          ] ⭐ Run Main Run unit tests
+[Calculator CI/CD/Test          ]   🐳  docker exec cmd=[bash -e /var/run/act/workflow/3] user= workdir=
+[Calculator CI/CD/Test          ]   | ============================= test session starts ==============================
+[Calculator CI/CD/Test          ]   | platform linux -- Python 3.12.15, pytest-8.4.2, pluggy-1.6.0 -- /opt/hostedtoolcache/Python/3.12.15/arm64/bin/python
+[Calculator CI/CD/Test          ]   | cachedir: .pytest_cache
+[Calculator CI/CD/Test          ]   | rootdir: /Users/utkarshpathak3107/Desktop/Learn_DevOps/Class_Assignments/CICD_GitHub_Actions
+[Calculator CI/CD/Test          ]   | collecting ... collected 9 items
+[Calculator CI/CD/Test          ]   | 
+[Calculator CI/CD/Test          ]   | tests/test_api.py::test_health PASSED                                    [ 11%]
+[Calculator CI/CD/Test          ]   | tests/test_api.py::test_add_endpoint PASSED                              [ 22%]
+[Calculator CI/CD/Test          ]   | tests/test_api.py::test_divide_by_zero_returns_400 PASSED                [ 33%]
+[Calculator CI/CD/Test          ]   | tests/test_api.py::test_unknown_operation_returns_404 PASSED             [ 44%]
+[Calculator CI/CD/Test          ]   | tests/test_calculator.py::test_add PASSED                                [ 55%]
+[Calculator CI/CD/Test          ]   | tests/test_calculator.py::test_subtract PASSED                           [ 66%]
+[Calculator CI/CD/Test          ]   | tests/test_calculator.py::test_multiply PASSED                           [ 77%]
+[Calculator CI/CD/Test          ]   | tests/test_calculator.py::test_divide PASSED                             [ 88%]
+[Calculator CI/CD/Test          ]   | tests/test_calculator.py::test_divide_by_zero PASSED                     [100%]
+[Calculator CI/CD/Test          ]   | 
+[Calculator CI/CD/Test          ]   | ============================== 9 passed in 0.06s ===============================
+[Calculator CI/CD/Test          ]   ✅  Success - Main Run unit tests [233.142ms]
+[Calculator CI/CD/Test          ] ⭐ Run Post Setup Python
+[Calculator CI/CD/Test          ]   🐳  docker exec cmd=[/opt/acttoolcache/node/24.19.0/arm64/bin/node /var/run/act/actions/actions-setup-python@v5/dist/cache-save/index.js] user= workdir=
+[Calculator CI/CD/Test          ]   | (node:92) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+[Calculator CI/CD/Test          ]   | (Use `node --trace-deprecation ...` to show where the warning was created)
+[Calculator CI/CD/Test          ]   ✅  Success - Post Setup Python [109.439458ms]
+[Calculator CI/CD/Test          ] ⭐ Run Complete job
+[Calculator CI/CD/Test          ] Cleaning up container for job Test
+[Calculator CI/CD/Test          ]   ✅  Success - Complete job
+[Calculator CI/CD/Test          ] 🏁  Job succeeded
+[Calculator CI/CD/Build         ] ⭐ Run Set up job
+[Calculator CI/CD/Build         ] 🚀  Start image=catthehacker/ubuntu:act-latest
+[Calculator CI/CD/Build         ]   🐳  docker pull image=catthehacker/ubuntu:act-latest platform= username= forcePull=false
+[Calculator CI/CD/Build         ]   🐳  docker create image=catthehacker/ubuntu:act-latest platform= entrypoint=["tail" "-f" "/dev/null"] cmd=[] network="host"
+[Calculator CI/CD/Build         ]   🐳  docker run image=catthehacker/ubuntu:act-latest platform= entrypoint=["tail" "-f" "/dev/null"] cmd=[] network="host"
+[Calculator CI/CD/Build         ]   🐳  docker exec cmd=[node --no-warnings -e console.log(process.execPath)] user= workdir=
+[Calculator CI/CD/Build         ]   ✅  Success - Set up job
+[Calculator CI/CD/Build         ]   ☁  git clone 'https://github.com/actions/upload-artifact' # ref=v4
+[Calculator CI/CD/Build         ] ⭐ Run Main Checkout source code
+[Calculator CI/CD/Build         ]   🐳  docker cp src=/Users/utkarshpathak3107/Desktop/Learn_DevOps/Class_Assignments/CICD_GitHub_Actions/. dst=/Users/utkarshpathak3107/Desktop/Learn_DevOps/Class_Assignments/CICD_GitHub_Actions
+[Calculator CI/CD/Build         ]   ✅  Success - Main Checkout source code [11.043125ms]
+[Calculator CI/CD/Build         ] ⭐ Run Main Build application
+[Calculator CI/CD/Build         ]   🐳  docker exec cmd=[bash -e /var/run/act/workflow/1] user= workdir=
+[Calculator CI/CD/Build         ]   | Starting application build
+[Calculator CI/CD/Build         ]   | total 20
+[Calculator CI/CD/Build         ]   | drwxr-xr-x 3 root root 4096 Oct  6 18:17 .
+[Calculator CI/CD/Build         ]   | drwxr-xr-x 7 root root 4096 Oct  6 18:17 ..
+[Calculator CI/CD/Build         ]   | drwxr-xr-x 2 root root 4096 Oct  6 18:17 app
+[Calculator CI/CD/Build         ]   | -rw-r--r-- 1 root root  151 Oct  6 18:17 build-info.txt
+[Calculator CI/CD/Build         ]   | -rw-r--r-- 1 root root   30 Oct  6 18:17 requirements.txt
+[Calculator CI/CD/Build         ]   | Build completed successfully.
+[Calculator CI/CD/Build         ]   ✅  Success - Main Build application [68.735125ms]
+[Calculator CI/CD/Build         ] ⭐ Run Main Show build info
+[Calculator CI/CD/Build         ]   🐳  docker exec cmd=[bash -e /var/run/act/workflow/2] user= workdir=
+[Calculator CI/CD/Build         ]   | Application: Session 16 Calculator API
+[Calculator CI/CD/Build         ]   | Build Status: SUCCESS
+[Calculator CI/CD/Build         ]   | Commit: 9036109cc5945f20e1aa9efb40a876fd4a1f335f
+[Calculator CI/CD/Build         ]   | Build Date: Tue Oct  6 18:17:54 UTC 2026
+[Calculator CI/CD/Build         ]   ✅  Success - Main Show build info [60.060875ms]
+[Calculator CI/CD/Build         ] ⭐ Run Main Upload build artifact
+[Calculator CI/CD/Build         ]   🐳  docker cp src=/Users/utkarshpathak3107/.cache/act/actions-upload-artifact@v4/ dst=/var/run/act/actions/actions-upload-artifact@v4/
+[Calculator CI/CD/Build         ]   🐳  docker exec cmd=[/opt/acttoolcache/node/24.19.0/arm64/bin/node /var/run/act/actions/actions-upload-artifact@v4/dist/upload/index.js] user= workdir=
+[Calculator CI/CD/Build         ]   | (node:51) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+[Calculator CI/CD/Build         ]   | (Use `node --trace-deprecation ...` to show where the warning was created)
+[Calculator CI/CD/Build         ]   | With the provided path, there will be 5 files uploaded
+[Calculator CI/CD/Build         ]   | Artifact name is valid!
+[Calculator CI/CD/Build         ]   | Root directory input is valid!
+[Calculator CI/CD/Build         ]   | Beginning upload of artifact content to blob storage
+[Calculator CI/CD/Build         ]   | (node:51) [DEP0169] DeprecationWarning: `url.parse()` behavior is not standardized and prone to errors that have security implications. Use the WHATWG URL API instead. CVEs are not issued for `url.parse()` vulnerabilities.
+[Calculator CI/CD/Build         ]   | Uploaded bytes 1336
+[Calculator CI/CD/Build         ]   | Finished uploading artifact content to blob storage!
+[Calculator CI/CD/Build         ]   | SHA256 digest of uploaded artifact zip is bd0fb9f82b47ff7460e68c435bcb44405870ad5bcb5119102c8d07e09b698976
+[Calculator CI/CD/Build         ]   | Finalizing artifact upload
+[Calculator CI/CD/Build         ]   | Artifact calculator-build.zip successfully finalized. Artifact ID 1242866976
+[Calculator CI/CD/Build         ]   | Artifact calculator-build has been successfully uploaded! Final size is 1336 bytes. Artifact ID is 1242866976
+[Calculator CI/CD/Build         ]   | Artifact download URL: https://github.com/31UTKARSH07-ALPHA/Learn_DevOps/actions/runs/1/artifacts/1242866976
+[Calculator CI/CD/Build         ]   ✅  Success - Main Upload build artifact [583.550125ms]
+[Calculator CI/CD/Build         ]   ⚙  ::set-output:: artifact-id=1242866976
+[Calculator CI/CD/Build         ]   ⚙  ::set-output:: artifact-digest=bd0fb9f82b47ff7460e68c435bcb44405870ad5bcb5119102c8d07e09b698976
+[Calculator CI/CD/Build         ]   ⚙  ::set-output:: artifact-url=https://github.com/31UTKARSH07-ALPHA/Learn_DevOps/actions/runs/1/artifacts/1242866976
+[Calculator CI/CD/Build         ] ⭐ Run Complete job
+[Calculator CI/CD/Build         ] Cleaning up container for job Build
+[Calculator CI/CD/Build         ]   ✅  Success - Complete job
+[Calculator CI/CD/Build         ] 🏁  Job succeeded

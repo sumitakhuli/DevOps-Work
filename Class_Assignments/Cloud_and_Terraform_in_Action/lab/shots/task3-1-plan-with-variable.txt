@@ -1,0 +1,22 @@
+$ terraform plan -no-color -var instance_type=t3.small -var ssh_allowed_cidr=198.51.100.7/32 | grep -E "will be|~ |instance_type|cidr_blocks|198\.|203\.|Plan:" | grep -v "tags"
+  ~ update in-place
+  # aws_instance.web will be updated in-place
+  ~ resource "aws_instance" "web" {
+      ~ instance_type                        = "t3.micro" -> "t3.small"
+      ~ public_dns                           = "ec2-54-214-199-118.ap-south-1.compute.amazonaws.com" -> (known after apply)
+      ~ public_ip                            = "54.214.199.118" -> (known after apply)
+  # aws_s3_bucket.assets will be updated in-place
+  ~ resource "aws_s3_bucket" "assets" {
+  # aws_security_group.web will be updated in-place
+  ~ resource "aws_security_group" "web" {
+      ~ ingress                = [
+              - cidr_blocks      = [
+                  - "203.0.113.10/32",
+              - ipv6_cidr_blocks = []
+              + cidr_blocks      = [
+                  + "198.51.100.7/32",
+              + ipv6_cidr_blocks = []
+  # aws_subnet.public will be updated in-place
+  ~ resource "aws_subnet" "public" {
+Plan: 0 to add, 4 to change, 0 to destroy.
+  ~ instance_public_ip  = "54.214.199.118" -> (known after apply)

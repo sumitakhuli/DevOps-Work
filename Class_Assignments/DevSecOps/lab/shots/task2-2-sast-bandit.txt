@@ -1,0 +1,14 @@
+$ act push -W .github/workflows/devsecops.yml -P ubuntu-latest=catthehacker/ubuntu:act-latest --network kind --secret-file s17.secrets
+  (run 3 - SAST)
+[DevSecOps Pipeline/SAST - Bandit         ] ⭐ Run Main Scan source code
+[DevSecOps Pipeline/SAST - Bandit         ]   | 	No issues identified.
+[DevSecOps Pipeline/SAST - Bandit         ]   | 	Total lines of code: 168
+[DevSecOps Pipeline/SAST - Bandit         ]   | 	Total lines skipped (#nosec): 0
+[DevSecOps Pipeline/SAST - Bandit         ]   | 	Total issues (by severity):
+[DevSecOps Pipeline/SAST - Bandit         ]   | 		Low: 5
+[DevSecOps Pipeline/SAST - Bandit         ]   | 		Medium: 0
+[DevSecOps Pipeline/SAST - Bandit         ]   | 		High: 0
+[DevSecOps Pipeline/SAST - Bandit         ]   | 	Total issues (by confidence):
+[DevSecOps Pipeline/SAST - Bandit         ]   | 		Low: 0
+[DevSecOps Pipeline/SAST - Bandit         ]   | 		Medium: 0
+[DevSecOps Pipeline/SAST - Bandit         ]   | 		High: 5

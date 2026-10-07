@@ -1,0 +1,33 @@
+###SHOT:task2-6-statefulset-arm64-failure###
+$ kubectl get pods -l app=mysql
+NAME      READY   STATUS             RESTARTS   AGE
+mysql-0   0/1     ImagePullBackOff   0          58s
+
+$ kubectl describe pod mysql-0 | grep -A3 'Failed to pull'
+  Normal   Pulling           13s (x3 over 57s)  kubelet            spec.containers{mysql}: Pulling image "mysql:5.7"
+  Warning  Failed            10s (x3 over 54s)  kubelet            spec.containers{mysql}: Failed to pull image "mysql:5.7": rpc error: code = NotFound desc = failed to pull and unpack image "docker.io/library/mysql:5.7": no match for platform in manifest: not found
+  Warning  Failed            10s (x3 over 54s)  kubelet            spec.containers{mysql}: Error: ErrImagePull
+
+$ docker manifest inspect mysql:5.7 | grep -A2 'architecture'  # what platforms exist
+   1             "architecture": "amd64",
+   1             "architecture": "unknown",
+   1             "os": "linux"
+   1             "os": "unknown"
+
+###END###
+###SHOT:task2-7-statefulset-fixed-on-arm64###
+$ kubectl set image statefulset/mysql mysql=mysql:8.4   # 8.4 ships an arm64 manifest
+statefulset.apps/mysql image updated
+
+$ kubectl rollout status statefulset/mysql --timeout=300s
+Waiting for 3 pods to be ready...
+error: timed out waiting for the condition
+
+$ kubectl get pods -l app=mysql -o custom-columns=NAME:.metadata.name,STATUS:.status.phase,IMAGE:.spec.containers[0].image
+(eval):24: no matches found: custom-columns=NAME:.metadata.name,STATUS:.status.phase,IMAGE:.spec.containers[0].image
+
+$ kubectl get pvc
+NAME                               STATUS   VOLUME                                     CAPACITY   ACCESS MODES   STORAGECLASS   VOLUMEATTRIBUTESCLASS   AGE
+mysql-persistent-storage-mysql-0   Bound    pvc-1d0adea1-b639-4299-801b-75ec32263e85   5Gi        RWO            standard       <unset>                 6m6s
+
+###END###

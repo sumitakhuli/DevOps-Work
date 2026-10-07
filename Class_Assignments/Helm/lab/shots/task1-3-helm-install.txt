@@ -1,0 +1,14 @@
+$ kubectl create namespace helm-lab; helm install web web-chart -n helm-lab --wait --timeout 3m
+namespace/helm-lab created
+NAME: web
+LAST DEPLOYED: Tue Oct  6 23:38:39 2026
+NAMESPACE: helm-lab
+STATUS: deployed
+REVISION: 1
+DESCRIPTION: Install complete
+NOTES:
+1. Get the application URL by running these commands:
+  export POD_NAME=$(kubectl get pods --namespace helm-lab -l "app.kubernetes.io/name=web-chart,app.kubernetes.io/instance=web" -o jsonpath="{.items[0].metadata.name}")
+  export CONTAINER_PORT=$(kubectl get pod --namespace helm-lab $POD_NAME -o jsonpath="{.spec.containers[0].ports[0].containerPort}")
+  echo "Visit http://127.0.0.1:8080 to use your application"
+  kubectl --namespace helm-lab port-forward $POD_NAME 8080:$CONTAINER_PORT

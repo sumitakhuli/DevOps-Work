@@ -1,0 +1,7 @@
+$ helm uninstall web -n helm-lab --wait; helm list -A; kubectl get all -n helm-lab
+release "web" uninstalled
+NAME 	NAMESPACE	REVISION	UPDATED                             	STATUS  	CHART            	APP VERSION
+notes	notes    	3       	2026-10-06 23:41:50.039007 +0530 IST	deployed	notes-chart-0.1.0	1.0        
+NAME                                 READY   STATUS      RESTARTS   AGE
+pod/web-web-chart-5c6695df77-qcx9h   0/1     Completed   0          2m56s
+pod/web-web-chart-5c6695df77-zwfrq   0/1     Completed   0          2m41s

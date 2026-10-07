@@ -1,0 +1,24 @@
+$ terraform plan -no-color -out=tfplan    (excerpt - full plan in lab/transcript.txt)
+data.aws_availability_zones.available: Reading...
+data.aws_ami.ubuntu: Reading...
+data.aws_availability_zones.available: Read complete after 0s [id=ap-south-1]
+data.aws_ami.ubuntu: Read complete after 0s [id=ami-1e749f67]
+  # aws_iam_instance_profile.web will be created
+  # aws_iam_role.web will be created
+  # aws_iam_role_policy.read_assets will be created
+  # aws_instance.web will be created
+  # aws_internet_gateway.main will be created
+  # aws_route_table.public will be created
+  # aws_route_table_association.public will be created
+  # aws_s3_bucket.assets will be created
+  # aws_s3_bucket_public_access_block.assets will be created
+  # aws_s3_object.index will be created
+  # aws_security_group.web will be created
+  # aws_subnet.public will be created
+  # aws_vpc.main will be created
+Plan: 13 to add, 0 to change, 0 to destroy.
+Changes to Outputs:
+  + ami_used            = "ami-1e749f67 (ubuntu/images/hvm-ssd/ubuntu-trusty-14.04-amd64-server-20170727)"
+  + assets_bucket       = "s19-webapp-assets-24bcs10158"
+  + availability_zone   = "ap-south-1a"
+Saved the plan to: tfplan

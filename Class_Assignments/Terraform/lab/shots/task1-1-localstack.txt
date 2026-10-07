@@ -1,0 +1,5 @@
+$ docker ps --filter name=localstack --format "table {{.Names}}\t{{.Image}}\t{{.Status}}\t{{.Ports}}"; curl -s localhost:4566/_localstack/health | python3 -c "import json,sys; d=json.load(sys.stdin); print(\"edition:\", d[\"edition\"], \" version:\", d[\"version\"]); print({k:v for k,v in d[\"services\"].items() if v!=\"disabled\"})"
+NAMES        IMAGE                       STATUS                    PORTS
+localstack   localstack/localstack:4.0   Up 34 seconds (healthy)   0.0.0.0:4566->4566/tcp, [::]:4566->4566/tcp
+edition: community  version: 4.0.3
+{'ec2': 'available', 'iam': 'available', 's3': 'available', 'sts': 'available'}

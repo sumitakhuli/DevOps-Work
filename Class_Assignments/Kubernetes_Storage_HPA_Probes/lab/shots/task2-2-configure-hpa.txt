@@ -1,0 +1,6 @@
+$ kubectl apply -f hpa/hpa.yml; sleep 45; kubectl get hpa php-apache; kubectl top pods -l app=php-apache
+horizontalpodautoscaler.autoscaling/php-apache created
+NAME         REFERENCE               TARGETS              MINPODS   MAXPODS   REPLICAS   AGE
+php-apache   Deployment/php-apache   cpu: <unknown>/50%   1         5         1          46s
+NAME                          CPU(cores)   MEMORY(bytes)   
+php-apache-55d769b97b-kdtnh   16m          26Mi            

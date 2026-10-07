@@ -1,0 +1,298 @@
+$ kubectl version; kubectl get nodes; minikube addons list | grep -E "metrics-server|storage-provisioner|default-storageclass"; kubectl get storageclass
+Client Version: v1.37.0
+Kustomize Version: v5.8.1
+Server Version: v1.37.0
+NAME       STATUS   ROLES           AGE   VERSION
+minikube   Ready    control-plane   63m   v1.37.0
+│ [32mdefault-storageclass[0m        │ [32mminikube[0m │ [32menabled ✅[0m │ [32mKubernetes[0m                             │
+│ [32mmetrics-server[0m              │ [32mminikube[0m │ [32menabled ✅[0m │ [32mKubernetes[0m                             │
+│ [32mstorage-provisioner[0m         │ [32mminikube[0m │ [32menabled ✅[0m │ [32mminikube[0m                               │
+│ storage-provisioner-rancher │ minikube │ disabled   │ 3rd party (Rancher)                    │
+NAME                 PROVISIONER                RECLAIMPOLICY   VOLUMEBINDINGMODE   ALLOWVOLUMEEXPANSION   AGE
+standard (default)   k8s.io/minikube-hostpath   Delete          Immediate           false                  63m
+
+$ kubectl apply -f 01-kubernetes-volumes/pod-volumes.yml && kubectl wait --for=condition=Ready pod/emptydir-demo pod/hostpath-demo --timeout=120s && sleep 12; kubectl get pod emptydir-demo; kubectl exec emptydir-demo -c reader -- cat /shared/log.txt; kubectl exec emptydir-demo -c reader -- sh -c "echo hack > /shared/log.txt"
+pod/emptydir-demo created
+pod/hostpath-demo created
+pod/emptydir-demo condition met
+pod/hostpath-demo condition met
+NAME            READY   STATUS    RESTARTS   AGE
+emptydir-demo   2/2     Running   0          13s
+Tue Oct  6 18:31:12 UTC 2026
+Tue Oct  6 18:31:17 UTC 2026
+Tue Oct  6 18:31:22 UTC 2026
+sh: can't create /shared/log.txt: Read-only file system
+command terminated with exit code 1
+
+$ kubectl delete pod emptydir-demo --wait=true; kubectl apply -f 01-kubernetes-volumes/pod-volumes.yml >/dev/null && kubectl wait --for=condition=Ready pod/emptydir-demo --timeout=120s >/dev/null; kubectl exec emptydir-demo -c reader -- cat /shared/log.txt
+pod "emptydir-demo" deleted from default namespace
+Tue Oct  6 18:31:55 UTC 2026
+
+$ kubectl get pod hostpath-demo -o wide; kubectl exec hostpath-demo -- cat /node-data/message; minikube ssh -- cat /tmp/session13-hostpath/message
+NAME            READY   STATUS    RESTARTS   AGE   IP            NODE       NOMINATED NODE   READINESS GATES
+hostpath-demo   1/1     Running   0          44s   10.244.0.31   minikube   <none>           <none>
+node-local-data
+written-by-hostpath-demo
+node-local-data
+written-by-hostpath-demo
+
+$ kubectl apply -f 01-kubernetes-volumes/static-pv-pvc.yml; sleep 3; kubectl get pv static-lab-pv; kubectl get pvc static-lab-claim
+persistentvolume/static-lab-pv created
+persistentvolumeclaim/static-lab-claim created
+NAME            CAPACITY   ACCESS MODES   RECLAIM POLICY   STATUS   CLAIM                      STORAGECLASS   VOLUMEATTRIBUTESCLASS   REASON   AGE
+static-lab-pv   1Gi        RWO            Retain           Bound    default/static-lab-claim   manual         <unset>                          3s
+NAME               STATUS   VOLUME          CAPACITY   ACCESS MODES   STORAGECLASS   VOLUMEATTRIBUTESCLASS   AGE
+static-lab-claim   Bound    static-lab-pv   1Gi        RWO            manual         <unset>                 3s
+
+$ kubectl apply -f 01-kubernetes-volumes/pvc-pod.yml >/dev/null && kubectl wait --for=condition=Ready pod/pvc-writer --timeout=120s >/dev/null; kubectl exec pvc-writer -- sh -c "echo order-1001 > /data/orders.txt; cat /data/orders.txt"; kubectl delete pod pvc-writer --wait=true; kubectl apply -f 01-kubernetes-volumes/pvc-pod.yml >/dev/null && kubectl wait --for=condition=Ready pod/pvc-writer --timeout=120s >/dev/null; echo "--- new pod, same claim:"; kubectl exec pvc-writer -- cat /data/orders.txt
+order-1001
+pod "pvc-writer" deleted from default namespace
+--- new pod, same claim:
+order-1001
+
+$ kubectl get pv | grep -c dynamic-lab-claim; kubectl apply -f 01-kubernetes-volumes/dynamic-pvc.yml; sleep 4; kubectl get pvc dynamic-lab-claim; kubectl get pv | grep -E "NAME|dynamic-lab-claim"; kubectl describe pvc dynamic-lab-claim | sed -n "/Events/,\$p"
+0
+persistentvolumeclaim/dynamic-lab-claim created
+NAME                STATUS   VOLUME                                     CAPACITY   ACCESS MODES   STORAGECLASS   VOLUMEATTRIBUTESCLASS   AGE
+dynamic-lab-claim   Bound    pvc-e03fa5c4-63db-4326-85e6-657d1f1b483b   1Gi        RWO            standard       <unset>                 4s
+NAME                                       CAPACITY   ACCESS MODES   RECLAIM POLICY   STATUS   CLAIM                       STORAGECLASS   VOLUMEATTRIBUTESCLASS   REASON   AGE
+pvc-e03fa5c4-63db-4326-85e6-657d1f1b483b   1Gi        RWO            Delete           Bound    default/dynamic-lab-claim   standard       <unset>                          4s
+Events:
+  Type    Reason                 Age   From                                                                    Message
+  ----    ------                 ----  ----                                                                    -------
+  Normal  ExternalProvisioning   4s    persistentvolume-controller                                             Waiting for a volume to be created either by the external provisioner 'k8s.io/minikube-hostpath' or manually by the system administrator. If volume creation is delayed, please verify that the provisioner is running and correctly registered.
+  Normal  Provisioning           4s    k8s.io/minikube-hostpath_minikube_e089e9d3-4cb7-4b55-be59-6dda492c7178  External provisioner is provisioning volume for claim "default/dynamic-lab-claim"
+  Normal  ProvisioningSucceeded  4s    k8s.io/minikube-hostpath_minikube_e089e9d3-4cb7-4b55-be59-6dda492c7178  Successfully provisioned volume pvc-e03fa5c4-63db-4326-85e6-657d1f1b483b
+
+$ kubectl apply -f hpa/deployment.yml -f hpa/service.yml && kubectl rollout status deploy/php-apache --timeout=180s; kubectl get deploy,svc php-apache
+deployment.apps/php-apache created
+service/php-apache created
+Waiting for deployment "php-apache" rollout to finish: 0 of 1 updated replicas are available...
+deployment "php-apache" successfully rolled out
+NAME                         READY   UP-TO-DATE   AVAILABLE   AGE
+deployment.apps/php-apache   1/1     1            1           1s
+
+NAME                 TYPE        CLUSTER-IP     EXTERNAL-IP   PORT(S)   AGE
+service/php-apache   ClusterIP   10.103.22.66   <none>        80/TCP    1s
+
+$ kubectl apply -f hpa/hpa.yml; sleep 45; kubectl get hpa php-apache; kubectl top pods -l app=php-apache
+horizontalpodautoscaler.autoscaling/php-apache created
+NAME         REFERENCE               TARGETS              MINPODS   MAXPODS   REPLICAS   AGE
+php-apache   Deployment/php-apache   cpu: <unknown>/50%   1         5         1          46s
+NAME                          CPU(cores)   MEMORY(bytes)   
+php-apache-55d769b97b-kdtnh   16m          26Mi            
+
+$ kubectl describe hpa php-apache | sed -n "1,30p"
+Name:                                                  php-apache
+Namespace:                                             default
+Labels:                                                <none>
+Annotations:                                           <none>
+CreationTimestamp:                                     Wed, 07 Oct 2026 00:02:57 +0530
+Reference:                                             Deployment/php-apache
+Metrics:                                               ( current / target )
+  resource cpu on pods  (as a percentage of request):  <unknown> / 50%
+Min replicas:                                          1
+Max replicas:                                          5
+Deployment pods:                                       1 current / 0 desired
+Conditions:
+  Type           Status  Reason                   Message
+  ----           ------  ------                   -------
+  AbleToScale    True    SucceededGetScale        the HPA controller was able to get the target's current scale
+  ScalingActive  False   FailedGetResourceMetric  the HPA was unable to compute the replica count: failed to get cpu utilization: did not receive metrics for targeted pods (pods might be unready)
+Events:
+  Type     Reason                        Age               From                       Message
+  ----     ------                        ----              ----                       -------
+  Warning  FailedGetResourceMetric       46s               horizontal-pod-autoscaler  failed to get cpu utilization: unable to get metrics for resource cpu: no metrics returned from resource metrics API
+  Warning  FailedComputeMetricsReplicas  46s               horizontal-pod-autoscaler  invalid metrics (1 invalid out of 1), first error is: failed to get cpu resource metric value: failed to get cpu utilization: unable to get metrics for resource cpu: no metrics returned from resource metrics API
+  Warning  FailedGetResourceMetric       1s (x3 over 31s)  horizontal-pod-autoscaler  failed to get cpu utilization: did not receive metrics for targeted pods (pods might be unready)
+  Warning  FailedComputeMetricsReplicas  1s (x3 over 31s)  horizontal-pod-autoscaler  invalid metrics (1 invalid out of 1), first error is: failed to get cpu resource metric value: failed to get cpu utilization: did not receive metrics for targeted pods (pods might be unready)
+
+$ kubectl get hpa php-apache; kubectl describe hpa php-apache | grep -E "resource cpu|ScalingActive|desired"
+NAME         REFERENCE               TARGETS       MINPODS   MAXPODS   REPLICAS   AGE
+php-apache   Deployment/php-apache   cpu: 1%/50%   1         5         1          84s
+  resource cpu on pods  (as a percentage of request):  1% (1m) / 50%
+Deployment pods:                                       1 current / 1 desired
+  ScalingActive   True    ValidMetricFound    the HPA was able to successfully calculate a replica count from cpu resource utilization (percentage of request)
+  ScalingLimited  False   DesiredWithinRange  the desired count is within the acceptable range
+  Warning  FailedGetResourceMetric       84s                horizontal-pod-autoscaler  failed to get cpu utilization: unable to get metrics for resource cpu: no metrics returned from resource metrics API
+  Warning  FailedComputeMetricsReplicas  84s                horizontal-pod-autoscaler  invalid metrics (1 invalid out of 1), first error is: failed to get cpu resource metric value: failed to get cpu utilization: unable to get metrics for resource cpu: no metrics returned from resource metrics API
+
+$ kubectl apply -f hpa/load-generator.yml; kubectl wait --for=condition=Ready pod/load-generator --timeout=90s; kubectl get pod load-generator
+pod/load-generator created
+pod/load-generator condition met
+NAME             READY   STATUS    RESTARTS   AGE
+load-generator   1/1     Running   0          1s
+
+--- t+0s 00:04:31
+php-apache   Deployment/php-apache   cpu: 1%/50%   1     5     1     94s
+--- t+20s 00:04:51
+php-apache   Deployment/php-apache   cpu: 1%/50%   1     5     1     114s
+--- t+40s 00:05:11
+php-apache   Deployment/php-apache   cpu: 1%/50%   1     5     1     2m14s
+--- t+60s 00:05:31
+php-apache   Deployment/php-apache   cpu: 337%/50%   1     5     4     2m34s
+--- t+80s 00:05:51
+php-apache   Deployment/php-apache   cpu: 337%/50%   1     5     5     2m54s
+--- t+100s 00:06:11
+php-apache   Deployment/php-apache   cpu: 337%/50%   1     5     5     3m15s
+--- t+120s 00:06:32
+php-apache   Deployment/php-apache   cpu: 178%/50%   1     5     5     3m35s
+--- t+140s 00:06:52
+php-apache   Deployment/php-apache   cpu: 178%/50%   1     5     5     3m55s
+--- t+160s 00:07:12
+php-apache   Deployment/php-apache   cpu: 178%/50%   1     5     5     4m15s
+--- t+180s 00:07:32
+php-apache   Deployment/php-apache   cpu: 144%/50%   1     5     5     4m35s
+--- t+200s 00:07:52
+php-apache   Deployment/php-apache   cpu: 144%/50%   1     5     5     4m56s
+--- t+220s 00:08:13
+php-apache   Deployment/php-apache   cpu: 144%/50%   1     5     5     5m16s
+--- t+240s 00:08:33
+php-apache   Deployment/php-apache   cpu: 139%/50%   1     5     5     5m36s
+$ kubectl get hpa php-apache; kubectl get pods -l app=php-apache -o wide; kubectl top pods -l app=php-apache
+NAME         REFERENCE               TARGETS         MINPODS   MAXPODS   REPLICAS   AGE
+php-apache   Deployment/php-apache   cpu: 139%/50%   1         5         5          6m5s
+NAME                          READY   STATUS    RESTARTS   AGE     IP            NODE       NOMINATED NODE   READINESS GATES
+php-apache-55d769b97b-6xrsk   1/1     Running   0          3m49s   10.244.0.39   minikube   <none>           <none>
+php-apache-55d769b97b-8htqm   1/1     Running   0          3m49s   10.244.0.40   minikube   <none>           <none>
+php-apache-55d769b97b-f5fxx   1/1     Running   0          3m49s   10.244.0.38   minikube   <none>           <none>
+php-apache-55d769b97b-kdtnh   1/1     Running   0          6m6s    10.244.0.36   minikube   <none>           <none>
+php-apache-55d769b97b-tnm64   1/1     Running   0          3m34s   10.244.0.41   minikube   <none>           <none>
+NAME                          CPU(cores)   MEMORY(bytes)   
+php-apache-55d769b97b-6xrsk   129m         39Mi            
+php-apache-55d769b97b-8htqm   150m         39Mi            
+php-apache-55d769b97b-f5fxx   149m         45Mi            
+php-apache-55d769b97b-kdtnh   136m         49Mi            
+php-apache-55d769b97b-tnm64   134m         37Mi            
+
+$ kubectl describe hpa php-apache | sed -n "/Metrics:/,\$p"
+Metrics:                                               ( current / target )
+  resource cpu on pods  (as a percentage of request):  139% (139m) / 50%
+Min replicas:                                          1
+Max replicas:                                          5
+Deployment pods:                                       5 current / 5 desired
+Conditions:
+  Type            Status  Reason               Message
+  ----            ------  ------               -------
+  AbleToScale     True    ScaleDownStabilized  recent recommendations were higher than current one, applying the highest recent recommendation
+  ScalingActive   True    ValidMetricFound     the HPA was able to successfully calculate a replica count from cpu resource utilization (percentage of request)
+  ScalingLimited  True    TooManyReplicas      the desired replica count is more than the maximum replica count
+  ScaledToZero    False   NotScaledToZero      the HPA controller did not scale the workload to zero
+Events:
+  Type     Reason                        Age                   From                       Message
+  ----     ------                        ----                  ----                       -------
+  Warning  FailedGetResourceMetric       6m5s                  horizontal-pod-autoscaler  failed to get cpu utilization: unable to get metrics for resource cpu: no metrics returned from resource metrics API
+  Warning  FailedComputeMetricsReplicas  6m5s                  horizontal-pod-autoscaler  invalid metrics (1 invalid out of 1), first error is: failed to get cpu resource metric value: failed to get cpu utilization: unable to get metrics for resource cpu: no metrics returned from resource metrics API
+  Warning  FailedGetResourceMetric       5m4s (x4 over 5m50s)  horizontal-pod-autoscaler  failed to get cpu utilization: did not receive metrics for targeted pods (pods might be unready)
+  Warning  FailedComputeMetricsReplicas  5m4s (x4 over 5m50s)  horizontal-pod-autoscaler  invalid metrics (1 invalid out of 1), first error is: failed to get cpu resource metric value: failed to get cpu utilization: did not receive metrics for targeted pods (pods might be unready)
+  Normal   SuccessfulRescale             3m49s                 horizontal-pod-autoscaler  New size: 4; reason: cpu resource utilization (percentage of request) above target
+  Normal   SuccessfulRescale             3m34s                 horizontal-pod-autoscaler  New size: 5; reason: cpu resource utilization (percentage of request) above target
+
+$ kubectl delete pod load-generator --wait=true; date +%H:%M:%S
+pod "load-generator" deleted from default namespace
+00:09:32
+
+$ kubectl apply -f mini-project/namespace.yaml -f mini-project/pvc.yaml -f mini-project/deployment.yaml -f mini-project/service.yaml -f mini-project/hpa.yaml && kubectl rollout status deploy/web-app -n production-webapp --timeout=180s; kubectl get pvc,deploy,pods,svc,hpa -n production-webapp
+namespace/production-webapp created
+persistentvolumeclaim/web-data created
+deployment.apps/web-app created
+service/web-service created
+horizontalpodautoscaler.autoscaling/web-app-hpa created
+Waiting for deployment "web-app" rollout to finish: 0 of 2 updated replicas are available...
+Waiting for deployment "web-app" rollout to finish: 1 of 2 updated replicas are available...
+deployment "web-app" successfully rolled out
+NAME                             STATUS   VOLUME                                     CAPACITY   ACCESS MODES   STORAGECLASS   VOLUMEATTRIBUTESCLASS   AGE
+persistentvolumeclaim/web-data   Bound    pvc-f031b87f-affe-4dfc-9e0f-3f6329673826   500Mi      RWO            standard       <unset>                 10s
+
+NAME                      READY   UP-TO-DATE   AVAILABLE   AGE
+deployment.apps/web-app   2/2     2            2           10s
+
+NAME                         READY   STATUS    RESTARTS   AGE
+pod/web-app-f9769fb4-9574s   1/1     Running   0          10s
+pod/web-app-f9769fb4-ldkkn   1/1     Running   0          10s
+
+NAME                  TYPE        CLUSTER-IP     EXTERNAL-IP   PORT(S)   AGE
+service/web-service   ClusterIP   10.101.39.29   <none>        80/TCP    10s
+
+NAME                                              REFERENCE            TARGETS              MINPODS   MAXPODS   REPLICAS   AGE
+horizontalpodautoscaler.autoscaling/web-app-hpa   Deployment/web-app   cpu: <unknown>/50%   2         5         2          10s
+
+$ kubectl describe pod -n production-webapp -l app=web-app | grep -E "^Name:|Liveness|Readiness|Startup" | head -8; kubectl get events -n production-webapp --field-selector reason=Unhealthy 2>&1 | tail -3
+Name:             web-app-f9769fb4-9574s
+    Liveness:     http-get http://:http/ delay=5s timeout=2s period=5s successThreshold=1 failureThreshold=3
+    Readiness:    http-get http://:http/ delay=5s timeout=2s period=5s successThreshold=1 failureThreshold=2
+    Startup:      http-get http://:http/ delay=0s timeout=1s period=2s successThreshold=1 failureThreshold=30
+Name:             web-app-f9769fb4-ldkkn
+    Liveness:     http-get http://:http/ delay=5s timeout=2s period=5s successThreshold=1 failureThreshold=3
+    Readiness:    http-get http://:http/ delay=5s timeout=2s period=5s successThreshold=1 failureThreshold=2
+    Startup:      http-get http://:http/ delay=0s timeout=1s period=2s successThreshold=1 failureThreshold=30
+No resources found in production-webapp namespace.
+
+$ P=$(kubectl get pods -n production-webapp -l app=web-app -o jsonpath="{.items[0].metadata.name}"); kubectl exec -n production-webapp $P -- sh -c "echo \"Student: Sumit Akhuli (24bcs10158)\" > /data/student.txt; cat /data/student.txt"; kubectl delete pod -n production-webapp $P --wait=true; kubectl rollout status deploy/web-app -n production-webapp --timeout=120s >/dev/null; kubectl get pods -n production-webapp; for p in $(kubectl get pods -n production-webapp -l app=web-app -o name); do echo "$p:"; kubectl exec -n production-webapp $p -- cat /data/student.txt; done
+Student: Sumit Akhuli (24bcs10158)
+pod "web-app-f9769fb4-9574s" deleted from production-webapp namespace
+NAME                     READY   STATUS    RESTARTS   AGE
+web-app-f9769fb4-ldkkn   1/1     Running   0          31s
+web-app-f9769fb4-xmzt7   1/1     Running   0          10s
+pod/web-app-f9769fb4-ldkkn:
+Student: Sumit Akhuli (24bcs10158)
+pod/web-app-f9769fb4-xmzt7:
+Student: Sumit Akhuli (24bcs10158)
+
+$ kubectl exec -n production-webapp web-app-f9769fb4-ldkkn -- rm /usr/share/nginx/html/index.html; sleep 25; kubectl get pods -n production-webapp; kubectl get endpointslices -n production-webapp -o jsonpath='{range .items[*].endpoints[*]}{.targetRef.name} ready={.conditions.ready}{"\n"}{end}'
+NAME                     READY   STATUS    RESTARTS      AGE
+web-app-f9769fb4-ldkkn   1/1     Running   1 (10s ago)   56s
+web-app-f9769fb4-xmzt7   1/1     Running   0             35s
+web-app-f9769fb4-ldkkn ready=true
+web-app-f9769fb4-xmzt7 ready=true
+
+$ kubectl get pods -n production-webapp; kubectl get events -n production-webapp --sort-by=.lastTimestamp | grep -E 'Unhealthy|Killing|Started' | tail -8; kubectl exec -n production-webapp web-app-f9769fb4-ldkkn -- ls /usr/share/nginx/html
+NAME                     READY   STATUS    RESTARTS      AGE
+web-app-f9769fb4-ldkkn   1/1     Running   1 (25s ago)   71s
+web-app-f9769fb4-xmzt7   1/1     Running   0             50s
+70s         Normal    Started                        pod/web-app-f9769fb4-9574s            Container started
+50s         Normal    Killing                        pod/web-app-f9769fb4-9574s            Stopping container nginx
+49s         Normal    Started                        pod/web-app-f9769fb4-xmzt7            Container started
+25s         Warning   Unhealthy                      pod/web-app-f9769fb4-ldkkn            Readiness probe failed: HTTP probe failed with statuscode: 403
+25s         Warning   Unhealthy                      pod/web-app-f9769fb4-ldkkn            Liveness probe failed: HTTP probe failed with statuscode: 403
+25s         Normal    Started                        pod/web-app-f9769fb4-ldkkn            Container started
+25s         Normal    Killing                        pod/web-app-f9769fb4-ldkkn            Container nginx failed liveness probe, will be restarted
+50x.html
+index.html
+
+$ kubectl get hpa -n production-webapp; kubectl top pods -n production-webapp
+NAME          REFERENCE            TARGETS              MINPODS   MAXPODS   REPLICAS   AGE
+web-app-hpa   Deployment/web-app   cpu: <unknown>/50%   2         5         2          85s
+NAME                     CPU(cores)   MEMORY(bytes)   
+web-app-f9769fb4-ldkkn   3m           8Mi             
+
+$ date +%H:%M:%S; kubectl get hpa php-apache; kubectl get pods -l app=php-apache; kubectl describe hpa php-apache | grep SuccessfulRescale
+00:14:26
+NAME         REFERENCE               TARGETS       MINPODS   MAXPODS   REPLICAS   AGE
+php-apache   Deployment/php-apache   cpu: 1%/50%   1         5         5          11m
+NAME                          READY   STATUS    RESTARTS   AGE
+php-apache-55d769b97b-6xrsk   1/1     Running   0          9m13s
+php-apache-55d769b97b-8htqm   1/1     Running   0          9m13s
+php-apache-55d769b97b-f5fxx   1/1     Running   0          9m13s
+php-apache-55d769b97b-kdtnh   1/1     Running   0          11m
+php-apache-55d769b97b-tnm64   1/1     Running   0          8m58s
+  Normal   SuccessfulRescale             9m13s              horizontal-pod-autoscaler  New size: 4; reason: cpu resource utilization (percentage of request) above target
+  Normal   SuccessfulRescale             8m58s              horizontal-pod-autoscaler  New size: 5; reason: cpu resource utilization (percentage of request) above target
+
+$ date +%H:%M:%S; kubectl get hpa php-apache; kubectl get pods -l app=php-apache; kubectl describe hpa php-apache | grep SuccessfulRescale
+00:16:16
+NAME         REFERENCE               TARGETS       MINPODS   MAXPODS   REPLICAS   AGE
+php-apache   Deployment/php-apache   cpu: 1%/50%   1         5         1          13m
+NAME                          READY   STATUS    RESTARTS   AGE
+php-apache-55d769b97b-6xrsk   1/1     Running   0          11m
+  Normal   SuccessfulRescale             11m                horizontal-pod-autoscaler  New size: 4; reason: cpu resource utilization (percentage of request) above target
+  Normal   SuccessfulRescale             10m                horizontal-pod-autoscaler  New size: 5; reason: cpu resource utilization (percentage of request) above target
+  Normal   SuccessfulRescale             18s                horizontal-pod-autoscaler  New size: 1; reason: All metrics below target
+
+$ kubectl get hpa -n production-webapp; kubectl top pods -n production-webapp
+NAME          REFERENCE            TARGETS       MINPODS   MAXPODS   REPLICAS   AGE
+web-app-hpa   Deployment/web-app   cpu: 1%/50%   2         5         2          6m35s
+NAME                     CPU(cores)   MEMORY(bytes)   
+web-app-f9769fb4-ldkkn   1m           8Mi             
+web-app-f9769fb4-xmzt7   1m           8Mi             
+

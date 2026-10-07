@@ -1,0 +1,395 @@
+===== A. NAVIGATION =====
+$ pwd
+/root/cheatsheet
+
+$ mkdir -p project/src project/docs
+
+$ ls
+project
+
+$ ls -l
+total 4
+drwxr-xr-x 4 root root 4096 Sep  3 16:11 project
+
+$ ls -la project
+total 16
+drwxr-xr-x 4 root root 4096 Sep  3 16:11 .
+drwxr-xr-x 3 root root 4096 Sep  3 16:11 ..
+drwxr-xr-x 2 root root 4096 Sep  3 16:11 docs
+drwxr-xr-x 2 root root 4096 Sep  3 16:11 src
+
+$ tree project
+project
+|-- docs
+`-- src
+
+3 directories, 0 files
+
+$ cd project/src && pwd && cd ../.. && pwd
+/root/cheatsheet/project/src
+/root/cheatsheet
+
+===== B. CREATING / COPYING / MOVING / DELETING =====
+$ touch project/src/app.py project/src/utils.py project/docs/notes.md
+
+$ tree project
+project
+|-- docs
+|   `-- notes.md
+`-- src
+    |-- app.py
+    `-- utils.py
+
+3 directories, 3 files
+
+$ cp project/src/app.py project/src/app_backup.py
+
+$ ls -1 project/src
+app.py
+app_backup.py
+utils.py
+
+$ mv project/src/utils.py project/src/helpers.py
+
+$ ls -1 project/src
+app.py
+app_backup.py
+helpers.py
+
+$ rm project/src/app_backup.py
+
+$ ls -1 project/src
+app.py
+helpers.py
+
+$ mkdir emptydir && rmdir emptydir && echo 'rmdir removed the empty dir'
+rmdir removed the empty dir
+
+===== C. READING FILES =====
+$ printf 'alpha 10\nbravo 25\ncharlie 5\ndelta 25\necho 40\n' > data.txt
+
+$ cat data.txt
+alpha 10
+bravo 25
+charlie 5
+delta 25
+echo 40
+
+$ cat -n data.txt
+     1	alpha 10
+     2	bravo 25
+     3	charlie 5
+     4	delta 25
+     5	echo 40
+
+$ head -2 data.txt
+alpha 10
+bravo 25
+
+$ tail -2 data.txt
+delta 25
+echo 40
+
+$ wc -l data.txt
+5 data.txt
+
+$ wc data.txt
+ 5 10 45 data.txt
+
+===== D. SEARCHING AND FILTERING =====
+$ grep 'bravo' data.txt
+bravo 25
+
+$ grep -n '25' data.txt
+2:bravo 25
+4:delta 25
+
+$ grep -c '25' data.txt
+2
+
+$ grep -i 'ALPHA' data.txt
+alpha 10
+
+$ grep -v '25' data.txt
+alpha 10
+charlie 5
+echo 40
+
+$ find . -type f -name '*.py'
+./project/src/app.py
+./project/src/helpers.py
+
+$ find . -type d
+.
+./project
+./project/src
+./project/docs
+
+===== E. TEXT PROCESSING =====
+$ sort data.txt
+alpha 10
+bravo 25
+charlie 5
+delta 25
+echo 40
+
+$ sort -k2 -n data.txt
+charlie 5
+alpha 10
+bravo 25
+delta 25
+echo 40
+
+$ cut -d' ' -f1 data.txt
+alpha
+bravo
+charlie
+delta
+echo
+
+$ cut -d' ' -f2 data.txt | sort -n | uniq -c
+      1 5
+      1 10
+      2 25
+      1 40
+
+$ awk '{print $1, $2*2}' data.txt
+alpha 20
+bravo 50
+charlie 10
+delta 50
+echo 80
+
+$ awk '{sum += $2} END {print "total =", sum}' data.txt
+total = 105
+
+$ sed 's/bravo/BRAVO/' data.txt
+alpha 10
+BRAVO 25
+charlie 5
+delta 25
+echo 40
+
+$ cat data.txt | tr 'a-z' 'A-Z'
+ALPHA 10
+BRAVO 25
+CHARLIE 5
+DELTA 25
+ECHO 40
+
+===== F. PERMISSIONS AND OWNERSHIP =====
+$ echo '#!/bin/bash' > script.sh && echo 'echo hi' >> script.sh
+
+$ ls -l script.sh
+-rw-r--r-- 1 root root 20 Sep  3 16:11 script.sh
+
+$ chmod +x script.sh
+
+$ ls -l script.sh
+-rwxr-xr-x 1 root root 20 Sep  3 16:11 script.sh
+
+$ ./script.sh
+hi
+
+$ chmod 644 script.sh && ls -l script.sh
+-rw-r--r-- 1 root root 20 Sep  3 16:11 script.sh
+
+$ chmod 755 script.sh && ls -l script.sh
+-rwxr-xr-x 1 root root 20 Sep  3 16:11 script.sh
+
+$ chown testuser:testuser data.txt && ls -l data.txt
+-rw-r--r-- 1 testuser testuser 45 Sep  3 16:11 data.txt
+
+$ chown root:root data.txt && ls -l data.txt
+-rw-r--r-- 1 root root 45 Sep  3 16:11 data.txt
+
+===== G. PROCESSES =====
+$ ps
+    PID TTY          TIME CMD
+      1 ?        00:00:00 systemd
+     30 ?        00:00:00 systemd-journal
+     65 ?        00:00:00 cron
+     71 ?        00:00:00 sshd
+    223 ?        00:00:00 nginx
+    421 ?        00:00:00 systemd-logind
+    591 ?        00:00:00 bash
+    650 ?        00:00:00 ps
+
+$ ps aux | head -8
+USER         PID %CPU %MEM    VSZ   RSS TTY      STAT START   TIME COMMAND
+root           1  0.0  0.1  20500 11152 ?        Ss   16:08   0:00 /sbin/init
+root          30  0.0  0.1  33704 11244 ?        S<s  16:08   0:00 /usr/lib/systemd/systemd-journald
+root          65  0.0  0.0   4164  2372 ?        Ss   16:08   0:00 /usr/sbin/cron -f -P
+root          71  0.0  0.0  12116  7344 ?        Ss   16:08   0:00 sshd: /usr/sbin/sshd -D [listener] 0 of 10-100 startups
+root         223  0.0  0.0  10452  1572 ?        Ss   16:09   0:00 nginx: master process /usr/sbin/nginx -g daemon on; master_process on;
+www-data     224  0.0  0.0  10824  2884 ?        S    16:09   0:00 nginx: worker process
+www-data     225  0.0  0.0  10824  2884 ?        S    16:09   0:00 nginx: worker process
+
+$ ps -ef | head -6
+UID          PID    PPID  C STIME TTY          TIME CMD
+root           1       0  0 16:08 ?        00:00:00 /sbin/init
+root          30       1  0 16:08 ?        00:00:00 /usr/lib/systemd/systemd-journald
+root          65       1  0 16:08 ?        00:00:00 /usr/sbin/cron -f -P
+root          71       1  0 16:08 ?        00:00:00 sshd: /usr/sbin/sshd -D [listener] 0 of 10-100 startups
+root         223       1  0 16:09 ?        00:00:00 nginx: master process /usr/sbin/nginx -g daemon on; master_process on;
+
+$ sleep 300 & echo "started background sleep with PID $!"
+started background sleep with PID 655
+
+$ ps aux | grep 'sleep 300' | grep -v grep
+root         655  0.0  0.0   2272  1276 ?        S    16:11   0:00 sleep 300
+
+$ pgrep -a sleep
+655 sleep 300
+
+$ pkill -f 'sleep 300' && echo 'killed it'
+killed it
+
+$ pgrep -a sleep; echo '(no output = process gone)'
+(no output = process gone)
+
+===== H. DISK AND MEMORY =====
+$ df -h
+Filesystem      Size  Used Avail Use% Mounted on
+overlay         453G   39G  391G  10% /
+tmpfs            64M     0   64M   0% /dev
+shm              64M     0   64M   0% /dev/shm
+tmpfs           3.9G   48K  3.9G   1% /run
+tmpfs           3.9G     0  3.9G   0% /run/lock
+/dev/vda1       453G   39G  391G  10% /etc/hosts
+
+$ df -h / 
+Filesystem      Size  Used Avail Use% Mounted on
+overlay         453G   39G  391G  10% /
+
+$ du -sh /root/cheatsheet
+24K	/root/cheatsheet
+
+$ du -h --max-depth=1 /root/cheatsheet
+12K	/root/cheatsheet/project
+24K	/root/cheatsheet
+
+$ free -h
+               total        used        free      shared  buff/cache   available
+Mem:           7.8Gi       793Mi       2.6Gi       624Ki       4.6Gi       7.0Gi
+Swap:          1.0Gi          0B       1.0Gi
+
+===== I. SYSTEM INFO =====
+$ uname -a
+Linux devops-lab 6.12.76-linuxkit #1 SMP Fri May 29 10:00:01 UTC 2026 aarch64 aarch64 aarch64 GNU/Linux
+
+$ uname -r
+6.12.76-linuxkit
+
+$ cat /etc/os-release
+PRETTY_NAME="Ubuntu 24.04.4 LTS"
+NAME="Ubuntu"
+VERSION_ID="24.04"
+VERSION="24.04.4 LTS (Noble Numbat)"
+VERSION_CODENAME=noble
+ID=ubuntu
+ID_LIKE=debian
+HOME_URL="https://www.ubuntu.com/"
+SUPPORT_URL="https://help.ubuntu.com/"
+BUG_REPORT_URL="https://bugs.launchpad.net/ubuntu/"
+PRIVACY_POLICY_URL="https://www.ubuntu.com/legal/terms-and-policies/privacy-policy"
+UBUNTU_CODENAME=noble
+LOGO=ubuntu-logo
+
+$ uptime
+ 16:11:19 up 8 min,  0 user,  load average: 0.09, 0.34, 0.19
+
+$ date
+Thu Sep  3 16:11:19 UTC 2026
+
+$ date '+%Y-%m-%d %H:%M:%S'
+2026-09-03 16:11:19
+
+$ whoami
+root
+
+$ id
+uid=0(root) gid=0(root) groups=0(root)
+
+$ which ls grep awk
+/usr/bin/ls
+/usr/bin/grep
+/usr/bin/awk
+
+===== J. ARCHIVES AND COMPRESSION =====
+$ tar -czf project.tar.gz project
+
+$ ls -lh project.tar.gz
+-rw-r--r-- 1 root root 211 Sep  3 16:11 project.tar.gz
+
+$ tar -tzf project.tar.gz
+project/
+project/src/
+project/src/app.py
+project/src/helpers.py
+project/docs/
+project/docs/notes.md
+
+$ mkdir extracted && tar -xzf project.tar.gz -C extracted && tree extracted
+extracted
+`-- project
+    |-- docs
+    |   `-- notes.md
+    `-- src
+        |-- app.py
+        `-- helpers.py
+
+4 directories, 3 files
+
+$ gzip -k data.txt && ls -lh data.txt data.txt.gz
+-rw-r--r-- 1 root root 45 Sep  3 16:11 data.txt
+-rw-r--r-- 1 root root 72 Sep  3 16:11 data.txt.gz
+
+$ gunzip -f data.txt.gz && ls -lh data.txt
+-rw-r--r-- 1 root root 45 Sep  3 16:11 data.txt
+
+===== K. REDIRECTION AND PIPES =====
+$ echo 'written with >' > out.txt && cat out.txt
+written with >
+
+$ echo 'appended with >>' >> out.txt && cat out.txt
+written with >
+appended with >>
+
+$ ls /nonexistent 2> err.txt; cat err.txt
+ls: cannot access '/nonexistent': No such file or directory
+
+$ ls /root /nonexistent > both.txt 2>&1; cat both.txt
+ls: cannot access '/nonexistent': No such file or directory
+/root:
+cheat_task.sh
+cheatsheet
+deluser.sh
+linklab
+linux_task.sh
+net_task.sh
+
+$ cat data.txt | grep 25 | wc -l
+2
+
+===== L. SERVICES (systemd) =====
+$ systemctl is-active ssh nginx cron
+active
+active
+active
+
+$ systemctl list-units --type=service --state=running --no-pager
+  UNIT                     LOAD   ACTIVE SUB     DESCRIPTION
+  cron.service             loaded active running Regular background program processing daemon
+  dbus.service             loaded active running D-Bus System Message Bus
+  nginx.service            loaded active running A high performance web server and a reverse proxy server
+  ssh.service              loaded active running OpenBSD Secure Shell server
+  systemd-journald.service loaded active running Journal Service
+  systemd-logind.service   loaded active running User Login Management
+
+Legend: LOAD   → Reflects whether the unit definition was properly loaded.
+        ACTIVE → The high-level unit activation state, i.e. generalization of SUB.
+        SUB    → The low-level unit activation state, values depend on unit type.
+
+6 loaded units listed.
+

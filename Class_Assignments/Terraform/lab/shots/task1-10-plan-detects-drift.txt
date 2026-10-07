@@ -1,0 +1,20 @@
+$ terraform plan -no-color | grep -v "^$" | sed -n "/Terraform will perform/,/Plan:/p"
+Terraform will perform the following actions:
+  # aws_s3_bucket.demo will be updated in-place
+  ~ resource "aws_s3_bucket" "demo" {
+        id                          = "sumit-24bcs10158-terraform-demo"
+      ~ tags                        = {
+          + "Environment" = "dev"
+          + "Name"        = "sumit-24bcs10158-terraform-demo"
+        }
+      ~ tags_all                    = {
+          + "Environment" = "dev"
+          + "ManagedBy"   = "Terraform"
+          + "Name"        = "sumit-24bcs10158-terraform-demo"
+          + "Owner"       = "Sumit Akhuli"
+          + "Project"     = "Session18"
+        }
+        # (14 unchanged attributes hidden)
+        # (3 unchanged blocks hidden)
+    }
+Plan: 0 to add, 1 to change, 0 to destroy.

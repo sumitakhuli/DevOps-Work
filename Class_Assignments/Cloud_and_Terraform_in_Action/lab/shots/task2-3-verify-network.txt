@@ -1,0 +1,22 @@
+$ export AWS_ACCESS_KEY_ID=test AWS_SECRET_ACCESS_KEY=test AWS_DEFAULT_REGION=ap-south-1; A="aws --endpoint-url=http://localhost:4566"; V=$(terraform output -raw vpc_id); $A ec2 describe-vpcs --vpc-ids $V --query "Vpcs[].[VpcId,CidrBlock,State]" --output table; $A ec2 describe-subnets --filters Name=vpc-id,Values=$V --query "Subnets[].[SubnetId,CidrBlock,AvailabilityZone,MapPublicIpOnLaunch,AvailableIpAddressCount]" --output table; $A ec2 describe-route-tables --filters Name=vpc-id,Values=$V Name=association.subnet-id,Values=$(terraform output -raw public_subnet_id) --query "RouteTables[].Routes[].[DestinationCidrBlock,GatewayId,State]" --output table; $A ec2 describe-internet-gateways --filters Name=attachment.vpc-id,Values=$V --query "InternetGateways[].[InternetGatewayId,Attachments[0].VpcId,Attachments[0].State]" --output table
+-----------------------------------------------
+|                DescribeVpcs                 |
++--------------+----------------+-------------+
+|  vpc-a788f4e9|  10.20.0.0/16  |  available  |
++--------------+----------------+-------------+
+-------------------------------------------------------------------
+|                         DescribeSubnets                         |
++------------------+---------------+--------------+-------+-------+
+|  subnet-8ad741b3 |  10.20.1.0/24 |  ap-south-1a |  True |  250  |
++------------------+---------------+--------------+-------+-------+
+--------------------------------------------
+|            DescribeRouteTables           |
++---------------+----------------+---------+
+|  10.20.0.0/16 |  local         |  active |
+|  0.0.0.0/0    |  igw-273bad0c  |  active |
++---------------+----------------+---------+
+-----------------------------------------------
+|          DescribeInternetGateways           |
++--------------+----------------+-------------+
+|  igw-273bad0c|  vpc-a788f4e9  |  available  |
++--------------+----------------+-------------+

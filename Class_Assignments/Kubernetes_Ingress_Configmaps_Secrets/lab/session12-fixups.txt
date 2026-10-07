@@ -1,0 +1,20 @@
+###SHOT:task4-8-missing-configmap-behaviour###
+$ kubectl delete configmap yatri-app-config   # delete the ConfigMap the backend depends on
+configmap "yatri-app-config" deleted from default namespace
+
+$ kubectl rollout restart deployment/yatri-backend   # force new pods that must read it at start
+deployment.apps/yatri-backend restarted
+
+$ kubectl get pods -l app=yatri-backend
+NAME                             READY   STATUS                       RESTARTS   AGE
+yatri-backend-6c58cb99c7-l2zwc   1/1     Running                      0          6m29s
+yatri-backend-6c58cb99c7-ngx6v   1/1     Running                      0          6m29s
+yatri-backend-f65c8c945-f2bsw    0/1     CreateContainerConfigError   0          26s
+
+$ kubectl describe pod yatri-backend-f65c8c945-f2bsw | grep -A4 Events: | tail -2
+  Warning  Failed  kubelet  spec.containers{backend}: Error: configmap "yatri-app-config" not found
+
+# The two pods created before the delete are still Running and still serving - a pod
+# keeps the env vars it was given at start. Only the NEW pod cannot be created.
+
+###END###

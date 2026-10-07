@@ -1,0 +1,10 @@
+$ kubectl describe pod -n production-webapp -l app=web-app | grep -E "^Name:|Liveness|Readiness|Startup" | head -8; kubectl get events -n production-webapp --field-selector reason=Unhealthy 2>&1 | tail -3
+Name:             web-app-f9769fb4-9574s
+    Liveness:     http-get http://:http/ delay=5s timeout=2s period=5s successThreshold=1 failureThreshold=3
+    Readiness:    http-get http://:http/ delay=5s timeout=2s period=5s successThreshold=1 failureThreshold=2
+    Startup:      http-get http://:http/ delay=0s timeout=1s period=2s successThreshold=1 failureThreshold=30
+Name:             web-app-f9769fb4-ldkkn
+    Liveness:     http-get http://:http/ delay=5s timeout=2s period=5s successThreshold=1 failureThreshold=3
+    Readiness:    http-get http://:http/ delay=5s timeout=2s period=5s successThreshold=1 failureThreshold=2
+    Startup:      http-get http://:http/ delay=0s timeout=1s period=2s successThreshold=1 failureThreshold=30
+No resources found in production-webapp namespace.

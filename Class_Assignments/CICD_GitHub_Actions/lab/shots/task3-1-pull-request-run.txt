@@ -1,0 +1,7 @@
+$ act pull_request -W .github/workflows/ci-cd.yml -P ubuntu-latest=catthehacker/ubuntu:act-latest
+[Calculator CI/CD/Test          ] ⭐ Run Set up job
+[Calculator CI/CD/Security Check] ⭐ Run Set up job
+[Calculator CI/CD/Security Check] 🏁  Job succeeded
+[Calculator CI/CD/Test          ] 🏁  Job succeeded
+[Calculator CI/CD/Build         ] ⭐ Run Set up job
+[Calculator CI/CD/Build         ] 🏁  Job succeeded

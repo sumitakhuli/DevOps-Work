@@ -1,0 +1,323 @@
+===== SESSION 12 CAPTURE Thu Sep 17 22:36:24 IST 2026 =====
+###SHOT:task1-1-configmap-created###
+$ kubectl apply -f 01-configmap/app-config.yaml
+configmap/yatri-app-config unchanged
+
+$ kubectl get configmap yatri-app-config
+NAME               DATA   AGE
+yatri-app-config   5      9h
+
+###END###
+###SHOT:task1-2-configmap-contents###
+$ kubectl describe configmap yatri-app-config
+Name:         yatri-app-config
+Namespace:    default
+Labels:       app=yatri-backend
+Annotations:  <none>
+
+Data
+====
+DEFAULT_CURRENCY:
+----
+INR
+
+ENVIRONMENT:
+----
+production
+
+LOG_LEVEL:
+----
+INFO
+
+MAX_BOOKING_DAYS:
+----
+30
+
+PORT:
+----
+5000
+
+
+BinaryData
+====
+
+Events:  <none>
+
+###END###
+###SHOT:task1-3-configmap-single-key###
+$ kubectl get configmap yatri-app-config -o jsonpath='{.data.LOG_LEVEL}{"\n"}'
+INFO
+
+$ kubectl get configmap yatri-app-config -o jsonpath='{.data.DEFAULT_CURRENCY}{"\n"}'
+INR
+
+###END###
+###SHOT:task2-1-base64-encoding###
+$ echo -n 'yatri_admin' | base64
+eWF0cmlfYWRtaW4=
+
+$ echo -n 'secretpassword' | base64
+c2VjcmV0cGFzc3dvcmQ=
+
+$ echo -n 'yatri_production_db' | base64
+eWF0cmlfcHJvZHVjdGlvbl9kYg==
+
+###END###
+###SHOT:task2-2-secret-created-and-masked###
+$ kubectl apply -f 02-secret/db-secret.yaml
+secret/yatri-db-secret created
+
+$ kubectl get secret yatri-db-secret
+NAME              TYPE     DATA   AGE
+yatri-db-secret   Opaque   3      0s
+
+$ kubectl describe secret yatri-db-secret
+Name:         yatri-db-secret
+Namespace:    default
+Labels:       app=yatri-backend
+Annotations:  <none>
+
+Type:  Opaque
+
+Data
+====
+POSTGRES_DB:        19 bytes
+POSTGRES_PASSWORD:  14 bytes
+POSTGRES_USER:      11 bytes
+
+###END###
+###SHOT:task2-3-decoding-a-secret###
+$ kubectl get secret yatri-db-secret -o jsonpath='{.data.POSTGRES_PASSWORD}{"\n"}'
+c2VjcmV0cGFzc3dvcmQ=
+
+$ kubectl get secret yatri-db-secret -o jsonpath='{.data.POSTGRES_PASSWORD}' | base64 --decode; echo
+secretpassword
+
+###END###
+###SHOT:task2-4-the-trailing-newline-gotcha###
+$ echo 'secretpassword' | base64
+c2VjcmV0cGFzc3dvcmQK
+
+$ echo -n 'secretpassword' | base64
+c2VjcmV0cGFzc3dvcmQ=
+
+$ echo 'secretpassword' | base64 -d | xxd | tail -2     # WRONG - note the trailing 0a
+00000000: 7365 6372 6574 7061 7373 776f 7264 0a    secretpassword.
+
+$ echo -n 'secretpassword' | base64 -d | xxd | tail -2  # RIGHT - ends at 'd'
+00000000: 7365 6372 6574 7061 7373 776f 7264       secretpassword
+
+###END###
+###SHOT:task3-1-ingress-controller-ready###
+$ minikube addons list | grep ingress
+│ [32mingress[0m                     │ [32mminikube[0m │ [32menabled ✅[0m │ [32mKubernetes[0m                             │
+│ ingress-dns                 │ minikube │ disabled   │ minikube                               │
+
+$ kubectl get pods -n ingress-nginx
+NAME                                       READY   STATUS      RESTARTS   AGE
+ingress-nginx-admission-create-jktk4       0/1     Completed   0          16m
+ingress-nginx-admission-patch-l4cbw        0/1     Completed   0          16m
+ingress-nginx-controller-d7cd8c989-m6dcp   1/1     Running     0          16m
+
+$ kubectl get svc -n ingress-nginx ingress-nginx-controller
+NAME                       TYPE       CLUSTER-IP       EXTERNAL-IP   PORT(S)                      AGE
+ingress-nginx-controller   NodePort   10.111.241.145   <none>        80:31994/TCP,443:30107/TCP   16m
+
+###END###
+###SHOT:task3-2-ingress-object###
+$ kubectl apply -f 03-ingress/ingress-routes.yaml
+ingress.networking.k8s.io/yatri-ingress created
+
+$ kubectl get ingress yatri-ingress
+NAME            CLASS   HOSTS         ADDRESS        PORTS   AGE
+yatri-ingress   nginx   yatri.local   192.168.49.2   80      5s
+
+$ kubectl describe ingress yatri-ingress
+Name:             yatri-ingress
+Labels:           app=yatri-app
+Namespace:        default
+Address:          192.168.49.2
+Ingress Class:    nginx
+Default backend:  <default>
+Rules:
+  Host         Path  Backends
+  ----         ----  --------
+  yatri.local  
+               /api(/|$)(.*)   yatri-backend-service:80 (<error: services "yatri-backend-service" not found>)
+               /               yatri-frontend-service:80 (<error: services "yatri-frontend-service" not found>)
+Annotations:   nginx.ingress.kubernetes.io/ssl-redirect: false
+               nginx.ingress.kubernetes.io/use-regex: true
+Events:
+  Type    Reason  Age              From                      Message
+  ----    ------  ----             ----                      -------
+  Normal  Sync    3s (x2 over 5s)  nginx-ingress-controller  Scheduled for sync
+
+###END###
+###SHOT:task4-1-prerequisites###
+$ minikube status
+minikube
+type: Control Plane
+host: Running
+kubelet: Running
+apiserver: Running
+kubeconfig: Configured
+
+
+$ kubectl config current-context
+minikube
+
+$ kubectl wait --namespace ingress-nginx --for=condition=ready pod --selector=app.kubernetes.io/component=controller --timeout=180s
+pod/ingress-nginx-controller-d7cd8c989-m6dcp condition met
+
+###END###
+###SHOT:task4-2-config-and-secret###
+$ kubectl apply -f 04-full-demo/configmap.yaml
+configmap/yatri-app-config configured
+
+$ kubectl apply -f 04-full-demo/secret.yaml
+secret/yatri-db-secret configured
+
+$ kubectl get configmap yatri-app-config
+NAME               DATA   AGE
+yatri-app-config   5      9h
+
+$ kubectl get secret yatri-db-secret
+NAME              TYPE     DATA   AGE
+yatri-db-secret   Opaque   3      6s
+
+###END###
+###SHOT:task4-3-frontend-and-backend###
+$ kubectl apply -f 04-full-demo/frontend.yaml
+deployment.apps/yatri-frontend created
+service/yatri-frontend-service created
+
+$ kubectl apply -f 04-full-demo/backend.yaml
+deployment.apps/yatri-backend created
+service/yatri-backend-service created
+
+$ kubectl rollout status deployment/yatri-frontend --timeout=240s
+Waiting for deployment "yatri-frontend" rollout to finish: 0 of 2 updated replicas are available...
+Waiting for deployment "yatri-frontend" rollout to finish: 1 of 2 updated replicas are available...
+deployment "yatri-frontend" successfully rolled out
+
+$ kubectl rollout status deployment/yatri-backend --timeout=240s
+deployment "yatri-backend" successfully rolled out
+
+$ kubectl get pods,svc -l app=yatri-frontend
+NAME                                 READY   STATUS    RESTARTS   AGE
+pod/yatri-frontend-ddcfc4b5f-hpkgd   1/1     Running   0          1s
+pod/yatri-frontend-ddcfc4b5f-nnsd9   1/1     Running   0          1s
+
+NAME                             TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)   AGE
+service/yatri-frontend-service   ClusterIP   10.102.211.215   <none>        80/TCP    1s
+
+$ kubectl get pods,svc -l app=yatri-backend
+NAME                                 READY   STATUS    RESTARTS   AGE
+pod/yatri-backend-6c58cb99c7-l2zwc   1/1     Running   0          0s
+pod/yatri-backend-6c58cb99c7-ngx6v   1/1     Running   0          0s
+
+NAME                            TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)   AGE
+service/yatri-backend-service   ClusterIP   10.105.117.183   <none>        80/TCP    0s
+
+###END###
+###SHOT:task4-4-ingress-wired-up###
+$ kubectl apply -f 04-full-demo/ingress.yaml
+ingress.networking.k8s.io/yatri-ingress created
+
+$ kubectl get ingress yatri-ingress
+NAME            CLASS   HOSTS         ADDRESS   PORTS   AGE
+yatri-ingress   nginx   yatri.local             80      10s
+
+$ kubectl describe ingress yatri-ingress | sed -n '1,25p'
+Name:             yatri-ingress
+Labels:           app=yatri-app
+Namespace:        default
+Address:          
+Ingress Class:    nginx
+Default backend:  <default>
+Rules:
+  Host         Path  Backends
+  ----         ----  --------
+  yatri.local  
+               /api(/|$)(.*)   yatri-backend-service:80 (10.244.0.156:5000,10.244.0.155:5000)
+               /               yatri-frontend-service:80 (10.244.0.153:80,10.244.0.154:80)
+Annotations:   nginx.ingress.kubernetes.io/rewrite-target: /$2
+               nginx.ingress.kubernetes.io/ssl-redirect: false
+               nginx.ingress.kubernetes.io/use-regex: true
+Events:
+  Type    Reason  Age   From                      Message
+  ----    ------  ----  ----                      -------
+  Normal  Sync    10s   nginx-ingress-controller  Scheduled for sync
+
+###END###
+###SHOT:task4-5-routing-root-to-frontend###
+$ kubectl port-forward -n ingress-nginx svc/ingress-nginx-controller 18080:80 &
+$ curl -s -H 'Host: yatri.local' http://localhost:18080/
+<!DOCTYPE html>
+<html>
+<head>
+<title>Welcome to nginx!</title>
+<style>
+html { color-scheme: light dark; }
+body { width: 35em; margin: 0 auto;
+font-family: Tahoma, Verdana, Arial, sans-serif; }
+</style>
+</head>
+<body>
+<h1>Welcome to nginx!</h1>
+<p>If you see this page, the nginx web server is successfully installed and
+working. Further configuration is required.</p>
+
+<p>For online documentation and support please refer to
+<a href="http://nginx.org/">nginx.org</a>.<br/>
+Commercial support is available at
+<a href="http://nginx.com/">nginx.com</a>.</p>
+
+<p><em>Thank you for using nginx.</em></p>
+</body>
+</html>
+
+###END###
+###SHOT:task4-6-routing-api-to-backend###
+$ curl -s -H 'Host: yatri.local' http://localhost:18080/api/
+Yatri Backend API
+=================
+ENVIRONMENT     : production
+LOG_LEVEL       : INFO
+DEFAULT_CURRENCY: INR
+POSTGRES_USER   : yatri_admin
+POSTGRES_DB     : yatri_production_db
+
+###END###
+###SHOT:task4-7-config-and-secret-inside-the-pod###
+$ kubectl exec deploy/yatri-backend -- env | grep -E 'ENVIRONMENT|LOG_LEVEL|APP_PORT|DEFAULT_CURRENCY|MAX_BOOKING_DAYS' | sort
+APP_PORT=5000
+DEFAULT_CURRENCY=INR
+ENVIRONMENT=production
+LOG_LEVEL=INFO
+MAX_BOOKING_DAYS=30
+/tmp/claude-501/-Users-utkarshpathak3107/a3b6f990-5f77-4cd7-82b8-7462c87e1953/scratchpad/s12.sh: line 7: 82349 Terminated: 15          kubectl port-forward -n ingress-nginx svc/ingress-nginx-controller 18080:80 > /dev/null 2>&1
+
+$ kubectl exec deploy/yatri-backend -- env | grep -E 'POSTGRES' | sort
+POSTGRES_DB=yatri_production_db
+POSTGRES_PASSWORD=secretpassword
+POSTGRES_USER=yatri_admin
+
+###END###
+###SHOT:task4-8-missing-configmap-behaviour###
+$ kubectl get events --sort-by=.lastTimestamp | tail -12
+17s         Normal    ScalingReplicaSet         deployment/yatri-backend                                 Scaled up replica set yatri-backend-6c58cb99c7 from 0 to 2
+17s         Normal    Pulled                    pod/yatri-frontend-ddcfc4b5f-nnsd9                       Container image "nginx:1.25-alpine" already present on machine and can be accessed by the pod
+17s         Normal    Started                   pod/yatri-backend-6c58cb99c7-l2zwc                       Container started
+17s         Normal    Created                   pod/yatri-frontend-ddcfc4b5f-nnsd9                       Container created
+17s         Normal    Pulled                    pod/yatri-backend-6c58cb99c7-l2zwc                       Container image "python:3.11-alpine3.19" already present on machine and can be accessed by the pod
+17s         Normal    Scheduled                 pod/yatri-backend-6c58cb99c7-l2zwc                       Successfully assigned default/yatri-backend-6c58cb99c7-l2zwc to minikube
+17s         Normal    Created                   pod/yatri-backend-6c58cb99c7-ngx6v                       Container created
+17s         Normal    Started                   pod/yatri-backend-6c58cb99c7-ngx6v                       Container started
+17s         Normal    SuccessfulCreate          replicaset/yatri-backend-6c58cb99c7                      Created pod: yatri-backend-6c58cb99c7-l2zwc
+17s         Normal    Started                   pod/yatri-frontend-ddcfc4b5f-hpkgd                       Container started
+17s         Normal    Created                   pod/yatri-frontend-ddcfc4b5f-hpkgd                       Container created
+17s         Normal    Sync                      ingress/yatri-ingress                                    Scheduled for sync
+
+###END###
+===== SESSION 12 CAPTURE DONE Thu Sep 17 22:36:48 IST 2026 =====

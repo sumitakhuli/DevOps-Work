@@ -1,0 +1,4 @@
+$ helm upgrade web web-chart -n helm-lab --set image.tag=1.99-doesnotexist --set replicaCount=2 --wait --timeout 60s
+level=WARN msg="upgrade failed" name=web error="resource Deployment/helm-lab/web-web-chart not ready. status: InProgress, message: Updated: 1/2\ncontext deadline exceeded"
+Error: UPGRADE FAILED: resource Deployment/helm-lab/web-web-chart not ready. status: InProgress, message: Updated: 1/2
+context deadline exceeded

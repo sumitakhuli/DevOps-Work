@@ -1,0 +1,13 @@
+$ kubectl get pods -n production-webapp; kubectl get events -n production-webapp --sort-by=.lastTimestamp | grep -E 'Unhealthy|Killing|Started' | tail -8; kubectl exec -n production-webapp web-app-f9769fb4-ldkkn -- ls /usr/share/nginx/html
+NAME                     READY   STATUS    RESTARTS      AGE
+web-app-f9769fb4-ldkkn   1/1     Running   1 (25s ago)   71s
+web-app-f9769fb4-xmzt7   1/1     Running   0             50s
+70s         Normal    Started                        pod/web-app-f9769fb4-9574s            Container started
+50s         Normal    Killing                        pod/web-app-f9769fb4-9574s            Stopping container nginx
+49s         Normal    Started                        pod/web-app-f9769fb4-xmzt7            Container started
+25s         Warning   Unhealthy                      pod/web-app-f9769fb4-ldkkn            Readiness probe failed: HTTP probe failed with statuscode: 403
+25s         Warning   Unhealthy                      pod/web-app-f9769fb4-ldkkn            Liveness probe failed: HTTP probe failed with statuscode: 403
+25s         Normal    Started                        pod/web-app-f9769fb4-ldkkn            Container started
+25s         Normal    Killing                        pod/web-app-f9769fb4-ldkkn            Container nginx failed liveness probe, will be restarted
+50x.html
+index.html

@@ -1,0 +1,27 @@
+$ kubectl apply -f gitops/argocd-application.yaml; until [ "$(kubectl get application session20-mini -n argocd -o jsonpath={.status.health.status})" = "Healthy" ]; do sleep 3; done; kubectl get application session20-mini -n argocd -o wide; echo; kubectl get all,cm -n session20 -l app=session20-mini 2>/dev/null; kubectl get deploy,pods,svc,cm -n session20
+application.argoproj.io/session20-mini created
+NAME             SYNC STATUS   HEALTH STATUS   REVISION                                   PROJECT
+session20-mini   Synced        Healthy         6360907495980bc46bf3b36f74bd64d5bb162e90   default
+
+NAME                                  READY   STATUS    RESTARTS   AGE
+pod/session20-mini-65c66c8bf4-66gzn   1/1     Running   0          2s
+pod/session20-mini-65c66c8bf4-g57zj   1/1     Running   0          2s
+
+NAME                             READY   UP-TO-DATE   AVAILABLE   AGE
+deployment.apps/session20-mini   2/2     2            2           2s
+
+NAME                                        DESIRED   CURRENT   READY   AGE
+replicaset.apps/session20-mini-65c66c8bf4   2         2         2       2s
+NAME                             READY   UP-TO-DATE   AVAILABLE   AGE
+deployment.apps/session20-mini   2/2     2            2           2s
+
+NAME                                  READY   STATUS    RESTARTS   AGE
+pod/session20-mini-65c66c8bf4-66gzn   1/1     Running   0          2s
+pod/session20-mini-65c66c8bf4-g57zj   1/1     Running   0          2s
+
+NAME                     TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)   AGE
+service/session20-mini   ClusterIP   10.104.143.84   <none>        80/TCP    2s
+
+NAME                         DATA   AGE
+configmap/kube-root-ca.crt   1      2s
+configmap/web-content        1      2s

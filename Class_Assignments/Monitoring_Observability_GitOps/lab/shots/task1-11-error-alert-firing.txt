@@ -1,0 +1,12 @@
+$ date +%T; curl -s localhost:9090/api/v1/alerts | jq -r ".data.alerts[] | \"\(.labels.alertname)  state=\(.state)  value=\(.value)\"  "; echo; echo "# error ratio:"; curl -s localhost:9090/api/v1/query --data-urlencode "query=sum(rate(shop_http_requests_total{status=~\"5..\"}[1m])) / sum(rate(shop_http_requests_total[1m]))" | jq -r ".data.result[0].value[1]"; echo; echo "# matching log lines (last 30 s):"; docker logs --since 30s s20-shop-api 2>&1 | jq -r "select(.level==\"ERROR\") | \"\(.ts) \(.msg) trace=\(.trace_id)\"" | tail -4
+00:54:21
+HighErrorRate  state=firing  value=1.829652996845426e-01
+
+# error ratio:
+0.1829652996845426
+
+# matching log lines (last 30 s):
+2026-10-06T19:24:15 POST /api/checkout 502 trace=4229bb0764c4ca4492d884cfbd8c5037
+2026-10-06T19:24:15 POST /api/checkout 502 trace=9097bdb7b38078446b4d69a6f790503c
+2026-10-06T19:24:19 POST /api/checkout 502 trace=16426475f9ab3228c89bce41eb1ae2ef
+2026-10-06T19:24:20 POST /api/checkout 502 trace=3a5150bab9d77180a6a6b25da6ad4717

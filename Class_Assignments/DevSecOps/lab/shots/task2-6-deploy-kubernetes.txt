@@ -1,0 +1,22 @@
+$ act push -W .github/workflows/devsecops.yml -P ubuntu-latest=catthehacker/ubuntu:act-latest --network kind --secret-file s17.secrets
+  (run 3 - Deploy to Kubernetes)
+[DevSecOps Pipeline/Deploy to Kubernetes  ]   | NAME                      STATUS   ROLES           AGE    VERSION
+[DevSecOps Pipeline/Deploy to Kubernetes  ]   | devsecops-control-plane   Ready    control-plane   5m6s   v1.37.0
+[DevSecOps Pipeline/Deploy to Kubernetes  ]   | deployment.apps/session17-python created
+[DevSecOps Pipeline/Deploy to Kubernetes  ]   | service/session17-python created
+[DevSecOps Pipeline/Deploy to Kubernetes  ]   | Waiting for deployment "session17-python" rollout to finish: 0 of 2 updated replicas are available...
+[DevSecOps Pipeline/Deploy to Kubernetes  ]   | Waiting for deployment "session17-python" rollout to finish: 1 of 2 updated replicas are available...
+[DevSecOps Pipeline/Deploy to Kubernetes  ]   | deployment "session17-python" successfully rolled out
+[DevSecOps Pipeline/Deploy to Kubernetes  ]   | NAME                               READY   UP-TO-DATE   AVAILABLE   AGE   CONTAINERS         IMAGES                                    SELECTOR
+[DevSecOps Pipeline/Deploy to Kubernetes  ]   | deployment.apps/session17-python   2/2     2            2           4s    session17-python   localhost:5001/session17-python:9036109   app=session17-python
+[DevSecOps Pipeline/Deploy to Kubernetes  ]   | 
+[DevSecOps Pipeline/Deploy to Kubernetes  ]   | NAME                                    READY   STATUS    RESTARTS   AGE   IP           NODE                      NOMINATED NODE   READINESS GATES
+[DevSecOps Pipeline/Deploy to Kubernetes  ]   | pod/session17-python-68996cf4c9-74wrh   1/1     Running   0          4s    10.244.0.6   devsecops-control-plane   <none>           <none>
+[DevSecOps Pipeline/Deploy to Kubernetes  ]   | pod/session17-python-68996cf4c9-mngtl   1/1     Running   0          4s    10.244.0.5   devsecops-control-plane   <none>           <none>
+[DevSecOps Pipeline/Deploy to Kubernetes  ]   | 
+[DevSecOps Pipeline/Deploy to Kubernetes  ]   | NAME                       TYPE       CLUSTER-IP      EXTERNAL-IP   PORT(S)        AGE   SELECTOR
+[DevSecOps Pipeline/Deploy to Kubernetes  ]   | service/session17-python   NodePort   10.96.218.209   <none>        80:30001/TCP   4s    app=session17-python
+[DevSecOps Pipeline/Deploy to Kubernetes  ]   | {"status":"healthy","timestamp":"2026-10-06T18:26:45.388681Z","uptime_seconds":4.24}
+[DevSecOps Pipeline/Deploy to Kubernetes  ]   | 
+[DevSecOps Pipeline/Deploy to Kubernetes  ]   | {"app":"DevSecOps Dashboard","platform":"Linux","python_version":"3.12.15","status":"running","timestamp":"2026-10-06T18:26:45.395438Z","total_requests":4,"uptime":"00h 00m 04s","ver
+[DevSecOps Pipeline/Deploy to Kubernetes  ] 🏁  Job succeeded
