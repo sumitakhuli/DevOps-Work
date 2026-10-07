@@ -94,5 +94,3 @@ Where something behaved differently than the task expected — a deprecated base
 Linux-only commands (`adduser`, `useradd`, `journalctl`, `ip`, `ss`, `tracepath`, `traceroute`) were run in the Ubuntu container, because macOS does not provide them. The Dockerfile for that environment is committed at [`Class_Assignments/Linux_Fundamentals/lab/Dockerfile`](Class_Assignments/Linux_Fundamentals/lab/Dockerfile).
 
 
-#   D e v O p s - W o r k  
- 
