@@ -31,7 +31,7 @@ Every command in this README was actually run. The screenshots in [`screenshots/
 
 | Layer | What was built |
 |---|---|
-| Application | FastAPI REST API (`/api/tasks` CRUD, `/stats`, `/health`, `/ready`, `/metrics`), SQLAlchemy + Alembic, and a React/Vite dashboard served by nginx |
+| Application | FastAPI REST API (`/api/tasks` CRUD, `/stats`, `/health`, `/ready`, `/metrics`), SQLAlchemy + Alembic, and a React/Vite dashboard (dashboard, my tasks, kanban board, activity; full create/edit/delete) served by nginx |
 | Quality | flake8, 15 pytest tests at **100% coverage**; CI fails under 90% |
 | Docker | Multi-stage, non-root images with healthchecks, plus a Compose stack with health-gated startup |
 | Security | SAST, SCA, secret scanning, Dockerfile lint, image scanning, and a **security gate** that blocks the release |
@@ -168,6 +168,34 @@ Fixes made while setting this up:
 - The original test suite had a failing test because the table was never created. `TestClient` was used without its context manager, so the startup hook never ran. Startup now uses FastAPI's `lifespan` handler (`on_event` is deprecated).
 - CORS was `*` and is now driven by the `CORS_ORIGINS` setting.
 - Frontend dependencies were all `"latest"` and are now pinned with a lockfile.
+
+### The TaskBoard UI
+
+The React app ([`application/frontend/src`](application/frontend/src)) only ever calls `/api/...` on its own origin. nginx (Compose) or the Ingress (Kubernetes) routes those calls to the backend.
+
+| View | What it does |
+|---|---|
+| **Dashboard** (`#/dashboard`) | KPI cards from `GET /api/tasks/stats`, the task table with status filters and search, recent activity and the delivery pipeline |
+| **My tasks** (`#/my-tasks`) | Tasks assigned to the signed-in user, with their own counts |
+| **Board** (`#/board`) | Kanban columns for To do / In progress / Done. Drag a card to another column to change its status (`PUT /api/tasks/{id}`) |
+| **Activity** (`#/activity`) | Task creation times come from the API. Edits, status moves and deletes are logged in the browser |
+
+- **Create / edit:** one modal (`POST` or `PUT`). On success the modal closes and the list refreshes straight away, with no page reload. On failure the API error is shown in the modal and it stays open.
+- **Delete:** the trash icon asks for confirmation inline, then calls `DELETE /api/tasks/{id}`.
+- **Status:** change it from the pill on any row or card.
+- The sidebar uses hash routes, so it works behind nginx's `try_files` with no server changes. The UI follows the OS light/dark setting, and on phones the sidebar collapses into a top bar and table rows stack as cards.
+
+Fixes in this round:
+- **New tasks didn't appear until a page refresh.** `create()` called `e.currentTarget.reset()` after an `await`. React clears `currentTarget` once the handler yields, so that line threw, and `setShowForm(false)` and the reload never ran. The form is now controlled state, with no DOM access after `await`.
+- **No way to delete tasks.** The backend already had `DELETE /api/tasks/{id}`, but the UI never called it.
+- **The sidebar links did nothing.** They were `<a>` tags with no `href` or handler. They are now real routes.
+
+To try it locally: run the backend (`uvicorn app.main:app`, SQLite is fine via `DATABASE_URL=sqlite:///./dev.db`), then `npm run dev` in `application/frontend`. Vite proxies `/api` to `:8000`.
+
+| | |
+|---|---|
+| ![](screenshots/110-ui-dashboard.png) | ![](screenshots/111-ui-board.png) |
+| ![](screenshots/112-ui-task-modal.png) | ![](screenshots/113-ui-dark-mode.png) |
 
 | | |
 |---|---|
@@ -527,6 +555,7 @@ These weren't planted. They happened during the build and were debugged the same
 | 80-97 | Troubleshooting scenarios |
 | 100-105 | Real GitHub Actions runs: CI blocked, CI green, CD GitOps commit |
 | 106-109 | Argo CD tracking GitHub, GHCR images running, prod smoke test |
+| 110-113 | TaskBoard UI: dashboard, board, create-task modal, dark mode |
 
 ---
 
